@@ -8,15 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
-
+delegate void SetTextCallback(string dato);
 namespace OpenEFI_Tuner{
 
     public partial class Form1 : Form{
-        
+        public bool conectado = false;
+        SerialPort ArduinoPort = new SerialPort(); //DECLARAMOS instancia de serial port para luego empezar comunicacion
         public Form1(){
 
             InitializeComponent();
-            
         }
 
         private void Form1_Load(object sender, EventArgs e){
@@ -39,18 +39,26 @@ namespace OpenEFI_Tuner{
             }
         }
 
-        private void button1_Click(object sender, EventArgs e) {
-            SerialPort ArduinoPort = new SerialPort(); //DECLARAMOS instancia de serial port para luego empezar comunicacion
-                  ArduinoPort.PortName = (string)listBox1.SelectedItem; //el puerto lo sacamos del listbox1 
-                  ArduinoPort.BaudRate = 9600; //la veloidad siempre queda fija
-            try{
+        public void button1_Click(object sender, EventArgs e) {
+            Conectar();
+        }
+        public void Conectar() {
+            ArduinoPort.PortName = (string)listBox1.SelectedItem; //el puerto lo sacamos del listbox1 
+            ArduinoPort.BaudRate = 9600; //la veloidad siempre queda fija
+            ArduinoPort.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
+            try
+            {
                 ArduinoPort.Open(); //intentamos conectarnos al arduino
                 MessageBox.Show("Se puedo conectar :D");
-            } catch{
+                conectado = true;
+            }
+            catch
+            {
                 MessageBox.Show("Te mandaste una cagada boludo 7-7");
             }
-        }
+           
 
+        }
         private void aquaGauge1_Load(object sender, EventArgs e)
         {
             
@@ -65,19 +73,41 @@ namespace OpenEFI_Tuner{
             aquaGauge2.MaxValue = 120;
             aquaGauge2.MinValue = -10;
             aquaGauge2.Value = 50;
-            aquaGauge2.DialText = "Temp";
-
-            aquaGauge3.MaxValue = 18;
-            aquaGauge3.MinValue = 0;
-            aquaGauge3.Value = 12.6F;
-            aquaGauge3.DialText = "Volt";
+            aquaGauge2.DialText = "Temp °C";
         }
 
-        private void trackBar1_Scroll(object sender, EventArgs e)
+        public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e){
+            
+            // Leemos el dato recibido del puerto serie
+            string inData = ArduinoPort.ReadLine().ToString();
+            actualizar(inData.ToString());
+        }
+
+        public void actualizar(string dato){
+            if (this.textBox1.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(actualizar);
+                this.Invoke(d, new object[] { dato });
+            }
+            else
+            {
+                int dato2 = Convert.ToInt32(dato);
+                this.aquaGauge1.Value = dato2;
+                this.textBox1.Text += dato + Environment.NewLine;
+            }
+        }
+
+        private void sevenSegmentArray1_Load(object sender, EventArgs e)
         {
-            trackBar1.Maximum = 8000;
-            trackBar1.Minimum = 0;
-            aquaGauge1.Value = trackBar1.Value;
+            sevenSegmentArray1.Value = "12.4";
+            sevenSegmentArray2.Value = "12.4";
+            sevenSegmentArray3.Value = "12.4";
         }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+        
     }
 }
