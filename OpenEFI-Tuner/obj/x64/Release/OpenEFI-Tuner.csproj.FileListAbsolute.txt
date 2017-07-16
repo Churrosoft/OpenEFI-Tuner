@@ -1,0 +1,16 @@
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\bin\x64\Release\OpenEFI-Tuner.exe.config
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\bin\x64\Release\OpenEFI-Tuner.exe.manifest
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\bin\x64\Release\OpenEFI-Tuner.application
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\bin\x64\Release\OpenEFI-Tuner.exe
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\bin\x64\Release\OpenEFI-Tuner.pdb
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\bin\x64\Release\AquaGauge.dll
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\bin\x64\Release\AquaGauge.pdb
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI-Tuner.csprojResolveAssemblyReference.cache
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI_Tuner.Form1.resources
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI_Tuner.Properties.Resources.resources
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI-Tuner.csproj.GenerateResource.Cache
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI-Tuner.TrustInfo.xml
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI-Tuner.exe.manifest
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI-Tuner.application
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI-Tuner.exe
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\x64\Release\OpenEFI-Tuner.pdb

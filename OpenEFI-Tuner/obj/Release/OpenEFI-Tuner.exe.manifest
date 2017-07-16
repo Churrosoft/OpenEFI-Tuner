@@ -3,7 +3,7 @@
   <asmv1:assemblyIdentity name="OpenEFI-Tuner.exe" version="1.1.5.4" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="OpenEFI-Tuner" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="OpenEFI-Tuner" version="1.0.5.3" language="neutral" processorArchitecture="msil" />
     <commandLine file="OpenEFI-Tuner.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -43,25 +43,25 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AquaGauge.dll" size="17920">
-      <assemblyIdentity name="AquaGauge" version="1.0.6405.25808" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="AquaGauge" version="1.0.6405.42627" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>LekIYtu76wvJgZ8+B1JMYtLNyDQ0B7M/e55Ad2MP7/A=</dsig:DigestValue>
+        <dsig:DigestValue>tW5XhGi3aZgptuPNLGv96KUkioQ/kHcIyJv/vlsoA9s=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OpenEFI-Tuner.exe" size="25064">
-      <assemblyIdentity name="OpenEFI-Tuner" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OpenEFI-Tuner.exe" size="27624">
+      <assemblyIdentity name="OpenEFI-Tuner" version="1.0.5.3" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>iBdNc8UCeFd7g6vppoxgPg/R70kTHMeRBO+X0vl6IHQ=</dsig:DigestValue>
+        <dsig:DigestValue>iMm7r4w3XT6Tn0baHrt1tbglYGRHuneAmZOyBdzxnQc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

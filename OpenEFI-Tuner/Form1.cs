@@ -43,9 +43,13 @@ namespace OpenEFI_Tuner{
             Conectar();
         }
         public void Conectar() {
-            ArduinoPort.PortName = (string)listBox1.SelectedItem; //el puerto lo sacamos del listbox1 
-            ArduinoPort.BaudRate = 9600; //la veloidad siempre queda fija
-            ArduinoPort.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
+            try
+            {
+                ArduinoPort.PortName = (string)listBox1.SelectedItem; //el puerto lo sacamos del listbox1 
+                ArduinoPort.BaudRate = 9600; //la veloidad siempre queda fija
+                ArduinoPort.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
+            }
+            catch { MessageBox.Show("Ya hay una conexion abierta"); }
             try
             {
                 ArduinoPort.Open(); //intentamos conectarnos al arduino
@@ -72,8 +76,11 @@ namespace OpenEFI_Tuner{
 
             aquaGauge2.MaxValue = 120;
             aquaGauge2.MinValue = -10;
-            aquaGauge2.Value = 50;
+            aquaGauge2.Value = 50.5F;
             aquaGauge2.DialText = "Temp °C";
+            aquaGauge3.MaxValue = 100;
+            aquaGauge3.MinValue = 0;
+            aquaGauge3.DialText = "Carga";
         }
 
         public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e){
@@ -91,23 +98,91 @@ namespace OpenEFI_Tuner{
             }
             else
             {
-                int dato2 = Convert.ToInt32(dato);
-                this.aquaGauge1.Value = dato2;
-                this.textBox1.Text += dato + Environment.NewLine;
+                
+                //comenzamos a clasificar los datos de entrada y modificar :P
+                string result;
+                int dato2;
+                if (dato.StartsWith("RPM")) {
+                        result = dato.Remove(0, 4);
+                        dato2 = Convert.ToInt32(result);
+                        this.aquaGauge1.Value = dato2;
+                    }
+                    if (dato.StartsWith("00V"))
+                    {
+                        result = dato.Remove(0, 4);
+                       this.sevenSegmentArray3.Value = result;
+                }
+                if (dato.StartsWith("TEMP"))
+                {
+                    result = dato.Remove(0, 4);
+                    dato2 = Convert.ToInt32(result);
+                    this.aquaGauge2.Value = dato2;
+                }
+                if (dato.StartsWith("LOAD"))
+                {
+                    result = dato.Remove(0, 4);
+                    dato2 = Convert.ToInt32(result);
+                    this.aquaGauge3.Value = dato2;
+                }
+                if (dato.StartsWith("INY"))
+                {
+                    result = dato.Remove(0, 4);
+                    this.sevenSegmentArray1.Value = result;
+
+                }
+                if (dato.StartsWith("AVC"))
+                {
+                    result = dato.Remove(0, 4);
+                    this.sevenSegmentArray2.Value = result;
+
+                }
+                if (dato.StartsWith("DBG"))
+                {
+                    this.textBox1.AppendText(dato + Environment.NewLine);
+                }
             }
         }
 
         private void sevenSegmentArray1_Load(object sender, EventArgs e)
         {
-            sevenSegmentArray1.Value = "12.4";
-            sevenSegmentArray2.Value = "12.4";
-            sevenSegmentArray3.Value = "12.4";
+           
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
         {
 
         }
-        
+
+        private void Desconectar_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void toolStripComboBox1_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void toolStripSplitButton1_ButtonClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void desconectarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void desconectarToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ArduinoPort.Close();
+                MessageBox.Show("se cerro correctamente la conexion");
+            }
+            catch
+            {
+                MessageBox.Show("No se puede cerrar la conexion");
+            }
+        }
     }
 }

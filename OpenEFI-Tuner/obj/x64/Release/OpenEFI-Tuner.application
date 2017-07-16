@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xrml="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <assemblyIdentity name="OpenEFI-Tuner.application" version="1.1.5.4" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <assemblyIdentity name="OpenEFI-Tuner.application" version="1.1.5.4" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <description asmv2:publisher="OpenEFI Tuner" asmv2:product="OpenEFI Tuner" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <deployment install="true" disallowUrlActivation="true" mapFileExtensions="true" minimumRequiredVersion="0.1.8.1" co.v1:createDesktopShortcut="true">
     <subscription>
@@ -14,14 +14,14 @@
     <framework targetVersion="4.5.2" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="OpenEFI-Tuner.exe.manifest" size="5338">
-      <assemblyIdentity name="OpenEFI-Tuner.exe" version="1.1.5.4" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+    <dependentAssembly dependencyType="install" codebase="OpenEFI-Tuner.exe.manifest" size="5349">
+      <assemblyIdentity name="OpenEFI-Tuner.exe" version="1.1.5.4" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>/5nVG/DIiXjRyMCe3K/0tG3EAfgtjnKbK6Wqugz9KUk=</dsig:DigestValue>
+        <dsig:DigestValue>jENwybfWzO15tbsscE0uUdmew+2R3HUY65XHeKM72vE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
