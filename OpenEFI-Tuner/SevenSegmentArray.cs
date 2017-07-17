@@ -175,7 +175,7 @@ namespace DmitryBrant.CustomControls
                     for (int i = theValue.Length - 1; i >= 0; i--)
                     {
                         if (segmentIndex >= segments.Length) break;
-                        if (theValue[i] == '.') segments[segmentIndex].DecimalOn = true;
+                        if (theValue[i] == '.' || theValue[i] == ',') segments[segmentIndex].DecimalOn = true;
                         else segments[segmentIndex++].Value = theValue[i].ToString();
                     }
                 }

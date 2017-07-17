@@ -9,40 +9,53 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Ports;
 delegate void SetTextCallback(string dato);
-namespace OpenEFI_Tuner{
 
-    public partial class Form1 : Form{
+namespace OpenEFI_Tuner
+{
+
+    public partial class Form1 : Form
+    {
+
         public bool conectado = false;
+        public event FormClosingEventHandler FormClosing;
         SerialPort ArduinoPort = new SerialPort(); //DECLARAMOS instancia de serial port para luego empezar comunicacion
-        public Form1(){
 
+        public Form1()
+        {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e){
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e){
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e) {
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
 
         }
 
-        private void button2_Click(object sender, EventArgs e) {
+        private void button2_Click(object sender, EventArgs e)
+        {
 
             string[] ports = SerialPort.GetPortNames();
-            foreach (string port in ports){
+            foreach (string port in ports)
+            {
                 listBox1.Items.Add(port);
             }
         }
 
-        public void button1_Click(object sender, EventArgs e) {
+        public void button1_Click(object sender, EventArgs e)
+        {
             Conectar();
         }
-        public void Conectar() {
+        public void Conectar()
+        {
             try
             {
                 ArduinoPort.PortName = (string)listBox1.SelectedItem; //el puerto lo sacamos del listbox1 
@@ -60,12 +73,12 @@ namespace OpenEFI_Tuner{
             {
                 MessageBox.Show("Te mandaste una cagada boludo 7-7");
             }
-           
+
 
         }
         private void aquaGauge1_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void aquaGauge1_Load_1(object sender, EventArgs e)
@@ -83,14 +96,16 @@ namespace OpenEFI_Tuner{
             aquaGauge3.DialText = "Carga";
         }
 
-        public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e){
-            
+        public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+
             // Leemos el dato recibido del puerto serie
             string inData = ArduinoPort.ReadLine().ToString();
             actualizar(inData.ToString());
         }
 
-        public void actualizar(string dato){
+        public void actualizar(string dato)
+        {
             if (this.textBox1.InvokeRequired)
             {
                 SetTextCallback d = new SetTextCallback(actualizar);
@@ -98,19 +113,20 @@ namespace OpenEFI_Tuner{
             }
             else
             {
-                
+
                 //comenzamos a clasificar los datos de entrada y modificar :P
                 string result;
                 int dato2;
-                if (dato.StartsWith("RPM")) {
-                        result = dato.Remove(0, 4);
-                        dato2 = Convert.ToInt32(result);
-                        this.aquaGauge1.Value = dato2;
-                    }
-                    if (dato.StartsWith("00V"))
-                    {
-                        result = dato.Remove(0, 4);
-                       this.sevenSegmentArray3.Value = result;
+                if (dato.StartsWith("RPM"))
+                {
+                    result = dato.Remove(0, 4);
+                    dato2 = Convert.ToInt32(result);
+                    this.aquaGauge1.Value = dato2;
+                }
+                if (dato.StartsWith("00V"))
+                {
+                    result = dato.Remove(0, 4);
+                    this.sevenSegmentArray3.Value = result;
                 }
                 if (dato.StartsWith("TEMP"))
                 {
@@ -145,7 +161,7 @@ namespace OpenEFI_Tuner{
 
         private void sevenSegmentArray1_Load(object sender, EventArgs e)
         {
-           
+            sevenSegmentArray4.Value = "125.7";
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
@@ -155,7 +171,7 @@ namespace OpenEFI_Tuner{
 
         private void Desconectar_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void toolStripComboBox1_Click(object sender, EventArgs e)
@@ -169,7 +185,7 @@ namespace OpenEFI_Tuner{
 
         private void desconectarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           
+
         }
 
         private void desconectarToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -184,5 +200,38 @@ namespace OpenEFI_Tuner{
                 MessageBox.Show("No se puede cerrar la conexion");
             }
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void modoFijoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form3 frm = new Form3();
+            frm.Show();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            const string message = "Esta seguro que quiere salir?";
+            const string caption = "OpenEFI || Tuner v1.3.5";
+            var result = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            {
+                if (result == DialogResult.Yes)
+                {
+                    base.OnClosing(e);
+                }
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+
+        }
+        public void enviarSerie(string txt, bool op){
+            if (op) { ArduinoPort.WriteLine(txt); } else { ArduinoPort.Write(txt); }
+        }
     }
+
 }

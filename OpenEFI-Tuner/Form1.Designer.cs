@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.button2 = new System.Windows.Forms.Button();
@@ -47,6 +48,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.sistemaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.desconectarToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.modoFijoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actualizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tablasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,6 +58,8 @@
             this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fAQToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contactoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.sevenSegmentArray4 = new DmitryBrant.CustomControls.SevenSegmentArray();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -63,6 +67,7 @@
             this.panel1.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -285,6 +290,7 @@
             // 
             this.sistemaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.desconectarToolStripMenuItem1,
+            this.modoFijoToolStripMenuItem,
             this.actualizarToolStripMenuItem,
             this.salirToolStripMenuItem2});
             this.sistemaToolStripMenuItem.Name = "sistemaToolStripMenuItem";
@@ -297,6 +303,13 @@
             this.desconectarToolStripMenuItem1.Size = new System.Drawing.Size(139, 22);
             this.desconectarToolStripMenuItem1.Text = "Desconectar";
             this.desconectarToolStripMenuItem1.Click += new System.EventHandler(this.desconectarToolStripMenuItem1_Click);
+            // 
+            // modoFijoToolStripMenuItem
+            // 
+            this.modoFijoToolStripMenuItem.Name = "modoFijoToolStripMenuItem";
+            this.modoFijoToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.modoFijoToolStripMenuItem.Text = "Modo Fijo";
+            this.modoFijoToolStripMenuItem.Click += new System.EventHandler(this.modoFijoToolStripMenuItem_Click);
             // 
             // actualizarToolStripMenuItem
             // 
@@ -359,11 +372,39 @@
             this.contactoToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.contactoToolStripMenuItem.Text = "Contacto";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.sevenSegmentArray4);
+            this.groupBox6.Location = new System.Drawing.Point(196, 133);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(130, 64);
+            this.groupBox6.TabIndex = 12;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Sonda λ (V)";
+            // 
+            // sevenSegmentArray4
+            // 
+            this.sevenSegmentArray4.ArrayCount = 4;
+            this.sevenSegmentArray4.ColorBackground = System.Drawing.Color.Gainsboro;
+            this.sevenSegmentArray4.ColorDark = System.Drawing.Color.Silver;
+            this.sevenSegmentArray4.ColorLight = System.Drawing.Color.Red;
+            this.sevenSegmentArray4.DecimalShow = true;
+            this.sevenSegmentArray4.ElementPadding = new System.Windows.Forms.Padding(4);
+            this.sevenSegmentArray4.ElementWidth = 10;
+            this.sevenSegmentArray4.ItalicFactor = 0F;
+            this.sevenSegmentArray4.Location = new System.Drawing.Point(6, 19);
+            this.sevenSegmentArray4.Name = "sevenSegmentArray4";
+            this.sevenSegmentArray4.Size = new System.Drawing.Size(115, 39);
+            this.sevenSegmentArray4.TabIndex = 0;
+            this.sevenSegmentArray4.TabStop = false;
+            this.sevenSegmentArray4.Value = null;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(952, 646);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.aquaGauge3);
             this.Controls.Add(this.groupBox5);
@@ -372,6 +413,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Open EFI || Tuner v1.5.3";
@@ -384,6 +426,7 @@
             this.groupBox5.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -419,6 +462,9 @@
         private System.Windows.Forms.ToolStripMenuItem ayudaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fAQToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem contactoToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.ToolStripMenuItem modoFijoToolStripMenuItem;
+        private DmitryBrant.CustomControls.SevenSegmentArray sevenSegmentArray4;
     }
 }
 

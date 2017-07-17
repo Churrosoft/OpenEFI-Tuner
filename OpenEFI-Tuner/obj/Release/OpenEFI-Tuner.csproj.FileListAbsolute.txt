@@ -14,3 +14,4 @@ E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\Release\OpenEFI-Tuner.exe.m
 E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\Release\OpenEFI-Tuner.application
 E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\Release\OpenEFI-Tuner.exe
 E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\Release\OpenEFI-Tuner.pdb
+E:\0_Programacion\C#\OpenEFI-Tuner\OpenEFI-Tuner\obj\Release\OpenEFI_Tuner.Form3.resources

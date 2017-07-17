@@ -14,14 +14,14 @@
     <framework targetVersion="4.5.2" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="OpenEFI-Tuner.exe.manifest" size="5338">
+    <dependentAssembly dependencyType="install" codebase="OpenEFI-Tuner.exe.manifest" size="5340">
       <assemblyIdentity name="OpenEFI-Tuner.exe" version="1.1.5.4" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>vRa0BtC2RQOe6SlRfqSwEk+8h5bRkX7WWc7fpU1DGR0=</dsig:DigestValue>
+        <dsig:DigestValue>KAnXmbRKow4kj3yoE42374VYVIIveUB/zdvv7p7GGNc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
