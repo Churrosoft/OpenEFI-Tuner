@@ -1,9 +1,0 @@
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\obj\Debug\ResolveAssemblyReference.cache
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\obj\Debug\WinAppOpenForm.Form1.resources
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\obj\Debug\WinAppOpenForm.Form2.resources
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\obj\Debug\WinAppOpenForm.Properties.Resources.resources
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\obj\Debug\WinAppOpenForm.csproj.GenerateResource.Cache
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\bin\Debug\WinAppOpenForm.exe
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\bin\Debug\WinAppOpenForm.pdb
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\obj\Debug\WinAppOpenForm.exe
-C:\Desarrollo\Blog\[C#] WinAppOpenForm\WinAppOpenForm\obj\Debug\WinAppOpenForm.pdb

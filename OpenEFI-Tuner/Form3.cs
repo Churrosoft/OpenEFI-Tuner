@@ -5,6 +5,8 @@ namespace OpenEFI_Tuner
 {
     public partial class Form3 : Form
     {
+        public delegate void EnviarSerie(string txt, bool op);
+        public event EnviarSerie miserie;
         //Declaramos variable :D
         float valor1 = 0;
         float valor2 = 0;
@@ -31,16 +33,18 @@ namespace OpenEFI_Tuner
             valor1 = valor1 + 0.05F;
             aInt = (int)(valor1 * 100);
             tmp = aInt / 100.0f;
-            temp = Convert.ToString(valor1);
+            temp = Convert.ToString(tmp);
             sevenSegmentArray1.Value = temp;
             valor1 = tmp;
+            temp = Convert.ToString(valor1);
+            sevenSegmentArray1.Value = temp;
 
             if (modo == true && valor1 != ant1)
             {
                
-                    temp3 = "AVC";
+                temp3 = "INY";
                 temp2 = temp3 += Convert.ToString(valor1);
-               //EnviarSerie("INY", false);
+                this.miserie(temp3,true);
                 ant1 = valor1;
             
             }
@@ -55,11 +59,12 @@ namespace OpenEFI_Tuner
             sevenSegmentArray4.Value = temp;
             if (modo == true && valor2 != ant2)
             {
-                    temp3 = "AVC";
-                    temp2 = temp3 += Convert.ToString(valor2);
-                   //EnviarSerie("AVC", false);
-                    ant2 = valor2;
-                
+
+                temp3 = "AVC";
+                temp2 = temp3 += Convert.ToString(valor2);
+                this.miserie(temp3, true);
+                ant2 = valor2;
+
             }
         }
 
@@ -74,24 +79,14 @@ namespace OpenEFI_Tuner
                 valor1 = tmp;
                 if (modo == true && valor1 != ant1)
                 {
-                        temp3 = "AVC";
-                        temp2 = temp3 += Convert.ToString(valor1);
-                        //EnviarSerie("INY", false);
-                        ant1 = valor1;
-                    }
-                
-            }
 
-            if (modo == true && valor1 != ant1)
-            {
-                
-                temp3 = "AVC";
-                temp2 = temp3 += Convert.ToString(valor1);
-                //EnviarSerie("INY", false);
-                //
-                Form1.enviarSerie(Convert.ToString(valor1),false);
-                ant1 = valor1;
-            
+                    temp3 = "INY";
+                    temp2 = temp3 += Convert.ToString(valor1);
+                    this.miserie(temp3, true);
+                    ant1 = valor1;
+
+                }
+
             }
 
         }
@@ -103,27 +98,29 @@ namespace OpenEFI_Tuner
                 temp = Convert.ToString(valor2);
                 sevenSegmentArray4.Value = temp;
             }
-            if (modo == true && valor2 != ant2){
-                    temp3 = "AVC";
-                    temp2 = temp3 += Convert.ToString(valor2);
-                   //EnviarSerie("AVC", false);
-                    ant2 = valor2;
-                
+            if (modo == true && valor2 != ant2)
+            {
+
+                temp3 = "AVC";
+                temp2 = temp3 += Convert.ToString(valor2);
+                this.miserie(temp3, true);
+                ant2 = valor2;
+
             }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (modo == false)
-                {
-                   //EnviarSerie("ManEN", true);
-                    MessageBox.Show("Modo Manual Activado", "OpenEFI || Tuner v1.3.5");
-                }
-                if (modo == true)
-                {
-                   //EnviarSerie("ManDE", true);
-                    MessageBox.Show("Modo Manual Desactivado", "OpenEFI || Tuner v1.3.5");
-                }
+            {
+                MessageBox.Show("Modo manual activado","OpenEFI || Fixed Mode");
+                this.miserie("FXD.E",true);
+                modo = true;
+            } else if (modo == true) {
+                MessageBox.Show("Modo manual desactivado", "OpenEFI || Fixed Mode");
+                this.miserie("FXD.D", true);
+                modo = false;
+            }
             
         }
 

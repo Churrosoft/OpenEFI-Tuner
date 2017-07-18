@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OpenEFI-Tuner.exe" size="1191400">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OpenEFI-Tuner.exe" size="1191912">
       <assemblyIdentity name="OpenEFI-Tuner" version="1.0.5.3" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>D4ZB7tdqb3HBiU5kVIblt3544r+7EIAR0gepEknjwrM=</dsig:DigestValue>
+        <dsig:DigestValue>Q5FHO5MYdvruj6jIpfb2jwjiJlss4A+Uw/OMxZ5Ag/Q=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

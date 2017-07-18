@@ -15,6 +15,7 @@ namespace OpenEFI_Tuner
 
     public partial class Form1 : Form
     {
+        Form3 frm = new Form3();
 
         public bool conectado = false;
         public event FormClosingEventHandler FormClosing;
@@ -23,6 +24,7 @@ namespace OpenEFI_Tuner
         public Form1()
         {
             InitializeComponent();
+            frm.miserie += new Form3.EnviarSerie(EnvSer);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -106,7 +108,7 @@ namespace OpenEFI_Tuner
 
         public void actualizar(string dato)
         {
-            if (this.textBox1.InvokeRequired)
+            if (textBox1.InvokeRequired)
             {
                 SetTextCallback d = new SetTextCallback(actualizar);
                 this.Invoke(d, new object[] { dato });
@@ -154,7 +156,8 @@ namespace OpenEFI_Tuner
                 }
                 if (dato.StartsWith("DBG"))
                 {
-                    this.textBox1.AppendText(dato + Environment.NewLine);
+                    result = dato.Remove(0, 4);
+                    this.textBox1.AppendText(result + Environment.NewLine);
                 }
             }
         }
@@ -208,7 +211,7 @@ namespace OpenEFI_Tuner
 
         private void modoFijoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form3 frm = new Form3();
+            
             frm.Show();
         }
 
@@ -229,8 +232,8 @@ namespace OpenEFI_Tuner
             }
 
         }
-        public void enviarSerie(string txt, bool op){
-            if (op) { ArduinoPort.WriteLine(txt); } else { ArduinoPort.Write(txt); }
+        public void EnvSer(string txt, bool op){
+           if (op) { ArduinoPort.WriteLine(txt); } else { ArduinoPort.Write(txt); }
         }
     }
 
