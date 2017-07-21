@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO.Ports;
+using System.Windows.Forms;
 delegate void SetTextCallback(string dato);
 
 namespace OpenEFI_Tuner
@@ -15,8 +9,8 @@ namespace OpenEFI_Tuner
 
     public partial class Form1 : Form
     {
-        Form3 frm = new Form3();
 
+        int i = 0;
         public bool conectado = false;
         public event FormClosingEventHandler FormClosing;
         SerialPort ArduinoPort = new SerialPort(); //DECLARAMOS instancia de serial port para luego empezar comunicacion
@@ -24,7 +18,6 @@ namespace OpenEFI_Tuner
         public Form1()
         {
             InitializeComponent();
-            frm.miserie += new Form3.EnviarSerie(EnvSer);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -49,6 +42,7 @@ namespace OpenEFI_Tuner
             foreach (string port in ports)
             {
                 listBox1.Items.Add(port);
+                i++;
             }
         }
 
@@ -64,7 +58,10 @@ namespace OpenEFI_Tuner
                 ArduinoPort.BaudRate = 9600; //la veloidad siempre queda fija
                 ArduinoPort.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
             }
-            catch { MessageBox.Show("Ya hay una conexion abierta"); }
+            catch {
+                if (i != 0) {
+                    MessageBox.Show("Ya hay una conexion abierta"); }
+            }
             try
             {
                 ArduinoPort.Open(); //intentamos conectarnos al arduino
@@ -211,7 +208,8 @@ namespace OpenEFI_Tuner
 
         private void modoFijoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            Form3 frm = new Form3();
+            frm.miserie += new Form3.EnviarSerie(EnvSer);
             frm.Show();
         }
 
@@ -232,9 +230,27 @@ namespace OpenEFI_Tuner
             }
 
         }
-        public void EnvSer(string txt, bool op){
-           if (op) { ArduinoPort.WriteLine(txt); } else { ArduinoPort.Write(txt); }
+        public bool EnvSer(string txt, bool op){
+            if (conectado == true) {
+                if (op) { ArduinoPort.WriteLine(txt); } else { ArduinoPort.Write(txt); }
+                return true;
+            }
+            else { MessageBox.Show("Realize coneccion antes de usar","OpenEFI || Tuner v1.3.5",MessageBoxButtons.OK); }
+            return false;
+         }
+
+        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
         }
+
+        private void contactoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string ttx = "              OpenEFI Team  " + Environment.NewLine + "pagina web : https://github.com/FDSoftware/OpenEFI-Tuner " + Environment.NewLine + " Correo de contacto. dfrenoux@gmail.com ";
+           
+            MessageBox.Show(ttx,"OpenEFI || Tuner v1.3.5");
+        }
+
     }
 
 }

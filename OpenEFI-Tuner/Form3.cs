@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
-using OpenEFI_Tuner;
 namespace OpenEFI_Tuner
 {
     public partial class Form3 : Form
     {
-        public delegate void EnviarSerie(string txt, bool op);
+        public delegate bool EnviarSerie(string txt, bool op);
         public event EnviarSerie miserie;
         //Declaramos variable :D
         float valor1 = 0;
@@ -109,19 +108,102 @@ namespace OpenEFI_Tuner
             }
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+                valor1 = valor1 + 1F;
+                aInt = (int)(valor1 * 100);
+                tmp = aInt / 100.0f;
+                temp = Convert.ToString(tmp);
+                sevenSegmentArray1.Value = temp;
+                valor1 = tmp;
+                if (modo == true && valor1 != ant1)
+                {
+
+                    temp3 = "INY";
+                    temp2 = temp3 += Convert.ToString(valor1);
+                    this.miserie(temp3, true);
+                    ant1 = valor1;
+
+                }
+            
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            if (valor1 != 0) {
+                 valor1 = valor1 - 1F;
+                aInt = (int)(valor1 * 100);
+                tmp = aInt / 100.0f;
+                temp = Convert.ToString(tmp);
+                sevenSegmentArray1.Value = temp;
+                valor1 = tmp;
+                if (modo == true && valor1 != ant1) {
+
+                    temp3 = "INY";
+                    temp2 = temp3 += Convert.ToString(valor1);
+                    this.miserie(temp3, true);
+                    ant1 = valor1;
+
+            }
+        }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            if (valor1 != 0)
+            {
+                valor1 = valor1 - 10F;
+                aInt = (int)(valor1 * 100);
+                tmp = aInt / 100.0f;
+                temp = Convert.ToString(tmp);
+                sevenSegmentArray1.Value = temp;
+                valor1 = tmp;
+                if (modo == true && valor1 != ant1)
+                {
+
+                    temp3 = "INY";
+                    temp2 = temp3 += Convert.ToString(valor1);
+                    this.miserie(temp3, true);
+                    ant1 = valor1;
+
+                }
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+                valor1 = valor1 + 10F;
+                aInt = (int)(valor1 * 100);
+                tmp = aInt / 100.0f;
+                temp = Convert.ToString(tmp);
+                sevenSegmentArray1.Value = temp;
+                valor1 = tmp;
+                if (modo == true && valor1 != ant1)
+                {
+
+                    temp3 = "INY";
+                    temp2 = temp3 += Convert.ToString(valor1);
+                    this.miserie(temp3, true);
+                    ant1 = valor1;
+
+                }
+            
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            if (modo == false)
-            {
-                MessageBox.Show("Modo manual activado","OpenEFI || Fixed Mode");
-                this.miserie("FXD.E",true);
-                modo = true;
-            } else if (modo == true) {
-                MessageBox.Show("Modo manual desactivado", "OpenEFI || Fixed Mode");
-                this.miserie("FXD.D", true);
-                modo = false;
+            if (this.miserie("DBG", true)) {
+                if (modo == false)
+                {
+                    this.miserie("FXD.E", true);
+                    MessageBox.Show("Modo manual activado", "OpenEFI || Fixed Mode");
+                    modo = true;
+                } else if (modo == true) {
+                    this.miserie("FXD.D", true);
+                    MessageBox.Show("Modo manual desactivado", "OpenEFI || Fixed Mode");
+                    modo = false;
+                }
             }
-            
         }
 
         private void sevenSegmentArray1_Load(object sender, EventArgs e)
