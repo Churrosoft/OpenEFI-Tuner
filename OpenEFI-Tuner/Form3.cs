@@ -158,14 +158,13 @@ namespace OpenEFI_Tuner
                 temp = Convert.ToString(tmp);
                 sevenSegmentArray1.Value = temp;
                 valor1 = tmp;
+
                 if (modo == true && valor1 != ant1)
                 {
-
                     temp3 = "INY";
                     temp2 = temp3 += Convert.ToString(valor1);
                     this.miserie(temp3, true);
                     ant1 = valor1;
-
                 }
             }
         }
@@ -178,21 +177,26 @@ namespace OpenEFI_Tuner
                 temp = Convert.ToString(tmp);
                 sevenSegmentArray1.Value = temp;
                 valor1 = tmp;
+
                 if (modo == true && valor1 != ant1)
                 {
-
                     temp3 = "INY";
                     temp2 = temp3 += Convert.ToString(valor1);
                     this.miserie(temp3, true);
                     ant1 = valor1;
-
                 }
             
         }
 
+        private void button10_Click(object sender, EventArgs e)
+        {
+            //Mandamo comando para arrancar el motor
+            this.miserie("ARRRPERRROOO",true);
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            if (this.miserie("DBG", true)) {
+            if (this.miserie("DBG", true)) { //para evitar mostrar los mensajes si no hay conexion
                 if (modo == false)
                 {
                     this.miserie("FXD.E", true);

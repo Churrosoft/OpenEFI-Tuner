@@ -88,7 +88,7 @@ namespace OpenEFI_Tuner
 
             aquaGauge2.MaxValue = 120;
             aquaGauge2.MinValue = -10;
-            aquaGauge2.Value = 50.5F;
+            //aquaGauge2.Value = 50.5F;
             aquaGauge2.DialText = "Temp °C";
             aquaGauge3.MaxValue = 100;
             aquaGauge3.MinValue = 0;
@@ -97,6 +97,7 @@ namespace OpenEFI_Tuner
 
         public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
+
 
             // Leemos el dato recibido del puerto serie
             string inData = ArduinoPort.ReadLine().ToString();
@@ -151,6 +152,12 @@ namespace OpenEFI_Tuner
                     this.sevenSegmentArray2.Value = result;
 
                 }
+                if (dato.StartsWith("LMB"))
+                {
+                    result = dato.Remove(0, 4);
+                    this.sevenSegmentArray4.Value = result;
+
+                }
                 if (dato.StartsWith("DBG"))
                 {
                     result = dato.Remove(0, 4);
@@ -161,7 +168,7 @@ namespace OpenEFI_Tuner
 
         private void sevenSegmentArray1_Load(object sender, EventArgs e)
         {
-            sevenSegmentArray4.Value = "125.7";
+           // sevenSegmentArray4.Value = "125.7"; //Solo para pruebas esteticas
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
@@ -235,7 +242,7 @@ namespace OpenEFI_Tuner
                 if (op) { ArduinoPort.WriteLine(txt); } else { ArduinoPort.Write(txt); }
                 return true;
             }
-            else { MessageBox.Show("Realize coneccion antes de usar","OpenEFI || Tuner v1.3.5",MessageBoxButtons.OK); }
+            else { MessageBox.Show("Realize conexion antes de usar","OpenEFI || Tuner v1.3.5",MessageBoxButtons.OK); }
             return false;
          }
 
@@ -251,6 +258,15 @@ namespace OpenEFI_Tuner
             MessageBox.Show(ttx,"OpenEFI || Tuner v1.3.5");
         }
 
+        private void sevenSegmentArray4_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void aquaGauge2_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }
