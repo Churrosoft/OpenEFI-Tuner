@@ -1,0 +1,121 @@
+//Google Fonts
+@import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
+@import "./clear.css";
+$letrita: "Roboto", Arial;
+$prim: #0069c0;
+$sec: white;
+$button: white;
+$dev: false;
+a {
+  text-decoration: none;
+  color: black;
+}
+
+#head {
+  background: $prim;
+  height: 8vh;
+  font-family: $letrita;
+
+  &-titulo {
+    color: #e4e4e4;
+    font-size: 30px;
+    padding-top: 10px;
+    margin-left: 6%;
+  }
+}
+
+h1 {
+  padding-top: 0.38%;
+}
+body{
+   font-family: $letrita;
+}
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #eceff1;
+  @if $dev == true{
+   border: 2px dashed blueviolet;
+   background-color: lightyellow;
+  }
+}
+#container > div {
+  width: 80vw;
+}
+#container-2 {
+  display: flex;
+  
+  flex-wrap: wrap;
+  background-color: #eceff1;
+  margin-left: 5vw;
+  @if $dev == true{
+   border: 2px dashed green;
+   background-color: lightyellow;
+  }
+}
+
+#menu {
+  @if $dev == true{
+   border: 2px dashed #428cd1;
+   background-color: lightyellow;
+  }
+  background: $sec;
+  width: 12vw !important;
+  height: 82vh;
+  padding-left: 5px;
+  padding-top:5px;
+  font-family: $letrita;
+  &-item {
+    border-radius: 10px;
+    background: $button;
+    margin-top: 15px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    align-self: left;
+    &-icon{
+      vertical-align:middle;
+      align-content: left;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+   
+  }
+  &-item:hover {
+    background: #bbdefb;
+  }
+}
+
+#cards {
+  //margenes para que no queden todas pegoteadas:
+  @if $dev == true{
+    border: 2px dashed rgb(0, 4, 255);
+  }
+  &-text{
+   @extend #cards;
+   min-width: 15vw;
+   max-width: 25vw;
+   min-height: 15vh;
+   max-height: 30vh;
+  }
+
+  margin: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 2px 1px;
+
+  &-gauge{
+   @extend #cards;
+   height: 200px;
+   width: 200px;
+
+   &-max{
+      @extend #cards;
+      height: 320px;
+      width: 320px;
+   }
+
+  }
+
+}
