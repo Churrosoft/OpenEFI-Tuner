@@ -1,0 +1,73 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
+@import "./clear.css";
+
+$letrita: "Roboto", Arial;
+$prim: #0069c0;
+$sec: white;
+$button: white;
+$dev: false;
+
+#container-2 {
+    background-color: #d3d4d4;
+}
+
+#cards-cfg {
+    //margenes para que no queden todas pegoteadas:
+    @if $dev == true{
+      border: 2px dashed rgb(0, 4, 255);
+    }
+    &-text{
+     @extend #cards-cfg;
+     min-width: 15vw;
+     max-width: 25vw;
+     min-height: 15vh;
+     max-height: 30vh;
+    }
+  
+    margin: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 2px 1px;
+    background-color: #0069c0;
+   
+     &-max{
+     @extend #cards-cfg;
+        height: 40vh;
+        width: 100vh;
+     }
+  }
+
+  #menu-cfg {
+    @if $dev == true{
+     border: 2px dashed #428cd1;
+     background-color: lightyellow;
+    }
+    background: $sec;
+    width: 80vw !important;
+    height: 8vh;
+    font-family: $letrita;
+    border-radius: 18px;
+    display: flex;
+    flex-flow: row wrap;
+    flex-wrap: wrap;
+    align-items: center;
+
+    &-item {
+       
+      border-radius: 10px;
+      background: $button;
+      padding: 10px;
+      margin-left: 15px;
+      align-self: left;
+
+      &-icon{
+        vertical-align:middle;
+        align-content: left;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+     
+    }
+    &-item:hover {
+      background: #bbdefb;
+    }
+  }
