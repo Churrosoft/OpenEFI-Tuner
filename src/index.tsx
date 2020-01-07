@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 //Views:
 import Panel from './Panel';
-import Configuracion from './Configuracion';
+import CFG from './CFG';
 //SCSS e iconos
 import './css/layout.scss';
 import AdjustIcon from '@material-ui/icons/Adjust';
@@ -57,7 +57,7 @@ ReactDOM.render(
         </div>
 
         <Route path="/" exact render={(props) => <Panel getRPM={getValue2} getTemp={getval} />} />
-        <Route path="/CFG" render={(props) => <Configuracion />} />
+        <Route path="/CFG" render={(props) => <CFG />} />
 
       </Router>
 
