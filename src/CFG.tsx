@@ -4,14 +4,14 @@ class CFG extends React.Component{
   
     render() {
         return (
-                <div id="container-2">
+                <div id="container-3">
 
                     <div id ="menu-cfg">
-                        <div id ="menu-cfg-item"> Inyeccion</div>
+                        <div id ="menu-cfg-item-active"> Inyeccion</div>
                         <div id ="menu-cfg-item"> Encendido</div>
                     </div>
                     
-                    <div id="cards-cfg-max">
+                    <div id="cards-cfg-text">
                     <p>OLA K ACE</p>
                     </div>
                 </div>
@@ -19,7 +19,4 @@ class CFG extends React.Component{
     };
 }
 
-/* const App: React.FC = () => {
-
-} */
 export default CFG;

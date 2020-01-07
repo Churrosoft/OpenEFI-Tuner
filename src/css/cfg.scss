@@ -7,8 +7,12 @@ $sec: white;
 $button: white;
 $dev: false;
 
-#container-2 {
+#container-3 {
     background-color: #d3d4d4;
+    display: flex;
+    flex-flow: column wrap;
+    flex-wrap: wrap;
+    align-items: top;
 }
 
 #cards-cfg {
@@ -24,11 +28,11 @@ $dev: false;
      max-height: 30vh;
     }
   
-    margin: 10px;
+   // margin: 10px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     padding: 2px 1px;
     background-color: #0069c0;
-   
+    
      &-max{
      @extend #cards-cfg;
         height: 40vh;
@@ -50,7 +54,7 @@ $dev: false;
     flex-flow: row wrap;
     flex-wrap: wrap;
     align-items: center;
-
+    margin-left: 10vh;
     &-item {
        
       border-radius: 10px;
@@ -64,6 +68,11 @@ $dev: false;
         align-content: left;
         padding-left: 10px;
         padding-right: 10px;
+      }
+
+      &-active{
+        @extend #menu-cfg-item;
+        color: #428cd1;
       }
      
     }
