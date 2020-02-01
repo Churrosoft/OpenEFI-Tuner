@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 //Views:
 import Panel from './Panel';
 import CFG from './CFG';
+import DTC from './views/DTC';
 //SCSS e iconos
 import './css/layout.scss';
 import AdjustIcon from '@material-ui/icons/Adjust';
@@ -38,7 +39,7 @@ ReactDOM.render(
           
           <NavLink exact to="/DTC" activeStyle={{ color: "#428cd1" }} >
             <div id="menu-item">
-              <img id="menu-item-icon" src="https://img.icons8.com/android/24/000000/engine.png" /> DTC 
+              <img id="menu-item-icon" src="https://img.icons8.com/android/24/000000/engine.png" alt="engine-icon"/> DTC 
             </div>
           </NavLink>
 
@@ -58,7 +59,7 @@ ReactDOM.render(
 
         <Route path="/" exact render={(props) => <Panel getRPM={getValue2} getTemp={getval} />} />
         <Route path="/CFG" render={(props) => <CFG />} />
-
+        <Route path="/DTC" render={(props) => <DTC />} />
       </Router>
 
     </div>

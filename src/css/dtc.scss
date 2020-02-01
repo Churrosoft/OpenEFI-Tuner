@@ -1,0 +1,63 @@
+//Google Fonts
+@import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
+@import "./clear.css";
+@import "./card.scss";
+
+$letrita: "Roboto", Arial;
+$prim: #0069c0;
+$sec: white;
+$button: white;
+$dev: f;
+
+#container-DTC {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 3vw;
+    margin-right: 3vw;
+  @if $dev == true{
+   border: 2px dashed green;
+   background-color: lightyellow;
+  }
+  
+  justify-content: center;
+    width: 75vw;
+}
+
+#cards-DTC {
+   @extend #text;
+   flex-grow: 1;
+   flex-shrink: 1;
+    background-color: #fffdfd;
+}
+
+#DTC-title{
+    margin-left: 10px;
+    font-size: 30px;
+    img{
+        margin-top: 15px;
+        margin-right: 10px;
+    }
+}
+
+#DTC-icon{
+     border-radius: 50%;
+     width: 55px;
+     font-family: $letrita;
+     margin-left: 10px;
+     vertical-align:middle;
+}
+
+#DTC-txt{
+    margin-top: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
+   // border: 2px dashed rgb(0, 4, 255);
+    font-family: $letrita;
+     overflow-wrap: break-word;
+}
+
+ul{
+    margin-left: 20px;
+    list-style-position: outside;
+    list-style-type: square;
+}

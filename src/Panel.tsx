@@ -36,7 +36,7 @@ class Panel extends React.Component <Props2>{
   render() {
     return (
           <div id="container-2">
-            <div id="cards-gauge">
+          <div id="cards-panel-gauge">
               <RadialGauge
                 units="°C"
                 title="Temperature"
@@ -61,7 +61,7 @@ class Panel extends React.Component <Props2>{
                 data-animation="true"
               ></RadialGauge>
             </div>
-            <div id="cards-gauge-max">
+            <div id="cards-panel-gauge-max">
               <RadialGauge
                 units="RPM"
                 title=""
