@@ -1,15 +1,14 @@
 //React
-import React from "react";
-import ReactDOM from "react-dom";
-import * as serviceWorker from "./serviceWorker";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
-import App from "./components/header";
 //Views:
 //import Panel from './Panel';
 //import CFG from './CFG';
 //import DTC from './views/DTC';
-import AdjustIcon from "@material-ui/icons/Adjust";
-import DashboardIcon from "@material-ui/icons/Dashboard";
+import AdjustIcon from '@material-ui/icons/Adjust';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 
 function getval() {
   return Math.floor(Math.random() * 50 + 1);
@@ -20,8 +19,13 @@ function getValue2() {
 
 ReactDOM.render(
   <div className="Main">
-    <App/>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    />
 
+
+    
     <div id="head">
       <div id="head-titulo">
         <h1>OpenEFI || Tunner</h1>{" "}
