@@ -5,12 +5,13 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 //Views:
 import Panel from './Panel';
-import CFG from './CFG';
+import CFG from './views/CFG';
 import DTC from './views/DTC';
 //SCSS e iconos
 import './css/layout.scss';
 import AdjustIcon from '@material-ui/icons/Adjust';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import Brightness5Icon from '@material-ui/icons/Brightness5';
 
 function getval() {
   return Math.floor(Math.random() * 50 + 1);
@@ -23,7 +24,7 @@ ReactDOM.render(
   <div className="Main">
     <div id="head">
       <div id="head-titulo">
-        <h1>OpenEFI || Tunner</h1>{" "}
+        <h1>OpenEFI || Tunner</h1>
       </div>
     </div>
     <div id="container">
@@ -51,7 +52,7 @@ ReactDOM.render(
           
           <NavLink exact to="/CFG" activeStyle={{ color: "#428cd1" }} >
             <div id="menu-item">
-              <AdjustIcon id="menu-item-icon" /> Configuracion
+              <Brightness5Icon id="menu-item-icon" /> Configuracion
             </div>
           </NavLink>
 

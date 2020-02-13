@@ -1,0 +1,47 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
+//@import "./clear.css";
+@import "./card.scss";
+
+$letrita: "Roboto", Arial;
+$prim: #0069c0;
+$sec: white;
+$button: white;
+$dev: false;
+
+#INF-Container{
+  max-width: 80vw;
+}
+
+
+#table-INF{
+ table {
+  width: 97%;
+  font-family: $letrita;
+  border-collapse: collapse;
+  vertical-align: middle;
+ }
+
+ table, th, td {
+  border: 1px solid black;
+ }
+
+ tr{
+  height: 50px;
+  
+ }
+
+}
+
+#cards-INF {
+  @extend #text;
+  max-width: 60vw;
+  max-height: 50vh;
+  background-color: #fffdfd;
+  margin-left: auto;
+  margin-right: auto;
+  padding-block: 25px;
+  @extend #table-INF;
+  &-cnt {
+      margin-left: 1.5vw;
+  }
+}
