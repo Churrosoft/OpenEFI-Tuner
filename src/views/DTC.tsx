@@ -19,6 +19,7 @@ let test =
 
 class DTCItem extends React.Component <DTCProps>{
 
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(props: DTCProps){
         super(props);
     }

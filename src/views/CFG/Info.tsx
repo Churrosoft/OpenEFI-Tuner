@@ -25,7 +25,7 @@ class Info extends React.Component {
                   </tr>
                   <tr>
                     <td>Memoria disponible</td>
-                    <td>27% (480 bytes)</td>
+                    <td>27% (480 bytes) </td>
                   </tr>
                 </table>
               </div>

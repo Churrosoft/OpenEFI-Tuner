@@ -30,10 +30,11 @@ $dev: false;
   @extend #text;
   flex-grow: 1;
   flex-shrink: 1;
-   background-color: #fffdfd;
-  }
+  background-color: #fffdfd;
+  padding: 15px;
+}
 
-  #menu-cfg {
+#menu-cfg {
     
     @if $dev == true{
      border: 2px dashed #428cd1;

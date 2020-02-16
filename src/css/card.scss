@@ -1,4 +1,9 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
+
+$letrita: "Roboto", Arial;
+
 #card{
+  font-family: $letrita;
   margin: 10px;
   display: flex;
   flex-flow: row wrap;
@@ -10,7 +15,7 @@
 }
 
 #text{
-
+  font-family: $letrita;
   margin: 10px;
   //para hacer el efecto "card"
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
