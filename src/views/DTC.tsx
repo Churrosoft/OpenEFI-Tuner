@@ -7,15 +7,15 @@ interface DTCProps{
 }
 
 let test = 
+<div>
 <p>  
     Charging System Voltage Low <br></br>
-    Possible Causes:
+    Possible Causes:</p>
  <ul>
     <li>Faulty Generator (Alternator)</li>
     <li>Generator circuit poor electrical connection</li>
     <li>Generator harness is open or shorted</li>
- </ul>
-</p>;
+ </ul></div>;
 
 class DTCItem extends React.Component <DTCProps>{
 

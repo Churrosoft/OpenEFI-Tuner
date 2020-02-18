@@ -10,7 +10,7 @@ class Info extends React.Component {
           <div id="INF-container">
             <div id="cards-INF">
               <div id="cards-INF-cnt">
-                <table>
+                <table><tbody>
                   <tr>
                     <td>Version bootloader</td>
                     <td>v0.2.15</td>
@@ -27,7 +27,7 @@ class Info extends React.Component {
                     <td>Memoria disponible</td>
                     <td>27% (480 bytes) </td>
                   </tr>
-                </table>
+                  </tbody></table>
               </div>
             </div>
           </div>

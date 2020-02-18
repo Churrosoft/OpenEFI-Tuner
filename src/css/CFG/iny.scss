@@ -1,3 +1,38 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto&display=swap);
 @import "../clear.css";
 @import "../card.scss";
+$letrita: "Roboto", Arial;
+
+#INY-Cards{
+    @extend #text;
+    max-width: 80vw;
+    margin-left: 5vw;
+    padding: 10px;
+}
+
+#INY-Form{
+    input{
+        margin-left: 10px;
+    }
+table {
+    width: 97%;
+    font-family: $letrita;
+    border-collapse: collapse;
+    vertical-align: middle;
+    border: 1px solid black;
+   }
+  
+   th,td{
+     padding: 15px; //asi centro el texto
+   }
+  
+   tr{
+      height: 50px;
+    }
+    tr:nth-child(even) { //para cambiar el fondo en las filas pares
+      background-color: #d6d6d6;
+    }
+   tr:hover { //para el efecto, dejar a lo ultimo asi no clavo un !important al pedo
+     background-color: #92cbf1 ;
+    }
+}
