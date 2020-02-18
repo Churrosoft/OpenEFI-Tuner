@@ -12,7 +12,10 @@ import './css/layout.scss';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import Brightness5Icon from '@material-ui/icons/Brightness5';
+//API RE LOCA:
+import SerialAPI from './serial';
 
+ const myApi = new SerialAPI();
 function getval() {
   return Math.floor(Math.random() * 50 + 1);
 }
@@ -25,7 +28,9 @@ ReactDOM.render(
     <div id="head">
       <div id="head-titulo">
         <h1>OpenEFI || Tunner</h1>
+        
       </div>
+      <button onClick={myApi.run}>CONECTAMEEE</button>
     </div>
     <div id="container">
       <Router>
@@ -58,7 +63,7 @@ ReactDOM.render(
 
         </div>
 
-        <Route path="/"    exact render={(props) => <Panel getRPM={getValue2} getTemp={getval} />} />
+        <Route path="/"    exact render={(props) => <Panel getRPM={myApi.getRPM} getTemp={getval} />} />
         <Route path="/CFG"       render={(props) => <CFG />} />
         <Route path="/DTC"       render={(props) => <DTC />} />
       </Router>
