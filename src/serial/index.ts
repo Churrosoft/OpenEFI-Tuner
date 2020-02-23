@@ -1,3 +1,5 @@
+import { read } from "fs";
+
 /**
  * Copyright 2019 Google LLC
  *
@@ -15,84 +17,93 @@
  */
 let port: SerialPort | undefined;
 let reader: ReadableStreamDefaultReader | any;
-
+let writer: WritableStream | any;
 const encoder = new TextEncoder();
 
 let rpm = 1;
-
+let ver = '';
+let SerialState = false;
 class SerialAPI {
+  getRPM() {
+    return rpm;
 
-    getRPM(){
-        return rpm;
-    }
-     hex2a(hexx:any) {
-    var hex = hexx.toString();//force conversion
-    var str = '';
-    for (var i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
-}
-
-async  run(){
+  }
+  getVer = () => {
+    console.log({VERLOCA: ver});
+    return ver;
+    
+  };
+  isConected = () => {
+    return SerialState;
+  }
+  //funcion principale:
+  async run() {
     if (port) {
-        if (reader)
-            reader.cancel();
-        await port.close();
+      if (reader) reader.cancel();
+      await port.close();
     } else {
-        port = await navigator.serial.requestPort({});
-        console.log(port);
-      // await this.connectToPort();
-  //  }
-//}
+      port = await navigator.serial.requestPort({});
+      // console.log(port);
+      const options = {
+        baudrate: 115200
+      };
 
-//async  connectToPort() {
-    if (!port) {
-        return;
-    }
+      //console.log(options);
+      await port.open(options);
 
-    const options = {
-        baudrate: 115200,
-    };
-    console.log(options);
-    await port.open(options);
+      console.log("<CONNECTED>");
 
-    console.log('<CONNECTED>');
-
-    while (port.readable) {
+     // SerialAPI.get_info(port);
+      while (port.readable) {
         try {
-            reader = port.readable.getReader();
-            while (true) {
-                const { value, done } = await reader.read();
-
-                let test = '';
-                value.map( (hex: number) => test += String.fromCharCode(hex))
-                let args = test.split(' ');
-
-                if(args[1] !== undefined){
-                    if(parseInt(args[1]) > 500){
-                        rpm = parseInt(args[1]);
-                        console.log(args[1]);
-                    }
-                    
-                }
-               // console.log(test);
-                test = '';
-                if (done) {
-                    break;
-                }
+          reader = port.readable.getReader();
+          if (port && port.writable) {
+            const value = parseInt('45\n');
+            const bytes = new Uint8Array([value]);
+            const writer = port.writable.getWriter();
+            console.log("en teoria mande algo");
+            writer.write(bytes);
+            writer.releaseLock();
+          }
+          SerialState = true;
+          while (true) {
+            const { value, done } = await reader.read();
+             
+            let test = SerialAPI.ByteToString(value);
+            let args = test.split(" ");
+            if (args[0].startsWith('INF')) {
+              console.log("FUNCAAAA");
+              console.log(args);
+              ver = args[1];
             }
-            reader = undefined;
+            if (args[1] !== undefined) {
+              if (parseInt(args[1]) > 500) {
+                rpm = parseInt(args[1]);
+                console.log(args[1]);
+              }
+            }
+            test = "";
+          }
         } catch (e) {
-            //error
+          //error
         }
+      }
+
+      port = undefined;
     }
+  }
 
-    port = undefined;}
-}
+  static ByteToString(value:any){
+    let test = "";
+    value.map(
+      (hex: number) => (
+        test += String.fromCharCode(hex)
+        )
+    );
+    return test;
+  }
 
- getSelectedBaudRate() {
-    return Number.parseInt('115200');
-}
+
 }
 
 export default SerialAPI;

@@ -14,6 +14,8 @@ a {
 }
 
 #head {
+  display: flex;
+  flex-wrap: column;
   background: $prim;
   height: 8vh;
   font-family: $letrita;
@@ -23,6 +25,11 @@ a {
     font-size: 30px;
     padding-top: 10px;
     margin-left: 6%;
+  }
+  &-inf {
+    font-size: 15px;
+    padding-top: 10px;
+    margin-left: 280px;
   }
 }
 

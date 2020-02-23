@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import Panel from './Panel';
 import CFG from './views/CFG';
 import DTC from './views/DTC';
+//Header:
+import Head from './Head';
 //SCSS e iconos
 import './css/layout.scss';
 import ListAltIcon from '@material-ui/icons/ListAlt';
@@ -25,13 +27,11 @@ function getValue2() {
 
 ReactDOM.render(
   <div className="Main">
-    <div id="head">
-      <div id="head-titulo">
-        <h1>OpenEFI || Tunner</h1>
-        
-      </div>
-      <button onClick={myApi.run}>CONECTAMEEE</button>
-    </div>
+   <Head 
+    Init={myApi.run}
+    GetVer={myApi.getVer}
+    isConected={myApi.isConected}
+   />
     <div id="container">
       <Router>
 
