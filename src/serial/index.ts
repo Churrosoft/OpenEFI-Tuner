@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 // Importamos el redu:
-//import mystore from '../GS';
+import mystore from '../GS';
 
 let port: SerialPort | undefined;
 let reader: ReadableStreamDefaultReader | any;
@@ -72,7 +72,7 @@ class SerialAPI {
               
               if (args[0].startsWith(commands[key].trigger)){
                 commands[key].value = args[1];
-                //mystore.dispatch({ type: commands[key].trigger, val: args[1] });
+                mystore.dispatch({ type: commands[key].trigger, val: args[1] });
                 console.log({ type: commands[key].trigger, val: args[1] });
               }
             // console.log({ [commands[key].trigger] : commands[key].value });

@@ -40,9 +40,9 @@ ReactDOM.render(
       <Router>
 
         <div id="menu">
-        <Button 
+        {/*<Button 
         onClick={ actualizarRPM}
-        >ENROSCAR EL TUTU</Button>
+        >ENROSCAR EL TUTU</Button>*/}
           <NavLink exact to="/"       activeStyle={{ color: "#428cd1" }} >
             <div id="menu-item">  
               <DashboardIcon id="menu-item-icon" /> Panel 
