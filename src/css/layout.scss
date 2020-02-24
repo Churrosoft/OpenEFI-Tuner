@@ -19,7 +19,9 @@ a {
   background: $prim;
   height: 8vh;
   font-family: $letrita;
-
+  p{
+    color: white;
+  }
   &-titulo {
     color: #e4e4e4;
     font-size: 30px;

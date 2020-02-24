@@ -1,5 +1,3 @@
-import { read } from "fs";
-
 /**
  * Copyright 2019 Google LLC
  *
@@ -15,74 +13,70 @@ import { read } from "fs";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Importamos el redu:
+//import mystore from '../GS';
+
 let port: SerialPort | undefined;
 let reader: ReadableStreamDefaultReader | any;
-let writer: WritableStream | any;
-const encoder = new TextEncoder();
-
-let rpm = 1;
-let ver = '';
 let SerialState = false;
-class SerialAPI {
-  getRPM() {
-    return rpm;
 
+let commands : { [index: string]: any} = {
+  "rpm"  :{
+    value: '100',
+    trigger: 'RPM'
+  },
+  "inf": {
+    value: '',
+    trigger: 'INF'
   }
-  getVer = () => {
-    console.log({VERLOCA: ver});
-    return ver;
-    
-  };
+};
+class SerialAPI {
   isConected = () => {
     return SerialState;
+  }
+  getValues = (key : string, int:boolean | false) =>{
+    if(int){
+      return parseInt(commands[key].value);
+    }else{
+      return commands[key].value;
+    }
+    
   }
   //funcion principale:
   async run() {
     if (port) {
       if (reader) reader.cancel();
       await port.close();
+      SerialState = false;
     } else {
       port = await navigator.serial.requestPort({});
-      // console.log(port);
-      const options = {
-        baudrate: 115200
-      };
-
-      //console.log(options);
+      const options = { baudrate: 115200 };
       await port.open(options);
 
       console.log("<CONNECTED>");
-
-     // SerialAPI.get_info(port);
+      SerialAPI.SendCommand();
       while (port.readable) {
         try {
+          
+          //Test enviar numero "45"
+         
           reader = port.readable.getReader();
-          if (port && port.writable) {
-            const value = parseInt('45\n');
-            const bytes = new Uint8Array([value]);
-            const writer = port.writable.getWriter();
-            console.log("en teoria mande algo");
-            writer.write(bytes);
-            writer.releaseLock();
-          }
+          //empezamos a leer
           SerialState = true;
           while (true) {
             const { value, done } = await reader.read();
              
             let test = SerialAPI.ByteToString(value);
             let args = test.split(" ");
-            if (args[0].startsWith('INF')) {
-              console.log("FUNCAAAA");
-              console.log(args);
-              ver = args[1];
-            }
-            if (args[1] !== undefined) {
-              if (parseInt(args[1]) > 500) {
-                rpm = parseInt(args[1]);
-                console.log(args[1]);
+            Object.keys(commands).map(function (key, index) {
+              
+              if (args[0].startsWith(commands[key].trigger)){
+                commands[key].value = args[1];
+                //mystore.dispatch({ type: commands[key].trigger, val: args[1] });
+                console.log({ type: commands[key].trigger, val: args[1] });
               }
-            }
-            test = "";
+            // console.log({ [commands[key].trigger] : commands[key].value });
+            });      
           }
         } catch (e) {
           //error
@@ -101,6 +95,18 @@ class SerialAPI {
         )
     );
     return test;
+  }
+
+  static SendCommand(){
+    if (port && port.writable) { //&& port.writable
+      const value = parseInt('45\n');
+      const bytes = new Uint8Array([value]);
+      const writer = port.writable.getWriter();
+      console.log("en teoria mande algo");
+      writer.write(bytes);
+      writer.releaseLock();
+
+    }
   }
 
 

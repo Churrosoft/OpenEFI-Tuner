@@ -3,6 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+//Redux:
+import mystore from './GS';
 //Views:
 import Panel from './Panel';
 import CFG from './views/CFG';
@@ -16,27 +18,31 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import Brightness5Icon from '@material-ui/icons/Brightness5';
 //API RE LOCA:
 import SerialAPI from './serial';
+import { Button } from '@material-ui/core';
 
  const myApi = new SerialAPI();
 function getval() {
   return Math.floor(Math.random() * 50 + 1);
 }
-function getValue2() {
-  return Math.floor(Math.random() * 4000 + 1);
+
+const actualizarRPM = () =>{
+  mystore.dispatch({ type: 'RPM_UPDATE' });
 }
 
 ReactDOM.render(
   <div className="Main">
    <Head 
     Init={myApi.run}
-    GetVer={myApi.getVer}
+    GetVer={myApi.getValues}
     isConected={myApi.isConected}
    />
     <div id="container">
       <Router>
 
         <div id="menu">
-
+        <Button 
+        onClick={ actualizarRPM}
+        >ENROSCAR EL TUTU</Button>
           <NavLink exact to="/"       activeStyle={{ color: "#428cd1" }} >
             <div id="menu-item">  
               <DashboardIcon id="menu-item-icon" /> Panel 
@@ -63,7 +69,7 @@ ReactDOM.render(
 
         </div>
 
-        <Route path="/"    exact render={(props) => <Panel getRPM={myApi.getRPM} getTemp={getval} />} />
+        <Route path="/"    exact render={(props) => <Panel getTemp={getval} getValues={myApi.getValues}/>} />
         <Route path="/CFG"       render={(props) => <CFG />} />
         <Route path="/DTC"       render={(props) => <DTC />} />
       </Router>
