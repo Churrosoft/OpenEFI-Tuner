@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 //Redux:
-import mystore from './GS';
+import mystore from './redux-serial';
 //Views:
 import Panel from './Panel';
 import CFG from './views/CFG';

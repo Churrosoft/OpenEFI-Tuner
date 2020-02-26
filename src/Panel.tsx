@@ -2,7 +2,7 @@ import React from "react";
 import "./css/layout.scss";
 // @ts-ignore
 import { RadialGauge } from "./react-canvas-gauges/dist";
-import mystore from "./GS";
+import mystore from "./redux-serial";
 let timer: NodeJS.Timeout;
 interface Props2 {
   getTemp: Function;

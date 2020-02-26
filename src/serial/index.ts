@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 // Importamos el redu:
-import mystore from '../GS';
+import mystore from '../redux-serial';
 
 let port: SerialPort | undefined;
 let reader: ReadableStreamDefaultReader | any;
@@ -97,7 +97,7 @@ class SerialAPI {
     return test;
   }
 
-  static SendCommand(){
+  static SendCommand = () => {
     if (port && port.writable) { //&& port.writable
       const value = parseInt('45\n');
       const bytes = new Uint8Array([value]);
@@ -108,7 +108,6 @@ class SerialAPI {
 
     }
   }
-
 
 }
 
