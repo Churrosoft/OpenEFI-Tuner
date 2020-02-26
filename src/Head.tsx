@@ -36,14 +36,15 @@ class Head extends React.Component<Props2> {
           <h1>OpenEFI || Tunner</h1>
           <p id="head-inf"> </p>
         </div>
-        {!this.state.state ? (
+        {
+        !this.state.state ? (
           <div id="head-inf">
-            <button onClick={this.preclick}>CONECTAMEEE</button>
+            <button onClick={this.preclick}>CONECTAR</button>
             <p>Version: {this.state.Ver}</p>
           </div>
         ) : (
           <div id="head-inf">
-            <button onClick={this.preclick}>DESCONECTAMEE</button>
+            <button onClick={this.preclick}>DESCONECTAR</button>
             <p>Version: {this.state.Ver}</p>
           </div>
         )}
@@ -52,7 +53,4 @@ class Head extends React.Component<Props2> {
   }
 }
 
-/* const App: React.FC = () => {
-
-} */
 export default Head;

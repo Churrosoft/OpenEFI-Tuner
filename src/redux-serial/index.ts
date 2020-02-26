@@ -1,6 +1,8 @@
-import { createStore } from "redux";
+import { createStore  } from "redux";
 import { SerialStates } from "./GS";
-
+import { RPMReducer   } from './reducers/RPM';
+import { TEMPReducer  } from './reducers/TEMP';
+import { INFReducer   } from './reducers/INF';
 
 const Commands: SerialStates = {
   rpm: {
@@ -10,6 +12,10 @@ const Commands: SerialStates = {
   inf: {
     value: "",
     trigger: "INF"
+  },
+  temp: {
+    value: 0,
+    trigger: "TEMP"
   }
 };
 
@@ -18,41 +24,16 @@ const DefaultState: SerialStates = {
   cmd: Commands
 };
 
-
-const RPMReducer = (state :SerialStates, action:any) =>{
-  console.log({ "NEW RPM": state.cmd.rpm.value });
-  if (parseInt(action.val) > 250) {
-    return {
-      ...state,
-      cmd: {
-        rpm: {
-          //value: state.cmd.rpm.value + 250
-          value: action.val
-        }
-      }
-    };
-  }
-  return state;
-}
-
 const StateReducer = (state = DefaultState, action: any) => {
   switch (action.type) {
-  case "RPM":
-    return RPMReducer(state,action)
-    /*
+    case "RPM":
+      return RPMReducer(state,action)
+    
     case "INF":
-      if(action.val !== null || action.val !== undefined || action.val !== ""){
-        console.log({ "INF: ": action.val });
-        return {
-          ...state,
-          cmd:{
-            inf: {
-                value: action.val
-            }
-          }
-        };
-      }
-    return state;*/
+      return INFReducer(state,action);
+    
+    case "TEMP":
+      return TEMPReducer(state,action);
 
     default:
       console.log({ "Default action": action });
