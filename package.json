@@ -15,7 +15,7 @@
     "@types/react-redux": "^7.1.7",
     "@types/react-router-dom": "^5.1.3",
     "canvas-gauges": "^2.1.5-radial",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "react": "^16.12.0",
     "react-canvas-gauges": "^1.2.1",
     "react-dom": "^16.12.0",

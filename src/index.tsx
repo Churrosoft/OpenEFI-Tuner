@@ -16,11 +16,13 @@ import './css/layout.scss';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import Brightness5Icon from '@material-ui/icons/Brightness5';
-//API RE LOCA:
+//API Serial
 import SerialAPI from './serial';
 import { Button } from '@material-ui/core';
 
- const myApi = new SerialAPI();
+//iniciamo'
+const myApi = new SerialAPI();
+
 function getval() {
   return Math.floor(Math.random() * 50 + 1);
 }

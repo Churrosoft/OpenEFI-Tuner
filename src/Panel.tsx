@@ -26,7 +26,10 @@ class Panel extends React.Component<Props2> {
    
     mystore.subscribe(() => {
       const state = mystore.getState();
-      this.setState({ rpm: parseInt(state.cmd.rpm.value) });
+      this.setState({
+         rpm: parseInt(state.cmd.rpm.value),
+         temp: parseInt(state.cmd.temp.value) 
+        });
     });
   }
   componentWillUnmount() {
@@ -34,9 +37,9 @@ class Panel extends React.Component<Props2> {
   }
 
   tick() {
-    this.setState({
+    /* this.setState({
       temp: this.props.getTemp()
-    });
+    }); */
   }
   render() {
     return (
