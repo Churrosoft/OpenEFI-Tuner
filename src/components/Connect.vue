@@ -29,7 +29,6 @@ async function fetch({device, comp}) {
           filters: [{vendorId: 0x1209, productId: 0xeef1}]
         }).then(device => {
           // return device.open;
-          console.log('pas1', device);
           device.open({ baudrate: 115200 }).then(() => {
             //device.selectAlternateInterface(0x82)
             this.$store.dispatch('connected', device);

@@ -14,8 +14,12 @@ const commands = {
             },
             2: {
                 name: 'INVALID_COMMAND'
+            },
+            3: {
+                name: 'INVALID_CHECKSUM'
             }
-        }
+        },
+        handler: ({subcommand}) => console.warn('ERROR RECIBIDO DE OPENEFI:', subcommand)
     },
     10: {
         name: 'HELLO',

@@ -42,7 +42,9 @@ export default new Vuex.Store({
       }
       buffer.set([1, command, subcommand]);
       buffer.set(payloadBuffer, 3);
-      buffer.set([0, 0], 126)
+
+      let calcrc = crc(buffer.slice(0, 126));
+      buffer.set([(calcrc >> 0) & 0xff, (calcrc >> 8) & 0xff], 126)
       state.writer.write(buffer);
     },
     recv({dispatch}, data){
@@ -53,11 +55,12 @@ export default new Vuex.Store({
       let subcommand = frame[2];
       let payload = frame.slice(3, 126);
       let checksum = buf2hex(frame.slice(126, 128).reverse().buffer);
+      // Todo este bardo para comparar los dos crc como string...
+      let localcrc = ("0000" + crc(frame.slice(0, 126)).toString(16)).substr(-4)
       console.log('Frame recibido\nProtocolo: ' + protocol + '\nComando: ' + command + '\nSubcomando: ' + subcommand + '\nPayload: ' + payload + '\nChecksum: ' + checksum);
-      if(checksum != crc(frame.slice(0, 112)).toString(16)){
+      if(checksum != localcrc){
         console.warn("Checksums no coinciden!")
-        console.log(crc(frame.slice(0, 112)).toString(16))
-        console.log(checksum)
+        console.log('Local:', localcrc)
       }else{
         commandHandler(command, subcommand, payload);
       }
