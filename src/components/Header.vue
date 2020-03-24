@@ -1,6 +1,6 @@
 <template>
 	<v-app-bar app color="primary" dark clipped-left>
-		<v-app-bar-nav-icon @click.stop="$store.dispatch('toogle_menu');" />
+		<v-app-bar-nav-icon @click.stop="$store.dispatch('toogle_menu');" v-if="$store.state.connected" />
 		<v-toolbar-title>OpenEFI Tuner</v-toolbar-title>
 
 		<v-spacer></v-spacer>
