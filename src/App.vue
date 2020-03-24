@@ -17,7 +17,7 @@
 			<router-view />
 		</v-content>
 		<v-footer app>
-			<span>&copy; 2019</span>
+			<span><a href="https://github.com/openefi/" target="new"> &copy; OpenEFI 2020</a> </span>
 		</v-footer>
 	</v-app>
 </template>

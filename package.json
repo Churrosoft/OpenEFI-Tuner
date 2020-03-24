@@ -10,6 +10,7 @@
   "dependencies": {
     "@babel/core": "^7.9.0",
     "@mdi/font": "^3.6.95",
+    "@mdi/js": "^5.0.45",
     "@vue/composition-api": "^0.5.0",
     "core-js": "^3.6.4",
     "html-webpack-plugin": "^4.0.1",

@@ -1,6 +1,6 @@
 <template>
 	<v-app-bar app color="primary" dark clipped-left>
-		<v-app-bar-nav-icon @click.stop="$store.dispatch('toogle_menu');" v-if="$store.state.connected" />
+		<v-app-bar-nav-icon @click.stop="Drawer=!Drawer"  />
 		<v-toolbar-title>OpenEFI Tuner</v-toolbar-title>
 
 		<v-spacer></v-spacer>
@@ -20,5 +20,17 @@ export default {
 	name: 'Header',
 	components: {},
 	data: () => ({}),
+
+	computed: {
+		Drawer: {
+			get() {
+				return this.$store.getters.toogle_menu;
+			},
+			set (v) { return this.$store.commit('toogle_menu',v) }
+		},
+		mini() {
+			return this.$vuetify.breakpoint.mdAndDown;
+		},
+	},
 };
 </script>
