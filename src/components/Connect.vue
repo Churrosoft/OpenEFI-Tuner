@@ -9,45 +9,40 @@
 </template>
 
 <script>
-async function fetch({ device, comp }) {
-	let reader = device.readable.getReader();
-	console.log(device, comp);
-	let a = true;
-	while (a) {
-		let result = await reader.read();
-		comp.$store.dispatch('recv', result);
-	}
+async function fetch({device, comp}) {
+  let reader = device.readable.getReader();
+  console.log(device, comp);
+  let a = true;
+  while (a) {
+    try {
+      let result = await reader.read();
+      comp.$store.dispatch('recv', result);
+    } catch (error) {
+      break;
+    }
+  }
+  comp.$store.commit('setDisconnected');
 }
 export default {
 	name: 'Connect',
-
-	data: () => ({}),
-	methods: {
-		connectUsbDevice() {
-			navigator.serial
-				.requestPort({
-					filters: [{ vendorId: 0x1209, productId: 0xeef1 }],
-				})
-				.then(device => {
-					// return device.open;
-					device.open({ baudrate: 115200 }).then(() => {
-						//device.selectAlternateInterface(0x82)
-						this.$store.dispatch('connected', device);
-						this.$emit('on-usb-device-connected');
-						fetch({ device: device, comp: this });
-
-						/*const bytes = new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]);
-            console.log("en teoria mande algo");
-            writer.write(bytes);
-            writer.releaseLock();
-                })
-              }).catch(error => {
-                alert('Error al conectar' + error)
-                console.log(error);
-              });*/
-					});
-				});
-		},
-	},
-};
+    data: () => ({}),
+    methods: {
+      connectUsbDevice() {
+        navigator.serial.getPorts().then((r) => {
+          if(r.length > 0){
+            this.deviceOpen(r[0]);
+          }else{
+            navigator.serial.requestPort({filters: [{vendorId: 0x1209, productId: 0xeef1}]})
+              .then(device => this.deviceOpen(device));
+          }
+        });
+      },
+      deviceOpen(device){
+        device.open({ baudrate: 115200 }).then(() => {
+          this.$store.dispatch('connected', device);
+          fetch({device: device, comp: this});
+        });
+      }
+    }
+  }
 </script>

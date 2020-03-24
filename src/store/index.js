@@ -25,6 +25,10 @@ export default new Vuex.Store({
       state.writer = writer;
       state.connected = true;
     },
+    setDisconnected(state){
+      state.connected = false;
+      state.paired = false;
+    },
     setPaired(state, {major, minor, rev}){
       state.firmware_ver = {major: major, minor: minor, rev: rev};
       state.paired = true;
