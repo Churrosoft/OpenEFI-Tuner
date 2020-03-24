@@ -10,6 +10,7 @@ function buf2hex(buffer) { // buffer is an ArrayBuffer
 
 export default new Vuex.Store({
   state: {
+    toogle_menu:false,
     usbd: null,
     writer: null,
 
@@ -27,9 +28,15 @@ export default new Vuex.Store({
     setPaired(state, {major, minor, rev}){
       state.firmware_ver = {major: major, minor: minor, rev: rev};
       state.paired = true;
+    },
+    toogle_menu(state){
+      state.toogle_menu = !state.toogle_menu;
     }
   },
   actions: {
+    toogle_menu({commit}){
+      commit('toogle_menu')
+    },
     connected({commit, dispatch}, usbd){
       commit('setConnection', {usbd: usbd, writer: usbd.writable.getWriter()})
       dispatch('sendMessage', {command: 10, subcommand: 0})
