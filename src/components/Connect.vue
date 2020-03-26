@@ -9,13 +9,14 @@
 </template>
 
 <script>
-async function fetch({device, comp}) {
-  let reader = device.readable.getReader();
-  console.log(device, comp);
+async function startWorking({device, comp}) {
+  await device.selectConfiguration(1);
+  await device.claimInterface(1);
+  comp.$store.dispatch('connected', device);
   let a = true;
   while (a) {
     try {
-      let result = await reader.read();
+      let result = await device.transferIn(2, 128);
       comp.$store.dispatch('recv', result);
     } catch (error) {
       break;
@@ -28,19 +29,20 @@ export default {
     data: () => ({}),
     methods: {
       connectUsbDevice() {
-        navigator.serial.getPorts().then((r) => {
+        navigator.usb.getDevices().then((r) => {
           if(r.length > 0){
             this.deviceOpen(r[0]);
           }else{
-            navigator.serial.requestPort({filters: [{vendorId: 0x1209, productId: 0xeef1}]})
+            navigator.usb.requestDevice({filters: [{vendorId: 0x1209, productId: 0xeef1}]})
               .then(device => this.deviceOpen(device));
           }
         });
       },
       deviceOpen(device){
-        device.open({ baudrate: 115200 }).then(() => {
-          this.$store.dispatch('connected', device);
-          fetch({device: device, comp: this});
+        device.open().then(() => {
+          //fetch({device: device, comp: this});
+          console.log(device)
+          startWorking({device: device, comp: this})
         });
       }
     }

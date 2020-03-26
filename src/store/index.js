@@ -41,7 +41,6 @@ export default new Vuex.Store({
 		connected({ commit, dispatch }, usbd) {
 			commit('setConnection', {
 				usbd: usbd,
-				writer: usbd.writable.getWriter(),
 			});
 			dispatch('sendMessage', { command: 10, subcommand: 0 });
 		},
@@ -56,10 +55,11 @@ export default new Vuex.Store({
 
 			let calcrc = crc(buffer.slice(0, 126));
 			buffer.set([(calcrc >> 0) & 0xff, (calcrc >> 8) & 0xff], 126);
-			state.writer.write(buffer);
+			state.usbd.transferOut(1, buffer)
+			//state.writer.write(buffer);
 		},
 		recv({ dispatch }, data) {
-			let frame = data.value;
+			let frame = new Uint8Array(data.data.buffer);
 			console.log(frame);
 			let protocol = frame[0];
 			let command = frame[1];
