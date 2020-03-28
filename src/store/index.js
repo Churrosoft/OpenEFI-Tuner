@@ -72,15 +72,15 @@ export default new Vuex.Store({
 			).substr(-4);
 			console.log(
 				'Frame recibido\nProtocolo: ' +
-					protocol +
-					'\nComando: ' +
-					command +
-					'\nSubcomando: ' +
-					subcommand +
-					'\nPayload: ' +
-					payload +
-					'\nChecksum: ' +
-					checksum
+				protocol +
+				'\nComando: ' +
+				command +
+				'\nSubcomando: ' +
+				subcommand +
+				'\nPayload: ' +
+				payload +
+				'\nChecksum: ' +
+				checksum
 			);
 			if (checksum != localcrc) {
 				console.warn('Checksums no coinciden!');
