@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.fe120834d73f563d51ed4a29efdcfee1.js"
+  "/precache-manifest.10ab07e6253bd8c82dff7d9b037b4622.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "openefi-tuner"});
