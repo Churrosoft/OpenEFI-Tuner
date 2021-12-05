@@ -1,6 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import Vue from 'vue'
 import Vuex from 'vuex'
-import crc from '@/crc';
+import crc from './crc';
 import commandHandler from './commandHandler';
 Vue.use(Vuex)
 
@@ -53,21 +59,22 @@ export default new Vuex.Store({
 			buffer.set([1, command, subcommand]);
 			buffer.set(payloadBuffer, 3);
 
-			let calcrc = crc(buffer.slice(0, 126));
+			const calcrc = crc(buffer.slice(0, 126));
 			buffer.set([(calcrc >> 0) & 0xff, (calcrc >> 8) & 0xff], 126);
+			// @ts-expect-error webusb e una japi y hermoso a la ve
 			state.usbd.transferOut(1, buffer)
 			//state.writer.write(buffer);
 		},
 		recv({ dispatch }, data) {
-			let frame = new Uint8Array(data.data.buffer);
+			const frame = new Uint8Array(data.data.buffer);
 			console.log(frame);
-			let protocol = frame[0];
-			let command = frame[1];
-			let subcommand = frame[2];
-			let payload = frame.slice(3, 126);
-			let checksum = buf2hex(frame.slice(126, 128).reverse().buffer);
+			const protocol = frame[0];
+			const command = frame[1];
+			const subcommand = frame[2];
+			const payload = frame.slice(3, 126);
+			const checksum = buf2hex(frame.slice(126, 128).reverse().buffer);
 			// Todo este bardo para comparar los dos crc como string...
-			let localcrc = (
+			const localcrc = (
 				'0000' + crc(frame.slice(0, 126)).toString(16)
 			).substr(-4);
 			console.log(
@@ -96,3 +103,13 @@ export default new Vuex.Store({
 	},
 	modules: {},
 });
+
+
+
+export interface StateInterface {
+	// Define your own store structure, using submodules if needed
+	// example: ExampleStateInterface;
+	// Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
+	example: unknown
+  }
+  
