@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 const uint16 = n => n & 0xffff;
 
 const crc16 = data_p => {
@@ -10,5 +12,11 @@ const crc16 = data_p => {
   });
   return crc;
 };
+
+export function buf2hex(buffer) { // buffer is an ArrayBuffer
+  // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+  return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+}
+
 
 export default crc16;
