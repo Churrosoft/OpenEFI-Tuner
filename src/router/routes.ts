@@ -7,6 +7,20 @@ const routes: RouteRecordRaw[] = [
     children: [{ path: '', component: () => import('pages/Index.vue') }],
   },
 
+  {
+    path: '/ignition',
+    component: () => import('layouts/Ignition.vue'),
+    children: [
+      {
+        path: 'tables',
+        component: () => import('pages/Ignition/tables.vue'),
+      },
+      {
+        path: 'config',
+        component: () => import('pages/Ignition/config.vue'),
+      },
+    ],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

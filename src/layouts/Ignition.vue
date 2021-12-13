@@ -8,7 +8,7 @@ import Menu from 'src/components/Layout/Menu.vue';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: 'Ignition',
 
   components: {
     Menu,

@@ -3,12 +3,17 @@ import { InjectionKey } from 'vue'
 import {
   createStore,
   Module,
+  Store,
   Store as VuexStore,
   useStore as vuexUseStore,
 } from 'vuex'
 
 import UsbLayer from './usb-layer'
 import { UsbLayerInterface } from './usb-layer/state';
+
+import Layout from './layout'
+
+import { LayoutInterface } from './layout/state';
 
 
 /*
@@ -24,7 +29,8 @@ export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  UsbLayer: UsbLayerInterface
+  UsbLayer: UsbLayerInterface,
+  Layout: LayoutInterface,
 }
 
 // provide typings for `this.$store`
@@ -41,7 +47,8 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
       // example
-      UsbLayer
+      UsbLayer,
+      Layout
     },
 
     // enable strict mode (adds overhead!)
