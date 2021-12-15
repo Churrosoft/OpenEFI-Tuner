@@ -21,6 +21,19 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+
+  {
+    path: '/dtc',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/DTC/Status.vue') },
+      {
+        path: 'config',
+        component: () => import('pages/DTC/Configuration.vue'),
+      },
+    ],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

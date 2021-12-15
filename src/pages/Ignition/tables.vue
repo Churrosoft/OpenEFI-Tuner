@@ -1,11 +1,17 @@
 <template>
-  <q-page padding>
-    <!-- content -->
-  </q-page>
+  <div></div>
 </template>
 
-<script>
-export default {
-  // name: 'PageName',
-}
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'Ignition',
+
+  components: {},
+
+  setup() {
+    return {};
+  },
+});
 </script>

@@ -1,10 +1,10 @@
 <template>
   <q-drawer
-    v-model="$store.state.Layout.toogleMenu"
+    @update:modelValue="toggleLeftDrawer()"
+    :model-value="$store.state.Layout.toogleMenu"
     show-if-above
     bordered
-    no-swipe-close
-    overlay
+    
   >
     <q-scroll-area class="fit">
       <q-list>
@@ -26,31 +26,33 @@ import EssentialLink from 'src/components/Layout/EssentialLink.vue';
 const linksList = [
   {
     title: 'Dashboard',
-    caption: 'quasar.dev',
+    caption: '',
     icon: 'space_dashboard',
-    link: 'https://quasar.dev',
+    link: '#',
   },
   {
     title: 'DTC',
-    caption: 'github.com/quasarframework',
+    caption: 'read/erase DTC codes',
     icon: 'memory',
-    link: 'https://github.com/quasarframework',
+    link: '#dtc',
   },
   {
     title: 'Ignition',
     caption: 'configure ignition tables',
     icon: 'table_view',
-    link: '#ignition',
+    link: '#ignition/tables',
   },
   {
     title: 'Settings',
-    caption: 'chat.quasar.dev',
+    caption: 'system settings',
     icon: 'settings',
     link: 'https://chat.quasar.dev',
   },
 ];
 
 import { defineComponent } from 'vue';
+import { storeKey } from '../../store';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'NavBar',
@@ -60,8 +62,13 @@ export default defineComponent({
   },
 
   setup() {
+    const $store = useStore(storeKey);
+
     return {
       essentialLinks: linksList,
+      toggleLeftDrawer() {
+        void $store.dispatch('Layout/toogleMenu');
+      },
     };
   },
 });
