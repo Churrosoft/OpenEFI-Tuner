@@ -40,7 +40,7 @@
         <q-btn flat class="q-mr-lg" @click="requestCodeInfo(dtc)">
           More Info
         </q-btn>
-        <q-btn flat>Clear</q-btn>
+        <q-btn flat @click="requestDtcDelete(dtc)">Clear</q-btn>
       </q-card-actions>
     </q-card>
   </div>
@@ -83,7 +83,22 @@
       <q-separator />
 
       <q-card-actions align="right">
-        <q-btn flat label="Accept" color="primary" v-close-popup />
+        <q-btn flat label="Close" color="primary" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="clearDtc">
+    <q-card class="q-pa-md">
+      <q-card-section>
+        <div class="text-h5">Confirm delete code: {{ codeInfo.code }}?</div>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions align="right">
+        <q-btn flat label="Yes" color="primary" v-close-popup  class="q-mr-xl"/>
+        <q-btn flat label="No" color="secondary" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -108,6 +123,7 @@ export default defineComponent({
     return {
       store: $store.state.DtcCodes,
       fixed: ref(false),
+      clearDtc: ref(false),
       selectedCode: '',
       codeInfo: {
         code: '',
@@ -140,6 +156,11 @@ export default defineComponent({
       this.fixed = true;
       this.selectedCode = mockCode.code;
       this.codeInfo = mockCode;
+    },
+    requestDtcDelete(code: IDTCCode) {
+      this.clearDtc = true;
+      this.selectedCode = code.code;
+      this.codeInfo = code;
     },
   },
 });
