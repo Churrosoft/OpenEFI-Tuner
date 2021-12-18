@@ -1,20 +1,22 @@
-import { store } from 'quasar/wrappers'
-import { InjectionKey } from 'vue'
+import { store } from 'quasar/wrappers';
+import { InjectionKey } from 'vue';
 import {
   createStore,
   Module,
   Store,
   Store as VuexStore,
   useStore as vuexUseStore,
-} from 'vuex'
+} from 'vuex';
 
-import UsbLayer from './usb-layer'
+import UsbLayer from './usb-layer';
+import DtcCodes from './dtc_codes';
+
 import { UsbLayerInterface } from './usb-layer/state';
 
-import Layout from './layout'
+import Layout from './layout';
 
 import { LayoutInterface } from './layout/state';
-
+import { DTCCodesInterface } from './dtc_codes/state';
 
 /*
  * If not building with SSR mode, you can
@@ -29,36 +31,39 @@ export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  UsbLayer: UsbLayerInterface,
-  Layout: LayoutInterface,
+  UsbLayer: UsbLayerInterface;
+  Layout: LayoutInterface;
+  DtcCodes: DTCCodesInterface;
 }
 
 // provide typings for `this.$store`
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $store: VuexStore<StateInterface>
+    $store: VuexStore<StateInterface>;
   }
 }
 
 // provide typings for `useStore` helper
-export const storeKey: InjectionKey<VuexStore<StateInterface>> = Symbol('vuex-key')
+export const storeKey: InjectionKey<VuexStore<StateInterface>> =
+  Symbol('vuex-key');
 
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
       // example
       UsbLayer,
-      Layout
+      Layout,
+      DtcCodes,
     },
 
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
-    strict: !!process.env.DEBUGGING
-  })
+    strict: !!process.env.DEBUGGING,
+  });
 
   return Store;
-})
+});
 
 export function useStore() {
-  return vuexUseStore(storeKey)
+  return vuexUseStore(storeKey);
 }
