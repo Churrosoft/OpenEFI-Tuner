@@ -95,7 +95,7 @@ export default defineComponent({
 
     watchEffect(() => {
       if (tab.value) {
-        getTableObserver();
+        getTableObserver(13);
       }
     });
 
