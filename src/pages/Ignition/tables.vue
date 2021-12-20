@@ -32,7 +32,7 @@
       >
         <q-tab name="rpmload" label="RPM/Load" />
         <q-tab name="loadtemp" label="Load/Temp" />
-        <q-tab name="rpmbattery" label="RPM/Battery" />
+        <q-tab name="rpmbattery" label="RPM/Battery" disable />
       </q-tabs>
 
       <q-separator />
@@ -40,6 +40,7 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="rpmload">
           <div class="text-h6">RPM/Load</div>
+
           <canvas-datagrid
             :data.prop="data"
             showRowHeaders="false"
@@ -64,7 +65,7 @@
 
 <script lang="ts">
 import { defineComponent, watchEffect } from 'vue';
-import { getTableObserver } from 'src/types/tables';
+import { cleanTableEvents, getTableObserver } from 'src/types/tables';
 import { ref } from 'vue';
 
 /** Ejemplo tablita:
@@ -90,12 +91,18 @@ export default defineComponent({
   name: 'Ignition',
 
   components: {},
+  mounted() {
+    getTableObserver(13, 'ignition_table');
+  },
+  beforeUnmount() {
+    cleanTableEvents('ignition_table');
+  },
   setup() {
     const tab = ref('rpmload');
 
     watchEffect(() => {
       if (tab.value) {
-        getTableObserver(13);
+        getTableObserver(13, 'ignition_table');
       }
     });
 
