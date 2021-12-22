@@ -7,7 +7,7 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 import commandHandler from '../commandHandler';
 import crc, { buf2hex } from '../crc';
-import { UsbLayerInterface } from './state';
+import { IUSBCommand, UsbLayerInterface } from './state';
 
 const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   connected({ commit, dispatch }, usbd) {
@@ -30,6 +30,13 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     // @ts-expect-error webusb e una japi y hermoso a la ve
     state.usbd.transferOut(1, buffer);
     //state.writer.write(buffer);
+  },
+  removeCommand({ state, commit }, command: IUSBCommand) {
+    if (!command) return;
+    const filteredCommands = state.pending_commands?.filter((comm) => {
+      return comm.checksum !== command.checksum;
+    });
+    commit('setCommands', filteredCommands);
   },
   recv({ dispatch }, data) {
     const frame = new Uint8Array(data.data.buffer);

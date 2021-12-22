@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex';
-import { UsbLayerInterface } from './state';
+import { IUSBCommand, UsbLayerInterface } from './state';
 
 interface IPaired {
   state: UsbLayerInterface;
@@ -23,6 +23,9 @@ const mutation: MutationTree<UsbLayerInterface> = {
   setPaired(state, { major, minor, rev }: IPaired['payload']) {
     state.firmware_ver = { major, minor, rev };
     state.paired = true;
+  },
+  setCommands(state, commands: Array<IUSBCommand> | null) {
+    state.pending_commands = commands;
   },
   toogle_menu(state, v: boolean) {
     state.toogle_menu = v;
