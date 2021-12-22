@@ -6,7 +6,7 @@
     </h6>
     <!--  <q-card style="width: 30vw"> -->
     <div class="row q-pa-lg" style="width: 100%">
-      <q-btn flat icon="download" color="primary" rounded>
+      <q-btn flat icon="download" color="primary" @click="requestTable" rounded>
         <span class="q-mr-md" />get table info from EFI
       </q-btn>
       <span class="col-2 gt-xs"> </span>
@@ -39,14 +39,14 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="rpmload">
-          <div class="text-h6">RPM/Load</div>
+          <div class="text-h6 q-mb-md">RPM/Load</div>
 
           <canvas-datagrid
             :data.prop="data"
             showRowHeaders="false"
             showColumnHeaders="false"
             class="ignition_table"
-          ></canvas-datagrid>
+          />
         </q-tab-panel>
 
         <q-tab-panel name="loadtemp">
@@ -64,10 +64,13 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
 import { defineComponent, watchEffect } from 'vue';
 import { cleanTableEvents, getTableObserver } from 'src/types/tables';
 import { ref } from 'vue';
-
+import { storeKey } from '../../store';
+import { useStore } from 'vuex';
 /** Ejemplo tablita:
  * load(tps)/rpm
  * [  * ]  [550 ] [ 950] [1200] [1650] [2200] [2800] [3400] [3900] [4400] [4900] [5400] [7200]
@@ -97,8 +100,15 @@ export default defineComponent({
   beforeUnmount() {
     cleanTableEvents('ignition_table');
   },
+  methods: {
+    requestTable() {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      console.log(this.store.getters['UsbLayer/getCommand']('112'));
+    },
+  },
   setup() {
     const tab = ref('rpmload');
+    const store = useStore(storeKey);
 
     watchEffect(() => {
       if (tab.value) {
@@ -108,6 +118,7 @@ export default defineComponent({
 
     return {
       tab,
+      store,
       data: [
         {
           col0: '##',

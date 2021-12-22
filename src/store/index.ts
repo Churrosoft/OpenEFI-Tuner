@@ -2,6 +2,7 @@ import { store } from 'quasar/wrappers';
 import { InjectionKey } from 'vue';
 import {
   createStore,
+  GetterTree,
   Module,
   Store,
   Store as VuexStore,
@@ -10,6 +11,8 @@ import {
 
 import UsbLayer from './usb-layer';
 import DtcCodes from './dtc_codes';
+
+import UsbLayerGetters from './usb-layer/getters';
 
 import { UsbLayerInterface } from './usb-layer/state';
 
@@ -55,7 +58,9 @@ export default store(function (/* { ssrContext } */) {
       Layout,
       DtcCodes,
     },
-
+    /* getters: {
+      UsbLayerGetters: UsbLayerGetters.getCommand as never,
+    }, */
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
     strict: !!process.env.DEBUGGING,
