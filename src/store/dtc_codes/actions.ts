@@ -34,10 +34,10 @@ const actions: ActionTree<DTCCodesInterface, StateInterface> = {
       if (command !== null) {
         const chunk = command.payload.slice(0, 8);
         codes.push(_arrayBufferToBase64(chunk));
+        void dispatch('UsbLayer/removeCommand', command, {
+          root: true,
+        });
       }
-      void dispatch('UsbLayer/removeCommand', command, {
-        root: true,
-      });
     }
 
     for (let codeIndex = 0; codeIndex < codes.length; codeIndex++) {

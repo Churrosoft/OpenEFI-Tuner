@@ -1,25 +1,16 @@
 import { store } from 'quasar/wrappers';
 import { InjectionKey } from 'vue';
-import {
-  createStore,
-  GetterTree,
-  Module,
-  Store,
-  Store as VuexStore,
-  useStore as vuexUseStore,
-} from 'vuex';
+import { createStore, Store as VuexStore, useStore as vuexUseStore } from 'vuex';
 
 import UsbLayer from './usb-layer';
 import DtcCodes from './dtc_codes';
-
-import UsbLayerGetters from './usb-layer/getters';
+import Layout from './layout';
+import Ignition from './ignition';
 
 import { UsbLayerInterface } from './usb-layer/state';
-
-import Layout from './layout';
-
 import { LayoutInterface } from './layout/state';
 import { DTCCodesInterface } from './dtc_codes/state';
+import { IgnitionInterface } from './ignition/state';
 
 /*
  * If not building with SSR mode, you can
@@ -37,6 +28,7 @@ export interface StateInterface {
   UsbLayer: UsbLayerInterface;
   Layout: LayoutInterface;
   DtcCodes: DTCCodesInterface;
+  Ignition: IgnitionInterface;
 }
 
 // provide typings for `this.$store`
@@ -47,8 +39,7 @@ declare module '@vue/runtime-core' {
 }
 
 // provide typings for `useStore` helper
-export const storeKey: InjectionKey<VuexStore<StateInterface>> =
-  Symbol('vuex-key');
+export const storeKey: InjectionKey<VuexStore<StateInterface>> = Symbol('vuex-key');
 
 export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
@@ -57,6 +48,7 @@ export default store(function (/* { ssrContext } */) {
       UsbLayer,
       Layout,
       DtcCodes,
+      Ignition,
     },
     /* getters: {
       UsbLayerGetters: UsbLayerGetters.getCommand as never,
