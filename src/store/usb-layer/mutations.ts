@@ -27,6 +27,9 @@ const mutation: MutationTree<UsbLayerInterface> = {
   setCommands(state, commands: Array<IUSBCommand> | null) {
     state.pending_commands = commands;
   },
+  addCommand(state, command: IUSBCommand) {
+    if (state.pending_commands) state.pending_commands = [...state.pending_commands, command];
+  },
   toogle_menu(state, v: boolean) {
     state.toogle_menu = v;
   },

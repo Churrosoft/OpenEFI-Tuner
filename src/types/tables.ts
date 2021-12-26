@@ -8,11 +8,14 @@ export interface TableStyles {
 
 export const styleMappings = {
   ignition_rpm_load: {
-    '10': '#1976d2',
-    '14': '#90caf9',
-    '20': '#1976d2',
-    '23': '#ffc107',
-    '33': '#ef5350',
+    '5': '#536dfe',
+    '10': '#448aff',
+    '14': '#00b0ff',
+    '23': '#ff0',
+    '27': '#ffca28',
+    '30' : '#ffc107',
+    '33': '#ff9100',
+    '36': '#ef5350',
   },
 };
 
@@ -63,7 +66,7 @@ export const applyTableStyles = (
     const tb = table as unknown as TableStyles;
     const { width } = tb.getBoundingClientRect();
 
-    tb.style.cellWidth = width / cell_count > 65 ? width / cell_count - 0.15 : 65;
+    tb.style.cellWidth = width / cell_count > 60 ? width / cell_count - 0.15 : 60;
 
     tb.style.width = '100%';
     observer.disconnect();

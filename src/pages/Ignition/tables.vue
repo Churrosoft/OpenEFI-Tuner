@@ -10,11 +10,11 @@
       </q-btn>
       <span class="col-2 gt-xs"> </span>
 
-      <q-btn icon="file_upload" color="secondary" class="gt-xs" rounded>
+      <q-btn icon="file_upload" color="secondary" class="gt-xs" rounded @click="pathTable">
         <span class="q-mr-md" />write tables to EFI
       </q-btn>
 
-      <q-btn icon="file_upload" color="secondary" class="xs q-mt-md" rounded>
+      <q-btn icon="file_upload" color="secondary" class="xs q-mt-md" rounded @click="pathTable">
         <span class="q-mr-md" />write tables to EFI
       </q-btn>
     </div>
@@ -47,7 +47,7 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="rpmload">
-          <div class="text-h6 q-mb-md">RPM/Load</div>
+          <div class="text-h6 q-mb-md">RPM/Load (Kpa)</div>
           <!--  <canvas-datagrid
             v-if="tables.rpm_load !== null"
             :data.prop="tables.rpm_load"
@@ -86,6 +86,8 @@ import { cleanTableEvents, getTableObserver, ITableRow } from 'src/types/tables'
 import { ref, reactive } from 'vue';
 import { storeKey } from '../../store';
 import { useStore } from 'vuex';
+import { mockUSBCommand } from 'src/store/usb-layer/mocks';
+import { IUSBCommand } from 'src/store/usb-layer/state';
 /** Ejemplo tablita:
  * load(tps)/rpm
  * [  * ]  [550 ] [ 950] [1200] [1650] [2200] [2800] [3400] [3900] [4400] [4900] [5400] [7200]
@@ -108,14 +110,22 @@ export default defineComponent({
 
   components: {},
   mounted() {
-    getTableObserver(13, 'ignition_table');
+    getTableObserver(17, 'ignition_table');
   },
   beforeUnmount() {
     cleanTableEvents('ignition_table');
   },
   methods: {
     requestTable() {
-      void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
+      void this.store.dispatch('Ignition/requestIgnitionTableRPMTPS');
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      // console.log(this.store.getters['UsbLayer/getCommand'](120));
+      // void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
+    },
+    pathTable() {
+      const command = mockUSBCommand(2, 7, new Uint8Array([0xff]));
+      void this.store.dispatch('UsbLayer/putCommand', command);
     },
   },
 
@@ -129,9 +139,18 @@ export default defineComponent({
 
     const tables = reactive({ rpm_load: deReferenceRows(ignitionTables.rpm_load) });
 
+    // Efect to wait until all values from table are available
+    watchEffect(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     /*  const tableAvailable = store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
+      if (tableAvailable) {
+        void store.dispatch('Ignition/getIgnitionTableRPMTPS');
+      } */
+    });
+
     watchEffect(() => {
       if (tab.value) {
-        getTableObserver(13, 'ignition_table');
+        getTableObserver(17, 'ignition_table');
       }
     });
 

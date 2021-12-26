@@ -47,9 +47,7 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     const payload = frame.slice(3, 126);
     const checksum = buf2hex(frame.slice(126, 128).reverse().buffer);
     // Todo este bardo para comparar los dos crc como string...
-    const localcrc = ('0000' + crc(frame.slice(0, 126)).toString(16)).substr(
-      -4
-    );
+    const localcrc = ('0000' + crc(frame.slice(0, 126)).toString(16)).substr(-4);
     console.log(
       'Frame recibido\nProtocolo: ' +
         protocol +
@@ -72,6 +70,9 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   processCommand(i, { command, subcommand, payload }) {},
 
+  putCommand({ commit }, payload: IUSBCommand) {
+    commit('addCommand', payload);
+  },
   someAction(/* context */) {
     // your code
   },

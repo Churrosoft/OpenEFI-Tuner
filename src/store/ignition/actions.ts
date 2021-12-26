@@ -11,10 +11,19 @@ function timeout(ms: number) {
 }
 
 const actions: ActionTree<IgnitionInterface, StateInterface> = {
+  requestIgnitionTableRPMTPS({ commit,rootGetters ,dispatch}) {
+    commit('setIgnitionLoading', true);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const command = rootGetters['UsbLayer/getCommand'](127) as IUSBCommand;
+    void dispatch('UsbLayer/removeCommand', command, {
+      root: true,
+    });
+    console.log('TODO: request table to EFI');
+  },
   async getIgnitionTableRPMTPS({ commit, rootGetters, dispatch, rootState }) {
     const tableRow: Array<ITableRow> = [];
-    commit('setIgnitionLoading', true);
-    commit('clearTableRPM_TPS');
+    //commit('setIgnitionLoading', true);
+    // commit('clearTableRPM_TPS');
 
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
@@ -49,7 +58,10 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
       }
     }
     console.log(tableRow);
-    commit('setTableRPM_TPS', tableRow);
+    console.log(tableRow.length);
+    if (tableRow.length > 1) {
+      commit('setTableRPM_TPS', tableRow);
+    }
     /* 
     for (let codeIndex = 0; codeIndex < codes.length; codeIndex++) {
       const code = codes[codeIndex];
