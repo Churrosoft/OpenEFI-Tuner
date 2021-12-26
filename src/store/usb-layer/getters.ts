@@ -21,8 +21,8 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
             // valid command without subcommand
             resultCommand = _comm;
           } else {
-            console.log('invalid command');
-            console.log(_comm);
+            /* console.log('invalid command');
+            console.log(_comm); */
             // invalid command exception
           }
         }

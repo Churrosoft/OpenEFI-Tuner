@@ -11,18 +11,19 @@ function timeout(ms: number) {
 }
 
 const actions: ActionTree<IgnitionInterface, StateInterface> = {
-  requestIgnitionTableRPMTPS({ commit,rootGetters ,dispatch}) {
+  requestIgnitionTableRPMTPS({ commit, rootGetters, dispatch }) {
     commit('setIgnitionLoading', true);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const command = rootGetters['UsbLayer/getCommand'](127) as IUSBCommand;
-    void dispatch('UsbLayer/removeCommand', command, {
-      root: true,
-    });
+
     console.log('TODO: request table to EFI');
   },
   async getIgnitionTableRPMTPS({ commit, rootGetters, dispatch, rootState }) {
     const tableRow: Array<ITableRow> = [];
     //commit('setIgnitionLoading', true);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const endRowCommand = rootGetters['UsbLayer/getCommand'](127) as IUSBCommand;
+    void dispatch('UsbLayer/removeCommand', endRowCommand, {
+      root: true,
+    });
     // commit('clearTableRPM_TPS');
 
     const commandsLength = rootState.UsbLayer.pending_commands?.length;

@@ -104,6 +104,7 @@ import { IUSBCommand } from 'src/store/usb-layer/state';
  * [ 10 ]  (16.8) (16.3) (15.7) (15.9) (20.8) (28.4) (36.0) (34.4) (34.7) (37.2) (37.8) (39.7)
  * [  5 ]  (17.0) (16.5) (16.0) (16.0) (21.0) (28.5) (36.0) (34.4) (34.7) (37.4) (38.0) (40.0)
  */
+ let intTable: NodeJS.Timeout | null= null;
 
 export default defineComponent({
   name: 'Ignition',
@@ -122,6 +123,19 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       // console.log(this.store.getters['UsbLayer/getCommand'](120));
       // void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
+      const tableInterval = () => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        const tableAvailable = this.store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
+        if (tableAvailable) {
+          console.log('table available');
+          clearInterval(intTable as NodeJS.Timeout );
+          void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
+          
+        }
+/*         console.log(tableAvailable); */
+      };
+
+      this.intTable = setInterval(tableInterval, 500);
     },
     pathTable() {
       const command = mockUSBCommand(2, 7, new Uint8Array([0xff]));
@@ -133,7 +147,7 @@ export default defineComponent({
     const tab = ref('rpmload');
     const store = useStore(storeKey);
     const ignitionTables = store.state.Ignition.tables;
-
+   
     const deReferenceRows = (value: unknown) =>
       JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
@@ -142,7 +156,7 @@ export default defineComponent({
     // Efect to wait until all values from table are available
     watchEffect(() => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-     /*  const tableAvailable = store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
+      /*  const tableAvailable = store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
       if (tableAvailable) {
         void store.dispatch('Ignition/getIgnitionTableRPMTPS');
       } */
@@ -171,6 +185,7 @@ export default defineComponent({
       tab,
       store,
       tables,
+      intTable
     };
   },
 });
