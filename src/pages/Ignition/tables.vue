@@ -104,7 +104,7 @@ import { IUSBCommand } from 'src/store/usb-layer/state';
  * [ 10 ]  (16.8) (16.3) (15.7) (15.9) (20.8) (28.4) (36.0) (34.4) (34.7) (37.2) (37.8) (39.7)
  * [  5 ]  (17.0) (16.5) (16.0) (16.0) (21.0) (28.5) (36.0) (34.4) (34.7) (37.4) (38.0) (40.0)
  */
- let intTable: NodeJS.Timeout | null= null;
+let intTable: NodeJS.Timeout | null = null;
 
 export default defineComponent({
   name: 'Ignition',
@@ -128,11 +128,10 @@ export default defineComponent({
         const tableAvailable = this.store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
         if (tableAvailable) {
           console.log('table available');
-          clearInterval(intTable as NodeJS.Timeout );
+          clearInterval(intTable as NodeJS.Timeout);
           void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
-          
         }
-/*         console.log(tableAvailable); */
+        /*         console.log(tableAvailable); */
       };
 
       this.intTable = setInterval(tableInterval, 500);
@@ -147,7 +146,7 @@ export default defineComponent({
     const tab = ref('rpmload');
     const store = useStore(storeKey);
     const ignitionTables = store.state.Ignition.tables;
-   
+
     const deReferenceRows = (value: unknown) =>
       JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
@@ -164,6 +163,8 @@ export default defineComponent({
 
     watchEffect(() => {
       if (tab.value) {
+        cleanTableEvents('ignition_table');
+
         getTableObserver(17, 'ignition_table');
       }
     });
@@ -185,7 +186,7 @@ export default defineComponent({
       tab,
       store,
       tables,
-      intTable
+      intTable,
     };
   },
 });

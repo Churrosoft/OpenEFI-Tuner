@@ -13,7 +13,7 @@ export const styleMappings = {
     '14': '#00b0ff',
     '23': '#ff0',
     '27': '#ffca28',
-    '30' : '#ffc107',
+    '30': '#ffc107',
     '33': '#ff9100',
     '36': '#ef5350',
   },
@@ -65,7 +65,7 @@ export const applyTableStyles = (
   if (table) {
     const tb = table as unknown as TableStyles;
     const { width } = tb.getBoundingClientRect();
-
+    tb.style.cellWidth = 80;
     tb.style.cellWidth = width / cell_count > 60 ? width / cell_count - 0.15 : 60;
 
     tb.style.width = '100%';
@@ -76,12 +76,19 @@ export const applyTableStyles = (
 };
 
 export const getTableObserver = (cell_count: number, table_class: string) => {
-  const observer = new MutationObserver((_, observer) =>
-    applyTableStyles(_, observer, cell_count, table_class)
-  );
-  const targetNode = document.body;
+  const table = document.querySelector(`.${table_class}`);
+  console.log(table);
+  if (!table) {
+    const observer = new MutationObserver((_, observer) =>
+      applyTableStyles(_, observer, cell_count, table_class)
+    );
+    const targetNode = document.body;
 
-  observer.observe(targetNode, { childList: true, subtree: true });
+    observer.observe(targetNode, { childList: true, subtree: true });
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    applyTableStyles({}, { disconnect: () => {} }, cell_count, table_class);
+  }
 };
 
 export const cleanTableEvents = (table_class: string) => {

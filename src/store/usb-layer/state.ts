@@ -1,3 +1,4 @@
+import crc from '../crc';
 import mocks from './mocks';
 export interface IUSBCommand {
   protocol: number;
@@ -41,6 +42,24 @@ export function _arrayBufferToBase64(buffer: Uint8Array) {
   }
   return window.atob(binary);
 }
+
+export const createUSBCommand = (command: USBCommands, payload: Uint8Array): IUSBCommand => {
+  const protocol = 1;
+  const subcommand = 0;
+
+  const checksum = (
+    '0000' + crc([command, subcommand, ...payload].slice(0, 126)).toString(16)
+  ).substr(-4);
+
+  return {
+    protocol,
+    command,
+    subcommand,
+    payload,
+    checksum,
+  };
+};
+
 
 function state(): UsbLayerInterface {
   return {
