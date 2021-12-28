@@ -1,33 +1,41 @@
 <template>
-  <v-container>
-    <v-row class="text-center">
-      <v-col cols="4">
-        <v-btn color="primary" @click="connectUsbDevice">Conectar</v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div class="q-mr-lg">
+    <q-btn color="primary" @click="connectUsbDevice">Conectar</q-btn>
+  </div>
 </template>
 
 <script lang="ts">
 //import { USBDevice } from 'w3c-web-usb';
-import { USBDevice, Navigator } from '../types/webusb';
+import { Navigator, SerialPort } from '../types/webusb';
 import { storeKey } from '../store';
 import { useStore } from 'vuex';
 
-async function startWorking(args: { device: USBDevice }) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const store = useStore(storeKey);
-  const { device } = args;
-  await device.selectConfiguration(1);
-  await device.claimInterface(1);
-  void store.dispatch('connected', device);
-  let a = true;
-  while (a) {
+let serialCache = [];
+
+async function startWorking(port: SerialPort) {
+  console.log(port);
+  await port.open({ baudRate: 115200 });
+  while (port.readable) {
+    const reader = port.readable.getReader();
     try {
-      let result = await device.transferIn(2, 128);
-      void store.dispatch('recv', result);
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) {
+          // |reader| has been canceled.
+          break;
+        }
+        if (!value) return;
+        serialCache = [...value];
+        if (serialCache.length >= 128) {
+          const command = serialCache.slice(0, 128);
+          serialCache = [...serialCache.slice(128)];
+          console.log(command);
+        }
+      }
     } catch (error) {
-      break;
+      // algun dia me saco la paja y agarro el error
+    } finally {
+      reader.releaseLock();
     }
   }
   // comp.$store.commit('setDisconnected');
@@ -38,27 +46,17 @@ export default {
   data: () => ({}),
   methods: {
     connectUsbDevice() {
-      void (navigator as unknown as Navigator).usb.getDevices().then((r) => {
-        if (r.length > 0) {
-          this.deviceOpen(r[0]);
-        } else {
-          void (navigator as unknown as Navigator).usb
-            .requestDevice({
-              filters: [{ vendorId: 0x1209, productId: 0xeef1 }],
-            })
-            .then((device) => this.deviceOpen(device));
-        }
-      });
-    },
-    deviceOpen(device: USBDevice) {
-      void device.open().then(() => {
-        //fetch({device: device, comp: this});
-        console.log(device);
+      const usbVendorId = 0x1209;
 
-        void startWorking({
-          device,
+      (navigator as unknown as Navigator).serial
+        .requestPort({ filters: [{ usbVendorId }] })
+        .then((port) => {
+          // Connect to `port` or add it to the list of available ports.
+          void startWorking(port);
+        })
+        .catch((e) => {
+          // este catch puede pasar porque el usuario no agarro un puerto o estaba ocupado
         });
-      });
     },
   },
 };

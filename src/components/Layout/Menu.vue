@@ -4,6 +4,8 @@
       <q-toolbar>
         <q-btn flat @click="toggleLeftDrawer" round dense icon="menu" />
         <q-toolbar-title>OpenEFI | Tuner</q-toolbar-title>
+        <q-spacer />
+        <Connect/>
       </q-toolbar>
     </q-header>
 
@@ -17,6 +19,7 @@
 </template>
 <script lang="ts">
 import NavBar from 'src/components/Layout/NavBar.vue';
+import Connect from '../Connect.vue';
 
 import { defineComponent, ref } from 'vue';
 
@@ -28,6 +31,7 @@ export default defineComponent({
 
   components: {
     NavBar,
+    Connect
   },
 
   setup() {
