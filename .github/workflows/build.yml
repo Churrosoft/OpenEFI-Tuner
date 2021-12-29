@@ -26,8 +26,9 @@ jobs:
         run: yarn run build
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.8
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: dist/spa # The folder the action should deploy.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_BRANCH: master
-          BRANCH: gh-pages
-          FOLDER: dist/spa
