@@ -1,16 +1,16 @@
-import crc from '../crc';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import mocks from './mocks';
 export interface IUSBCommand {
   protocol: number;
   command: number;
-  subcommand: number;
+  /*   subcommand: number; */
   payload: Uint8Array;
   checksum: string; // hace falta?
 }
 export interface UsbLayerInterface {
   toogle_menu: boolean;
   usbd: null | unknown;
-  writer: null | unknown;
+  writer: null | WritableStreamDefaultWriter<Uint8Array>;
   connected: boolean;
   paired: boolean;
   firmware_ver: {
@@ -43,23 +43,26 @@ export function _arrayBufferToBase64(buffer: Uint8Array) {
   return window.atob(binary);
 }
 
-export const createUSBCommand = (command: USBCommands, payload: Uint8Array): IUSBCommand => {
+export const createUSBCommand = (
+  command: USBCommands,
+  payload: Uint8Array,
+  checksum: string
+): IUSBCommand => {
   const protocol = 1;
-  const subcommand = 0;
+  /*   const subcommand = 0;
 
   const checksum = (
     '0000' + crc([command, subcommand, ...payload].slice(0, 126)).toString(16)
-  ).substr(-4);
+  ).substr(-4); */
 
   return {
     protocol,
     command,
-    subcommand,
+    /*     subcommand, */
     payload,
     checksum,
   };
 };
-
 
 function state(): UsbLayerInterface {
   return {
@@ -71,7 +74,7 @@ function state(): UsbLayerInterface {
     paired: false, // Cuando le OpenEFI ya nos respondio
 
     firmware_ver: { major: null, minor: null, rev: null },
-    pending_commands: [...mocks],
+    pending_commands: null, // [...mocks],
   };
 }
 

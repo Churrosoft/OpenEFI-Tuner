@@ -5,9 +5,8 @@
 
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
-import commandHandler from '../commandHandler';
 import crc, { buf2hex } from '../crc';
-import { IUSBCommand, UsbLayerInterface } from './state';
+import { createUSBCommand, IUSBCommand, USBCommands, UsbLayerInterface } from './state';
 
 const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   connected({ commit, dispatch }, usbd) {
@@ -38,37 +37,35 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     });
     commit('setCommands', filteredCommands);
   },
-  recv({ dispatch }, data) {
-    const frame = new Uint8Array(data.data.buffer);
-    console.log(frame);
+  recv({ commit }, data) {
+    const frame = new Uint8Array(data);
     const protocol = frame[0];
-    const command = frame[1];
-    const subcommand = frame[2];
+    const command = (frame[0] << 8) + frame[1];
     const payload = frame.slice(3, 126);
-    const checksum = buf2hex(frame.slice(126, 128).reverse().buffer);
+    const checksum = buf2hex(frame.slice(126, 128).buffer);
     // Todo este bardo para comparar los dos crc como string...
     const localcrc = ('0000' + crc(frame.slice(0, 126)).toString(16)).substr(-4);
-    console.log(
+    const usbComand = createUSBCommand(command as USBCommands, payload, localcrc);
+    console.debug(
       'Frame recibido\nProtocolo: ' +
         protocol +
         '\nComando: ' +
         command +
-        '\nSubcomando: ' +
-        subcommand +
         '\nPayload: ' +
         payload +
         '\nChecksum: ' +
         checksum
     );
     if (checksum != localcrc) {
-      console.warn('Checksums no coinciden!');
-      console.log('Local:', localcrc);
+      console.warn('Checksums no coinciden! \n' + 'Local: ' + localcrc + '\nEFI: ' + checksum);
     } else {
-      commandHandler(command, subcommand, payload);
+      commit('addCommand', usbComand);
     }
   },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  processCommand(i, { command, subcommand, payload }) {},
+
+  setWriter({ commit }, serialWriter: WritableStreamDefaultWriter<Uint8Array>) {
+    commit('setConnection', serialWriter);
+  },
 
   putCommand({ commit }, payload: IUSBCommand) {
     commit('addCommand', payload);

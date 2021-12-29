@@ -11,8 +11,8 @@ interface IPaired {
 }
 
 const mutation: MutationTree<UsbLayerInterface> = {
-  setConnection(state, { usbd, writer }) {
-    state.usbd = usbd;
+  setConnection(state, writer: WritableStreamDefaultWriter<Uint8Array>) {
+    //state.usbd = usbd;
     state.writer = writer;
     state.connected = true;
   },

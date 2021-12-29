@@ -137,7 +137,7 @@ export default defineComponent({
       this.intTable = setInterval(tableInterval, 500);
     },
     pathTable() {
-      const command = mockUSBCommand(2, 7, new Uint8Array([0xff]));
+      const command = mockUSBCommand(27, new Uint8Array([0xff]));
       void this.store.dispatch('UsbLayer/putCommand', command);
     },
   },

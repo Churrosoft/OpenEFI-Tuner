@@ -77,7 +77,6 @@ export const applyTableStyles = (
 
 export const getTableObserver = (cell_count: number, table_class: string) => {
   const table = document.querySelector(`.${table_class}`);
-  console.log(table);
   if (!table) {
     const observer = new MutationObserver((_, observer) =>
       applyTableStyles(_, observer, cell_count, table_class)
