@@ -25,14 +25,28 @@ export default defineComponent({
       const usbWriter = this.store.state.UsbLayer.writer;
       console.log(usbWriter);
       if (usbWriter) {
-        const rawData = Array(127).fill(0xfd);
+        const command = 20;
+        const subcommand = 10;
+        const rawData = Array(127).fill(0x0);
+        rawData[0] = 1;
 
-        rawData[124] = 0xfa;
-        rawData[125] = 0xfa;
+        rawData[1] = (command >> 8) & 0xff;
+        rawData[2] = command & 0xff;
+
+        rawData[3] = (subcommand >> 8) & 0xff;
+        rawData[4] = subcommand & 0xff;
+
         rawData[126] = 0xfa;
         rawData[127] = 0xfa;
         /* 
+        
         const data = new Uint8Array(rawData); */
+/* 
+        console.debug(
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `Frame enviado\nProtocolo: ${1}\nComando: ${command}\nPayload: ${rawData}\nChecksum: ${0xfa}`
+        );
+ */
         void usbWriter.write(new Uint8Array(rawData));
       }
     },

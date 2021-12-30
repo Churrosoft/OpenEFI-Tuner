@@ -14,6 +14,18 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
   requestIgnitionTableRPMTPS({ commit, rootGetters, dispatch }) {
     commit('setIgnitionLoading', true);
 
+    const command = 21; //20;
+    const subcommand = 10;
+    const payload = Array(123).fill(0x0);
+
+    /*     payload[1] = (command >> 8) & 0xff;
+    payload[2] = command & 0xff;
+ */
+    payload[0] = (subcommand >> 8) & 0xff;
+    payload[1] = subcommand & 0xff;
+
+    void dispatch('UsbLayer/sendMessage', { command, payload }, { root: true });
+
     console.log('TODO: request table to EFI');
   },
   async getIgnitionTableRPMTPS({ commit, rootGetters, dispatch, rootState }) {
@@ -31,7 +43,7 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
 
     for (let ind = 0; ind < commandsLength; ind++) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const command = rootGetters['UsbLayer/getCommand'](120) as IUSBCommand;
+      const command = rootGetters['UsbLayer/getCommand'](126) as IUSBCommand;
       if (command !== null) {
         /*
         LOGICA PA' LA TABLA ACA'
