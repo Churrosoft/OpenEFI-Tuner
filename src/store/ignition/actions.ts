@@ -11,25 +11,23 @@ function timeout(ms: number) {
 }
 
 const actions: ActionTree<IgnitionInterface, StateInterface> = {
-  requestIgnitionTableRPMTPS({ commit, rootGetters, dispatch }) {
+  requestIgnitionTableRPMTPS({ commit, dispatch }) {
     commit('setIgnitionLoading', true);
 
     const command = 21; //20;
     const subcommand = 10;
     const payload = Array(123).fill(0x0);
 
-    /*     payload[1] = (command >> 8) & 0xff;
-    payload[2] = command & 0xff;
- */
     payload[0] = (subcommand >> 8) & 0xff;
     payload[1] = subcommand & 0xff;
 
     void dispatch('UsbLayer/sendMessage', { command, payload }, { root: true });
 
-    console.log('TODO: request table to EFI');
   },
   async getIgnitionTableRPMTPS({ commit, rootGetters, dispatch, rootState }) {
     const tableRow: Array<ITableRow> = [];
+    // por defecto, 17x17, luego hacer configurable'
+    const IGNITION_RPMTPS_SIZE = 17;
     //commit('setIgnitionLoading', true);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const endRowCommand = rootGetters['UsbLayer/getCommand'](127) as IUSBCommand;
@@ -50,7 +48,11 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
         */
         if (!command?.payload) return;
         const commandRow: ITableRow = {};
-        for (let rowIndex = 0; rowIndex < command?.payload.length; rowIndex += 4) {
+        for (
+          let rowIndex = 0;
+          rowIndex < IGNITION_RPMTPS_SIZE * 4 /* command?.payload.length */;
+          rowIndex += 4
+        ) {
           const row = command?.payload;
           const buff = new Uint8Array(4);
 
@@ -58,10 +60,10 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
           buff[1] = row[rowIndex + 1];
           buff[2] = row[rowIndex + 2];
           buff[3] = row[rowIndex + 3];
-
           const view = new DataView(buff.buffer, 0);
           commandRow[`col_${rowIndex}`] = String(view.getUint32(0, true) / 100);
         }
+        //  return;
         tableRow.push(commandRow);
         await timeout(10);
 
@@ -70,8 +72,8 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
         });
       }
     }
-    console.log(tableRow);
-    console.log(tableRow.length);
+/*     console.log(tableRow);
+    console.log(tableRow.length); */
     if (tableRow.length > 1) {
       commit('setTableRPM_TPS', tableRow);
     }

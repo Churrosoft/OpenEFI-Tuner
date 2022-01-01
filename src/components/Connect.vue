@@ -54,7 +54,6 @@ export default defineComponent({
             if (!value) return;
 
             serialCache = [...serialCache, ...value];
-            console.log(serialCache.length);
 
             if (serialCache.length > 127) {
               let i: number;

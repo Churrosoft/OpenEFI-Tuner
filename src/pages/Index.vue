@@ -23,7 +23,6 @@ export default defineComponent({
   methods: {
     sendHello() {
       const usbWriter = this.store.state.UsbLayer.writer;
-      console.log(usbWriter);
       if (usbWriter) {
         const command = 20;
         const subcommand = 10;

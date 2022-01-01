@@ -42,8 +42,6 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
       `Frame enviado\nProtocolo: ${1}\nComando: ${command}\nPayload: ${payload}\nChecksum: ${calcrc}`
     );
 
-    console.debug(data);
-
     // @ts-expect-error webusb e una japi y hermoso a la ve
     void state.writer.write(data);
   },
