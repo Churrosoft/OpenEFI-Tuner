@@ -16,7 +16,7 @@ const commands = {
 				name: 'RESPONSE',
 			},
 		},
-		handler: ({ payload, subcommand }) => console.log('STATUS:', payload),
+		handler: ({ payload }) => console.log('STATUS:', payload),
 	},
 	9: {
 		name: 'ERROR',

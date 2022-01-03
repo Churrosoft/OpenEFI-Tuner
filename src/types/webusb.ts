@@ -43,8 +43,8 @@ interface SerialPortInfo {
 
 /*~ https://wicg.github.io/serial/#dom-serialport */
 export declare class SerialPort extends EventTarget {
-    onconnect: ((this: this, ev: Event) => any) | null;
-    ondisconnect: ((this: this, ev: Event) => any) | null;
+    onconnect: ((this: this, ev: Event) => unknown) | null;
+    ondisconnect: ((this: this, ev: Event) => unknown) | null;
     readonly readable: ReadableStream<Uint8Array> | null;
     readonly writable: WritableStream<Uint8Array> | null;
 
@@ -56,7 +56,7 @@ export declare class SerialPort extends EventTarget {
 
     addEventListener(
         type: 'connect' | 'disconnect',
-        listener: (this: this, ev: Event) => any,
+        listener: (this: this, ev: Event) => unknown,
         useCapture?: boolean): void;
     addEventListener(
         type: string,
@@ -64,7 +64,7 @@ export declare class SerialPort extends EventTarget {
         options?: boolean | AddEventListenerOptions): void;
     removeEventListener(
         type: 'connect' | 'disconnect',
-        callback: (this: this, ev: Event) => any,
+        callback: (this: this, ev: Event) => unknown,
         useCapture?: boolean): void;
     removeEventListener(
         type: string,
@@ -85,14 +85,14 @@ interface SerialPortRequestOptions {
 
 /*~ https://wicg.github.io/serial/#dom-serial */
 declare class Serial extends EventTarget {
-    onconnect: ((this: this, ev: Event) => any) | null;
-    ondisconnect: ((this: this, ev: Event) => any) | null;
+    onconnect: ((this: this, ev: Event) => unknown) | null;
+    ondisconnect: ((this: this, ev: Event) => unknown) | null;
 
     getPorts(): Promise<SerialPort[]>;
     requestPort(options?: SerialPortRequestOptions): Promise<SerialPort>;
     addEventListener(
         type: 'connect' | 'disconnect',
-        listener: (this: this, ev: Event) => any,
+        listener: (this: this, ev: Event) => unknown,
         useCapture?: boolean): void;
     addEventListener(
         type: string,
@@ -100,7 +100,7 @@ declare class Serial extends EventTarget {
         options?: boolean | AddEventListenerOptions): void;
     removeEventListener(
         type: 'connect' | 'disconnect',
-        callback: (this: this, ev: Event) => any,
+        callback: (this: this, ev: Event) => unknown,
         useCapture?: boolean): void;
     removeEventListener(
         type: string,
@@ -114,6 +114,6 @@ export interface Navigator {
 }
 
 /*~ https://wicg.github.io/serial/#extensions-to-workernavigator-interface */
-interface WorkerNavigator {
+export interface WorkerNavigator {
     readonly serial: Serial;
 }

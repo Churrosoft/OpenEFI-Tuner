@@ -5,7 +5,13 @@
         <q-btn flat @click="toggleLeftDrawer" round dense icon="menu" />
         <q-toolbar-title>OpenEFI | Tuner</q-toolbar-title>
         <q-spacer />
-        <Connect/>
+        <q-toggle
+          @update:model-value="$q.dark.toggle()"
+          :model-value="$q.dark.isActive"
+          label="Dark Mode"
+         
+        />
+        <Connect />
       </q-toolbar>
     </q-header>
 
@@ -20,6 +26,7 @@
 <script lang="ts">
 import NavBar from 'src/components/Layout/NavBar.vue';
 import Connect from '../Connect.vue';
+import { useQuasar } from 'quasar';
 
 import { defineComponent, ref } from 'vue';
 
@@ -31,14 +38,16 @@ export default defineComponent({
 
   components: {
     NavBar,
-    Connect
+    Connect,
   },
 
   setup() {
     const leftDrawerOpen = ref(false);
     const $store = useStore(storeKey);
+    const $q = useQuasar();
 
     return {
+      $q,
       leftDrawerOpen,
       toggleLeftDrawer() {
         void $store.dispatch('Layout/toogleMenu');

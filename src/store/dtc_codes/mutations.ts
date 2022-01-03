@@ -1,5 +1,4 @@
 import { MutationTree } from 'vuex';
-import state from '../usb-layer/state';
 import { DTCCodesInterface, IDTCCode } from './state';
 
 const mutation: MutationTree<DTCCodesInterface> = {

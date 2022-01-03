@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mr-lg">
+  <div class="q-mr-lg q-ml-xl">
     <q-btn color="primary" @click="connectUsbDevice">Conectar</q-btn>
   </div>
 </template>
