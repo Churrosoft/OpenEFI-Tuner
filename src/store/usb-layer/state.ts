@@ -14,6 +14,7 @@ export interface UsbLayerInterface {
   connected: boolean;
   paired: boolean;
   firmware_ver: {
+    type: string | null;
     major: string | null;
     minor: string | null;
     rev: string | null;
@@ -73,7 +74,7 @@ function state(): UsbLayerInterface {
     connected: false, // Cuando ya nos conectamos por serial
     paired: false, // Cuando le OpenEFI ya nos respondio
 
-    firmware_ver: { major: null, minor: null, rev: null },
+    firmware_ver: { type: null, major: null, minor: null, rev: null },
     pending_commands: null, // [...mocks],
   };
 }

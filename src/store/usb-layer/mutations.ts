@@ -4,6 +4,7 @@ import { IUSBCommand, UsbLayerInterface } from './state';
 interface IPaired {
   state: UsbLayerInterface;
   payload: {
+    type: string;
     major: string;
     minor: string;
     rev: string;
@@ -20,8 +21,8 @@ const mutation: MutationTree<UsbLayerInterface> = {
     state.connected = false;
     state.paired = false;
   },
-  setPaired(state, { major, minor, rev }: IPaired['payload']) {
-    state.firmware_ver = { major, minor, rev };
+  setPaired(state, { major, minor, rev, type }: IPaired['payload']) {
+    state.firmware_ver = { major, minor, rev, type };
     state.paired = true;
   },
   setCommands(state, commands: Array<IUSBCommand> | null) {

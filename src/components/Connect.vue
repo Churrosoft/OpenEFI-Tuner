@@ -14,6 +14,9 @@ import { storeKey } from '../store';
 import { useStore } from 'vuex';
 
 let serialCache: Array<number> = [];
+let intConnection: NodeJS.Timeout | null = null;
+
+import { IUSBCommand } from 'src/store/usb-layer/state';
 
 export default defineComponent({
   name: 'Connect',
@@ -38,9 +41,21 @@ export default defineComponent({
       if (!port.writable) return;
       const writer = port.writable.getWriter();
 
-      /*  const data = new Uint8Array([104, 101, 108, 108, 111]); // hello */
-      /*   await writer.write(data); */
       void this.store.dispatch('UsbLayer/setWriter', writer);
+
+      void this.store.dispatch('UsbLayer/sendMessage', { command: 1, payload: [0xff] });
+
+      const pingInterval = () => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        const command = this.store.getters['UsbLayer/getCommand'](12) as IUSBCommand;
+        if (command) {
+          clearInterval(intConnection as NodeJS.Timeout);
+          void this.store.dispatch('UsbLayer/connected', command.payload);
+          void this.store.dispatch('UsbLayer/removeCommand', command);
+        }
+      };
+
+      this.intConnection = setInterval(pingInterval, 100);
 
       while (port.readable) {
         const reader = port.readable.getReader();
@@ -90,6 +105,7 @@ export default defineComponent({
 
     return {
       store,
+      intConnection,
     };
   },
 });

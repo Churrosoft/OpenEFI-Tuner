@@ -4,13 +4,23 @@
       <q-toolbar>
         <q-btn flat @click="toggleLeftDrawer" round dense icon="menu" />
         <q-toolbar-title>OpenEFI | Tuner</q-toolbar-title>
-        <q-spacer />
+        <q-space />
         <q-toggle
-          @update:model-value="$q.dark.toggle()"
-          :model-value="$q.dark.isActive"
+          @update:model-value="q.dark.toggle()"
+          :model-value="q.dark.isActive"
           label="Dark Mode"
-         
         />
+
+        <div v-if="$store.state.UsbLayer.paired" class="q-mr-lg q-ml-xl">
+          <span v-if="$store.state.UsbLayer.firmware_ver.type === '0'">OpenEFI</span>
+          <span v-if="$store.state.UsbLayer.firmware_ver.type === '1'">uEFI</span>
+          <span v-if="$store.state.UsbLayer.firmware_ver.type === '2'">DashDash</span>
+          <span> v</span>
+          <span>{{ $store.state.UsbLayer.firmware_ver.major }}</span>
+          <span>.{{ $store.state.UsbLayer.firmware_ver.minor }}</span>
+          <span>.{{ $store.state.UsbLayer.firmware_ver.minor }}</span>
+        </div>
+
         <Connect />
       </q-toolbar>
     </q-header>
@@ -44,10 +54,10 @@ export default defineComponent({
   setup() {
     const leftDrawerOpen = ref(false);
     const $store = useStore(storeKey);
-    const $q = useQuasar();
+    const q = useQuasar();
 
     return {
-      $q,
+      q,
       leftDrawerOpen,
       toggleLeftDrawer() {
         void $store.dispatch('Layout/toogleMenu');

@@ -9,11 +9,22 @@ import crc, { buf2hex } from '../crc';
 import { createUSBCommand, IUSBCommand, USBCommands, UsbLayerInterface } from './state';
 
 const actions: ActionTree<UsbLayerInterface, StateInterface> = {
-  connected({ commit, dispatch }, usbd) {
-    commit('setConnection', {
-      usbd: usbd,
-    });
-    void dispatch('sendMessage', { command: 10, subcommand: 0 });
+  connected({ commit }, commandPayload) {
+    const type = String(commandPayload[0]);
+    const major = String((commandPayload[1] << 8) + commandPayload[2]);
+    const minor = String((commandPayload[3] << 8) + commandPayload[4]);
+    const rev = String((commandPayload[5] << 8) + commandPayload[6]);
+
+    const typeString =
+      (type === '0' && 'OpenEFI') ||
+      (type === '1' && 'uEFI') ||
+      (type === '2' && 'DashDash') ||
+      'Unknow';
+
+    console.log(
+      `${typeString} Connected: \n` + `Major: ${major} \n` + `Minor: ${minor} \n` + `Rev: ${rev} \n`
+    );
+    void commit('setPaired', { major, minor, rev, type });
   },
   sendMessage({ state }, { command, payload }) {
     let rawData = Array(128).fill(0x0);
