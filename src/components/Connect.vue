@@ -1,6 +1,8 @@
 <template>
   <div class="q-mr-lg q-ml-xl">
-    <q-btn color="primary" @click="connectUsbDevice">Conectar</q-btn>
+    <q-btn color="primary" @click="connectUsbDevice" :disable="store.state.UsbLayer.paired">
+      Conectar
+    </q-btn>
   </div>
 </template>
 
@@ -28,11 +30,13 @@ export default defineComponent({
         .requestPort({ filters: [{ usbVendorId }] })
         .then((port) => {
           // Connect to `port` or add it to the list of available ports.
+          void this.store.dispatch('UsbLayer/initConnection', true);
           void this.startWorking(port);
         })
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .catch((_e) => {
           // este catch puede pasar porque el usuario no agarro un puerto o estaba ocupado
+          void this.store.dispatch('UsbLayer/initConnection', false);
         });
     },
     async startWorking(port: SerialPort) {

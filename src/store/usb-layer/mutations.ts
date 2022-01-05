@@ -35,8 +35,8 @@ const mutation: MutationTree<UsbLayerInterface> = {
       state.pending_commands = [command];
     }
   },
-  toogle_menu(state, v: boolean) {
-    state.toogle_menu = v;
+  toogleConnect(state, v: boolean) {
+    state.connecting = v;
   },
 };
 

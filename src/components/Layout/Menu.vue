@@ -23,9 +23,18 @@
 
         <Connect />
       </q-toolbar>
+      <q-linear-progress
+        class="q-mb-lg q-mt-md"
+        indeterminate
+        rounded
+        size="5px"
+        animation-speed="600"
+        v-if="$store.state.UsbLayer.connecting"
+      />
     </q-header>
 
     <NavBar />
+
     <q-page-container>
       <q-page padding>
         <router-view />

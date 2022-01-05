@@ -25,6 +25,7 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
       `${typeString} Connected: \n` + `Major: ${major} \n` + `Minor: ${minor} \n` + `Rev: ${rev} \n`
     );
     void commit('setPaired', { major, minor, rev, type });
+    void commit('toogleConnect', false);
   },
   sendMessage({ state }, { command, payload }) {
     let rawData = Array(128).fill(0x0);
@@ -96,8 +97,8 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   putCommand({ commit }, payload: IUSBCommand) {
     commit('addCommand', payload);
   },
-  someAction(/* context */) {
-    // your code
+  initConnection({ commit },payload) {
+    commit('toogleConnect', payload);
   },
 };
 

@@ -8,7 +8,7 @@ export interface IUSBCommand {
   checksum: string; // hace falta?
 }
 export interface UsbLayerInterface {
-  toogle_menu: boolean;
+  connecting: boolean;
   usbd: null | unknown;
   writer: null | WritableStreamDefaultWriter<Uint8Array>;
   connected: boolean;
@@ -67,7 +67,7 @@ export const createUSBCommand = (
 
 function state(): UsbLayerInterface {
   return {
-    toogle_menu: false,
+    connecting: false,
     usbd: null,
     writer: null,
 

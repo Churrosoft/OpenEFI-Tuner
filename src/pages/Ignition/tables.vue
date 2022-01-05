@@ -88,6 +88,7 @@ import { storeKey } from '../../store';
 import { useStore } from 'vuex';
 import { mockUSBCommand } from 'src/store/usb-layer/mocks';
 import { IUSBCommand } from 'src/store/usb-layer/state';
+import { deepCompare } from 'src/types/compare';
 /** Ejemplo tablita:
  * load(tps)/rpm
  * [  * ]  [550 ] [ 950] [1200] [1650] [2200] [2800] [3400] [3900] [4400] [4900] [5400] [7200]
@@ -146,7 +147,7 @@ export default defineComponent({
     const tab = ref('rpmload');
     const store = useStore(storeKey);
     const ignitionTables = store.state.Ignition.tables;
-
+    let pong = false;
     const deReferenceRows = (value: unknown) =>
       JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
@@ -176,8 +177,15 @@ export default defineComponent({
     watch(
       tables,
       (newTableValue) => {
-        // use toRaw here to get a readable console.log result
-        console.log('table have changed', toRaw(newTableValue));
+        if (deepCompare(tables.rpm_load, toRaw(newTableValue).rpm_load)) {
+          if (!pong) {
+            pong = true;
+            return;
+          }
+          console.log('table have changed', toRaw(newTableValue));
+          void store.dispatch('Ignition/updateTableRPMTPS', newTableValue.rpm_load);
+          pong = false;
+        }
       },
       { deep: true }
     );

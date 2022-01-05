@@ -93,7 +93,6 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
   },
 
   updateTableRPMTPS({ commit }, payload: Array<ITableRow>) {
-    console.log('updating', payload);
     commit('setTableRPM_TPS', payload);
   },
   someAction(/* context */) {
