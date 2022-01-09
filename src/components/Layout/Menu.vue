@@ -18,7 +18,7 @@
           <span> v</span>
           <span>{{ $store.state.UsbLayer.firmware_ver.major }}</span>
           <span>.{{ $store.state.UsbLayer.firmware_ver.minor }}</span>
-          <span>.{{ $store.state.UsbLayer.firmware_ver.minor }}</span>
+          <span>.{{ $store.state.UsbLayer.firmware_ver.rev }}</span>
         </div>
 
         <Connect />

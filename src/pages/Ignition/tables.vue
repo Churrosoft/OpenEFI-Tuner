@@ -39,7 +39,7 @@
         narrow-indicator
       >
         <q-tab name="rpmload" label="RPM/Load" />
-        <q-tab name="loadtemp" label="Load/Temp" />
+        <q-tab name="loadtemp" label="Temp/Load" />
         <q-tab name="rpmbattery" label="RPM/Battery" disable />
       </q-tabs>
 
@@ -121,9 +121,6 @@ export default defineComponent({
     requestTable() {
       void this.store.dispatch('Ignition/requestIgnitionTableRPMTPS');
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      // console.log(this.store.getters['UsbLayer/getCommand'](120));
-      // void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
       const tableInterval = () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         const tableAvailable = this.store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
@@ -132,10 +129,9 @@ export default defineComponent({
           clearInterval(intTable as NodeJS.Timeout);
           void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
         }
-        /*         console.log(tableAvailable); */
       };
 
-      this.intTable = setInterval(tableInterval, 500);
+      this.intTable = setInterval(tableInterval, 250);
     },
     pathTable() {
       const command = mockUSBCommand(27, new Uint8Array([0xff]));
@@ -147,20 +143,13 @@ export default defineComponent({
     const tab = ref('rpmload');
     const store = useStore(storeKey);
     const ignitionTables = store.state.Ignition.tables;
-    let pong = false;
+    let pong = {
+      rpm_load: false,
+    };
     const deReferenceRows = (value: unknown) =>
       JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
     const tables = reactive({ rpm_load: deReferenceRows(ignitionTables.rpm_load) });
-
-    // Efect to wait until all values from table are available
-    watchEffect(() => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      /*  const tableAvailable = store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
-      if (tableAvailable) {
-        void store.dispatch('Ignition/getIgnitionTableRPMTPS');
-      } */
-    });
 
     watchEffect(() => {
       if (tab.value) {
@@ -178,13 +167,13 @@ export default defineComponent({
       tables,
       (newTableValue) => {
         if (deepCompare(tables.rpm_load, toRaw(newTableValue).rpm_load)) {
-          if (!pong) {
-            pong = true;
+          if (!pong.rpm_load) {
+            pong.rpm_load = true;
             return;
           }
           console.log('table have changed', toRaw(newTableValue));
           void store.dispatch('Ignition/updateTableRPMTPS', newTableValue.rpm_load);
-          pong = false;
+          pong.rpm_load = false;
         }
       },
       { deep: true }
