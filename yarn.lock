@@ -3573,6 +3573,11 @@ dot-prop@6.0.1:
   dependencies:
     is-obj "^2.0.0"
 
+dseg@^0.46.0:
+  version "0.46.0"
+  resolved "https://registry.yarnpkg.com/dseg/-/dseg-0.46.0.tgz#9866819c4bee05fe6e6529d922417a546556bbdb"
+  integrity sha512-+wigrEmU4uJ75jtg26BFRoQdPXn8IVltzwI1ZDNsSoNdeO4vLpOssS/XNZNo8e3x5tBUBZd2aU0XeGhWniH8FA==
+
 duplexer@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.2.tgz#3abe43aef3835f8ae077d136ddce0f276b0400e6"
