@@ -1,6 +1,7 @@
 <template>
   <q-page class="row items-center justify-evenly">
     <RPMGauge />
+    <h4 class="dseg-display">45.34</h4>
     <!--   <div>
       <example-component
         title="Example component"
@@ -25,6 +26,7 @@ import RPMGauge from 'components/Dashboard/RPMGauge.vue';
 import { defineComponent } from 'vue';
 import { storeKey } from '../store';
 import { useStore } from 'vuex';
+import './dashboard.scss';
 
 export default defineComponent({
   name: 'PageIndex',
