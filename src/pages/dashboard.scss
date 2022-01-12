@@ -1,3 +1,59 @@
-.dseg-display {
+dseg-display {
   font-family: 'DSEG7-Classic';
+  font-weight: bold;
+  white-space: nowrap;
+  &--style {
+    font-size: 2.125rem;
+    line-height: 2.5rem;
+    letter-spacing: 0.00735em;
+  }
+}
+
+.battery {
+  &__digit-container {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    position: relative;
+
+    h4 {
+      @extend dseg-display--style;
+    }
+    &--volts {
+      margin: 0;
+      margin-left: 0.25em;
+    }
+  }
+  h5 {
+    margin: 0;
+  }
+  &__dseg-display {
+    // style
+    @extend dseg-display;
+    margin: 0;
+
+    // position
+    z-index: 100;
+    position: relative;
+
+    &__background {
+      // style
+      @extend dseg-display;
+      margin: 0;
+      color: rgba(153, 153, 153, 0.131);
+
+      // position
+      z-index: 50;
+      position: absolute;
+      top: 0px;
+    }
+  }
+}
+
+.body--dark {
+  .battery__dseg-display__background {
+    color: rgba(94, 94, 94, 0.36);
+  }
 }

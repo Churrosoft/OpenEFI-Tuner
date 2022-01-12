@@ -1,7 +1,19 @@
 <template>
   <q-page class="row items-center justify-evenly">
     <RPMGauge />
-    <h4 class="dseg-display">45.34</h4>
+
+    <q-card>
+      <q-card-section class="battery">
+        <h5>Battery</h5>
+        <span class="battery__digit-container">
+          <div class="battery__digit-container--digits">
+            <h4 class="battery__dseg-display">!9.60</h4>
+            <h4 class="battery__dseg-display__background">8888</h4>
+          </div>
+          <h4 class="battery__digit-container--volts">V</h4>
+        </span>
+      </q-card-section>
+    </q-card>
     <!--   <div>
       <example-component
         title="Example component"
