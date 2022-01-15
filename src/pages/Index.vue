@@ -55,11 +55,22 @@ export default defineComponent({
   components: { RPMGauge, Battery },
   methods: {
     requestMetadata() {
-      /*  const command = mockUSBCommand(4, new Uint8Array([0xff]));
-            void this.store.dispatch('UsbLayer/sendMessage', command); */
-
       void this.store.dispatch('Dashboard/requestGaugeConfig');
+      localStorage.setItem('DashboardActive', 'true');
     },
+  },
+  beforeUnmount() {
+    clearInterval(intDashboard as NodeJS.Timeout);
+  },
+  mounted() {
+    if (localStorage.getItem('DashboardActive')) {
+      const dashboardInterval = () => {
+        const command = mockUSBCommand(5, new Uint8Array([0xff]));
+        void this.store.dispatch('UsbLayer/sendMessage', command);
+      };
+      localStorage.removeItem('DashboardActive');
+      intDashboard = setInterval(dashboardInterval, 1000);
+    }
   },
   setup() {
     const store = useStore(storeKey);
