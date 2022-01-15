@@ -1,1 +1,11 @@
 // app global css in SCSS form
+dseg-display {
+  font-family: 'DSEG7-Classic';
+  font-weight: bold;
+  white-space: nowrap;
+  &--style {
+    font-size: 2.125rem;
+    line-height: 2.5rem;
+    letter-spacing: 0.00735em;
+  }
+}

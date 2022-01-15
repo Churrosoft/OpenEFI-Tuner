@@ -6,11 +6,13 @@ import UsbLayer from './usb-layer';
 import DtcCodes from './dtc_codes';
 import Layout from './layout';
 import Ignition from './ignition';
+import Dashboard from './dashboard';
 
 import { UsbLayerInterface } from './usb-layer/state';
 import { LayoutInterface } from './layout/state';
 import { DTCCodesInterface } from './dtc_codes/state';
 import { IgnitionInterface } from './ignition/state';
+import { DashboardInterface } from './dashboard/state';
 
 /*
  * If not building with SSR mode, you can
@@ -29,6 +31,7 @@ export interface StateInterface {
   Layout: LayoutInterface;
   DtcCodes: DTCCodesInterface;
   Ignition: IgnitionInterface;
+  Dashboard: DashboardInterface;
 }
 
 // provide typings for `this.$store`
@@ -49,6 +52,7 @@ export default store(function (/* { ssrContext } */) {
       Layout,
       DtcCodes,
       Ignition,
+      Dashboard,
     },
     /* getters: {
       UsbLayerGetters: UsbLayerGetters.getCommand as never,

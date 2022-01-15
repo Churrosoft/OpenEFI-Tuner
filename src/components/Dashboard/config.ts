@@ -38,7 +38,7 @@ export const RPMGaugeConfig: RadialGaugeOptions = {
   needleCircleSize: 7,
   needleCircleOuter: true,
   needleCircleInner: false,
-  animationDuration: 1500,
+  animationDuration: 100,
   animationRule: 'linear',
   colorBorderOuter: '#333',
   colorBorderOuterEnd: '#111',

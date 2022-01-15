@@ -12,9 +12,10 @@ export interface GaugeOptions {
 export interface DashboardInterface {
   rpm: number | null;
   temperature: number | null;
-  batery: number | null;
+  battery: number | null;
   advance: number | null;
   efiStatus: 'COLD' | 'NORMAL' | 'WARN' | 'ERROR' | 'EMERGENCY' | null;
+  loading: boolean;
   gaugeOptions: {
     rpm: GaugeOptions | null;
     temperature: GaugeOptions | null;
@@ -26,13 +27,14 @@ function state(): DashboardInterface {
   return {
     rpm: null,
     temperature: null,
-    batery: null,
+    battery: null,
     advance: null,
     efiStatus: null,
     gaugeOptions: {
       rpm: null,
       temperature: null,
     },
+    loading: false,
   };
 }
 

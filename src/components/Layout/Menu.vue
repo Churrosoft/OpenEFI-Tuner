@@ -29,7 +29,7 @@
         rounded
         size="5px"
         animation-speed="600"
-        v-if="$store.state.UsbLayer.connecting"
+        v-if="$store.state.UsbLayer.connecting || $store.state.Dashboard.loading"
       />
     </q-header>
 

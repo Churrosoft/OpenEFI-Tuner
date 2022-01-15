@@ -75,7 +75,7 @@ function state(): UsbLayerInterface {
     paired: false, // Cuando le OpenEFI ya nos respondio
 
     firmware_ver: { type: null, major: null, minor: null, rev: null },
-    pending_commands: null, // [...mocks],
+    pending_commands: [...mocks],
   };
 }
 

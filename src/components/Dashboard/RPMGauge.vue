@@ -7,10 +7,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import { RadialGauge } from 'canvas-gauges';
-import { defineComponent } from 'vue';
 import { storeKey } from 'src/store';
 import { useStore } from 'vuex';
 import { RPMGaugeConfig } from './config';
+import { defineComponent, watchEffect } from 'vue';
 
 let gauge: RadialGauge | null = null;
 
@@ -20,11 +20,11 @@ export default defineComponent({
   mounted: () => {
     gauge = new RadialGauge(RPMGaugeConfig);
     gauge.draw();
-    gauge.value = 4500;
+    gauge.value = 0;
     gauge.update({
       ...RPMGaugeConfig,
-      maxValue: 4500,
-      majorTicks: [0, 750, 1000, 1500, 3000, 4000, 4500],
+      maxValue: 6500,
+      majorTicks: [0, 750, 1000, 1500, 3000, 4000, 4500, 5000, 6000],
     });
     gauge.draw();
   },
@@ -33,9 +33,15 @@ export default defineComponent({
       console.log('asdas');
     },
   },
+
   setup() {
     const store = useStore(storeKey);
-
+    watchEffect(() => {
+      const rpm = store.state.Dashboard.rpm;
+      if (rpm !== null && gauge !== null) {
+        gauge.value = rpm;
+      }
+    });
     return { store };
   },
 });

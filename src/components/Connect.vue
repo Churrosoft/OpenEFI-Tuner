@@ -1,7 +1,7 @@
 <template>
   <div class="q-mr-lg q-ml-xl">
     <q-btn color="primary" @click="connectUsbDevice" :disable="store.state.UsbLayer.paired">
-      Conectar
+      Connect
     </q-btn>
   </div>
 </template>
@@ -59,7 +59,7 @@ export default defineComponent({
         }
       };
 
-      this.intConnection = setInterval(pingInterval, 100);
+      this.intConnection = setInterval(pingInterval, 50);
 
       while (port.readable) {
         const reader = port.readable.getReader();
