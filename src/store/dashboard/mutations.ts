@@ -9,6 +9,28 @@ const mutation: MutationTree<DashboardInterface> = {
     state.advance = advance;
     state.efiStatus = efiStatus;
   },
+  setDashboardConfig(
+    state,
+    {
+      rpmTicks,
+      maxRpm,
+      highlights,
+    }: {
+      rpmTicks: Array<number>;
+      maxRpm: number;
+      highlights: Array<{
+        from: number;
+        to: number;
+        color: string;
+      }>;
+    }
+  ) {
+    state.gaugeOptions.rpm = {
+      majorTicks: rpmTicks,
+      maxValue: maxRpm,
+      highlights: highlights,
+    };
+  },
   setDashboardLoading(state, loading: boolean) {
     state.loading = loading;
   },

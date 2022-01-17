@@ -42,6 +42,14 @@ export default defineComponent({
         gauge.value = rpm;
       }
     });
+
+    watchEffect(() => {
+      const rpm_config = store.state.Dashboard.gaugeOptions.rpm;
+      if (rpm_config !== null && gauge !== null) {
+        gauge.update({ ...RPMGaugeConfig, ...rpm_config });
+      }
+    });
+
     return { store };
   },
 });

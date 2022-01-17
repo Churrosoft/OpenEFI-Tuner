@@ -1,8 +1,8 @@
 export interface GaugeOptions {
-  minValue: number;
+  minValue?: number;
   maxValue: number;
   majorTicks: Array<number>;
-  highlights: Array<{
+  highlights?: Array<{
     from: number;
     to: number;
     color: string;

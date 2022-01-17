@@ -12,7 +12,7 @@ export const RPMGaugeConfig: RadialGaugeOptions = {
   minorTicks: 2,
   strokeTicks: true,
   highlights: [
-    {
+   /*  {
       from: -15,
       to: 0,
       color: 'rgba(0,0, 255, .3)',
@@ -21,7 +21,7 @@ export const RPMGaugeConfig: RadialGaugeOptions = {
       from: 0,
       to: 50,
       color: 'rgba(255, 0, 0, .3)',
-    },
+    }, */
   ],
   ticksAngle: 225,
   startAngle: 67.5,
