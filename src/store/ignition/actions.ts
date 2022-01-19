@@ -98,10 +98,16 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
 
       dataRow = Array(123).fill(0x0);
       index = 2;
-      await timeout(200);
+      await timeout(50);
     }
 
-    void dispatch('UsbLayer/sendMessage', { command: 24, payload: [] }, { root: true });
+    const subcommand = 10;
+    const outpayload = Array(123).fill(0x0);
+
+    outpayload[0] = (subcommand >> 8) & 0xff;
+    outpayload[1] = subcommand & 0xff;
+
+    void dispatch('UsbLayer/sendMessage', { command: 24, payload: outpayload }, { root: true });
   },
   someAction(/* context */) {
     // your code
