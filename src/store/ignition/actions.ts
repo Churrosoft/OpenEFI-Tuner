@@ -77,7 +77,9 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
   updateTableRPMTPS({ commit }, payload: Array<ITableRow>) {
     commit('setTableRPM_TPS', payload);
   },
-  async uploadTableRPMTPS({ dispatch }, payload: Array<ITableRow>) {
+  async uploadTableRPMTPS({ dispatch, commit }, payload: Array<ITableRow>) {
+    commit('setIgnitionLoading', true);
+
     let dataRow = Array(123).fill(0x0);
     let index = 2;
 
@@ -108,6 +110,12 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
     outpayload[1] = subcommand & 0xff;
 
     void dispatch('UsbLayer/sendMessage', { command: 24, payload: outpayload }, { root: true });
+  },
+  checkUploadResult({ dispatch, commit, rootGetters }) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const endRowCommand = rootGetters['UsbLayer/getCommand'](125) as IUSBCommand;
+    void dispatch('UsbLayer/removeCommand', endRowCommand, { root: true });
+    commit('setIgnitionLoading', false);
   },
   someAction(/* context */) {
     // your code

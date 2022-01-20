@@ -83,7 +83,7 @@
 
 import { defineComponent, watchEffect, watch, toRaw } from 'vue';
 import { cleanTableEvents, getTableObserver, ITableRow } from 'src/types/tables';
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { storeKey } from '../../store';
 import { useStore } from 'vuex';
 import { mockUSBCommand } from 'src/store/usb-layer/mocks';
@@ -150,6 +150,11 @@ export default defineComponent({
 
     const tables = reactive({ rpm_load: deReferenceRows(ignitionTables.rpm_load) });
 
+    const uploadResult = computed(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      (): IUSBCommand => store.getters['UsbLayer/getCommand'](125) as IUSBCommand
+    );
+
     watchEffect(() => {
       if (tab.value) {
         cleanTableEvents('ignition_table');
@@ -160,6 +165,12 @@ export default defineComponent({
 
     watchEffect(() => {
       tables.rpm_load = deReferenceRows(ignitionTables.rpm_load);
+    });
+
+    watchEffect(() => {
+      if (uploadResult.value) {
+        void store.dispatch('Ignition/checkUploadResult', uploadResult.value);
+      }
     });
 
     watch(
