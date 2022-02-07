@@ -18,12 +18,13 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
 
         const rpm = (frame[0] << 8) + frame[1];
         const temperature = (frame[2] << 8) + frame[3];
+        const load = (((frame[4] << 8) + frame[5]) / 100).toFixed(2);
         const battery = (((frame[6] << 8) + frame[7]) / 100).toFixed(2);
-        const advance = (frame[4] << 8) + frame[5];
+        const advance = (frame[8] << 8) + frame[9];
 
         const efiStatus = 'NORMAL';
 
-        commit('setDashboard', { rpm, temperature, battery, advance, efiStatus });
+        commit('setDashboard', { rpm, temperature, load, battery, advance, efiStatus });
 
         void dispatch('UsbLayer/removeCommand', command, {
           root: true,

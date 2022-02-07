@@ -14,6 +14,7 @@ export interface DashboardInterface {
   temperature: number | null;
   battery: number | null;
   advance: number | null;
+  load: number | null;
   efiStatus: 'COLD' | 'NORMAL' | 'WARN' | 'ERROR' | 'EMERGENCY' | null;
   loading: boolean;
   gaugeOptions: {
@@ -29,6 +30,7 @@ function state(): DashboardInterface {
     temperature: null,
     battery: null,
     advance: null,
+    load: null,
     efiStatus: null,
     gaugeOptions: {
       rpm: null,

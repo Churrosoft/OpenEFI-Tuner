@@ -108,7 +108,7 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
 
     outpayload[0] = (subcommand >> 8) & 0xff;
     outpayload[1] = subcommand & 0xff;
-
+    await timeout(50);
     void dispatch('UsbLayer/sendMessage', { command: 24, payload: outpayload }, { root: true });
   },
   checkUploadResult({ dispatch, commit, rootGetters }) {
