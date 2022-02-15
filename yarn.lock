@@ -2152,14 +2152,15 @@ canvas-datagrid@^0.3.21:
   dependencies:
     is-printable-key-event "1.0.0"
 
+canvas-gauges@Mikhus/canvas-gauges:
+  version "2.1.7"
+  uid "6b179f83b7f03926a4d58ac09e15525d19fad3d1"
+  resolved "https://codeload.github.com/Mikhus/canvas-gauges/tar.gz/6b179f83b7f03926a4d58ac09e15525d19fad3d1"
+
 canvas-gauges@^2.1.7:
   version "2.1.7"
   resolved "https://registry.yarnpkg.com/canvas-gauges/-/canvas-gauges-2.1.7.tgz#9f8d96960a19c64879083e72e66b773ed1ec8079"
   integrity sha512-z9cXBVTZdaUIOh32g21NU8gwxEeaxpEMvkZr9t8Y0QDbZiCDq05SJ17aIt+DM12oTJAlWGluN21D+bQ0NCv5GA==
-
-"canvas-gauges@github:mikhus/canvas-gauges":
-  version "2.1.7"
-  resolved "https://codeload.github.com/mikhus/canvas-gauges/tar.gz/6b179f83b7f03926a4d58ac09e15525d19fad3d1"
 
 chalk@4.1.2, chalk@^4.0.0, chalk@^4.1.0, chalk@^4.1.1:
   version "4.1.2"
@@ -3345,9 +3346,9 @@ flatted@^3.1.0:
   integrity sha512-8/sOawo8tJ4QOBX8YlQBMxL8+RLZfxMQOif9o0KUKTNTjMYElWPE0r/m5VNFxTRd0NSw8qSy8dajrwX4RYI1Hw==
 
 follow-redirects@^1.0.0:
-  version "1.14.7"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.7.tgz#2004c02eb9436eee9a21446a6477debf17e81685"
-  integrity sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
+  version "1.14.8"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.8.tgz#016996fb9a11a100566398b1c6839337d7bfa8fc"
+  integrity sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
 
 fork-ts-checker-webpack-plugin@6.5.0:
   version "6.5.0"
