@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { IGNITION_RPMTPS_SIZE } from 'src/config';
 import { ITableRow } from 'src/types/tables';
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
@@ -26,7 +27,6 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
   async getIgnitionTableRPMTPS({ commit, rootGetters, dispatch, rootState }) {
     const tableRow: Array<ITableRow> = [];
     // por defecto, 17x17, luego hacer configurable'
-    const IGNITION_RPMTPS_SIZE = 17;
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const endRowCommand = rootGetters['UsbLayer/getCommand'](127) as IUSBCommand;

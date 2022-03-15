@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 <template>
   <div>
     <h4 class="q-mt-md q-mb-md">Ignition Tables</h4>
     <h6 class="q-mt-md q-mb-lg">you can view and edit ignition tables from here</h6>
-    <!--  <q-card style="width: 30vw"> -->
     <div class="row q-pa-lg" style="width: 100%">
       <q-btn flat icon="download" color="primary" @click="requestTable" rounded>
         <span class="q-mr-md" />get table info from EFI
@@ -48,13 +46,6 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="rpmload">
           <div class="text-h6 q-mb-md">RPM/Load (Kpa)</div>
-          <!--  <canvas-datagrid
-            v-if="tables.rpm_load !== null"
-            :data.prop="tables.rpm_load"
-            showRowHeaders="false"
-            showColumnHeaders="false"
-            class="ignition_table"
-          /> -->
           <canvas-datagrid
             v-if="tables.rpm_load !== null"
             :data.prop="tables.rpm_load"
@@ -86,7 +77,6 @@ import { cleanTableEvents, getTableObserver, ITableRow } from 'src/types/tables'
 import { ref, reactive, computed } from 'vue';
 import { storeKey } from '../../store';
 import { useStore } from 'vuex';
-import { mockUSBCommand } from 'src/store/usb-layer/mocks';
 import { IUSBCommand } from 'src/store/usb-layer/state';
 import { deepCompare } from 'src/types/compare';
 /** Ejemplo tablita:

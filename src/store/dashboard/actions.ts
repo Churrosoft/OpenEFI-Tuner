@@ -3,7 +3,7 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 import { IUSBCommand } from '../usb-layer/state';
 
-import { DashboardInterface } from './state';
+import { DashboardInterface, efiStatusMap } from './state';
 
 const actions: ActionTree<DashboardInterface, StateInterface> = {
   parseStatus({ commit, rootGetters, dispatch, rootState }) {
@@ -22,7 +22,7 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
         const battery = (((frame[6] << 8) + frame[7]) / 100).toFixed(2);
         const advance = (frame[8] << 8) + frame[9];
 
-        const efiStatus = 'NORMAL';
+        const efiStatus = efiStatusMap[frame[10] as keyof typeof efiStatusMap];
 
         commit('setDashboard', { rpm, temperature, load, battery, advance, efiStatus });
 
@@ -46,7 +46,6 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
       const command = rootGetters['UsbLayer/getCommand'](14) as IUSBCommand;
       if (command !== null) {
         // a partir de aca toca chusmear que onda la config de la efi:
-        console.warn('le code', command);
         const frame = command.payload;
 
         const maxRpm = (frame[0] << 8) + frame[1];

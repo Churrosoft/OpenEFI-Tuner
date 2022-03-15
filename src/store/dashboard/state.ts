@@ -24,6 +24,14 @@ export interface DashboardInterface {
   };
 }
 
+export const efiStatusMap = {
+  0: 'COLD',
+  1: 'NORMAL',
+  2: 'WARN',
+  3: 'ERROR',
+  4: 'EMERGENCY',
+};
+
 function state(): DashboardInterface {
   return {
     rpm: null,
