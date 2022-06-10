@@ -8,14 +8,14 @@ export interface GaugeOptions {
     color: string;
   }>;
 }
-
+export type IEfiStatus ='COLD' | 'NORMAL' | 'WARN' | 'ERROR' | 'EMERGENCY' | null;
 export interface DashboardInterface {
   rpm: number | null;
   temperature: number | null;
   battery: number | null;
   advance: number | null;
   load: number | null;
-  efiStatus: 'COLD' | 'NORMAL' | 'WARN' | 'ERROR' | 'EMERGENCY' | null;
+  efiStatus:IEfiStatus;
   loading: boolean;
   gaugeOptions: {
     rpm: GaugeOptions | null;

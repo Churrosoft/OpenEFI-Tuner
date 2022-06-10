@@ -4,17 +4,12 @@
     :model-value="$store.state.Layout.toogleMenu"
     show-if-above
     bordered
-    
   >
     <q-scroll-area class="fit">
       <q-list>
         <!--   <q-item-label header> Essential Links </q-item-label> -->
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
       </q-list>
     </q-scroll-area>
   </q-drawer>
@@ -38,14 +33,94 @@ const linksList = [
   },
   {
     title: 'Ignition',
-    caption: 'configure ignition tables',
-    icon: 'table_view',
-    link: '#ignition/tables',
+    caption: '',
+    icon: 'settings_input_component',
+    innerItems: [
+      {
+        title: 'Tables',
+        caption: 'configure ignition tables',
+        link: '#ignition/tables',
+      },
+      {
+        title: 'Configuration',
+        caption: '(Dwell time, ignition, cold advance)',
+        link: '#dtc',
+      },
+    ],
+  },
+  {
+    title: 'Injection',
+    caption: '',
+    icon: 'mdi-needle',
+    innerItems: [
+      {
+        title: 'Tables',
+        caption: '(AFR, Fuel VE, FuelPump)',
+        link: '#ignition/tables',
+      },
+
+      {
+        title: 'Configuration',
+        caption: '(Calculations, DeadTime|PWM, FuelCutout)',
+        link: '#dtc',
+      },
+      {
+        title: 'Advanced Configuration',
+        caption: '(dual fuel, NoS, Water/Meth injection)',
+        link: '#dtc',
+      },
+    ],
+  },
+  {
+    title: 'Startup / IDLE',
+    caption: '',
+    icon: 'mdi-car-speed-limiter',
+    innerItems: [
+      {
+        title: 'Warnup Enrichment (WUE)',
+        link: '#',
+      },
+
+      {
+        title: 'Afterstart Enrichment (ASE)',
+        link: '#',
+      },
+      {
+        title: 'IDLE Advance / VE | IDLE Control',
+        link: '#',
+      },
+    ],
   },
   {
     title: 'Settings',
     caption: 'system settings',
     icon: 'settings',
+    link: 'https://chat.quasar.dev',
+    innerItems: [
+      {
+        title: 'Sensors',
+        link: '#',
+      },
+
+      {
+        title: 'I/O Mapping',
+        link: '#',
+      },
+      {
+        title: 'Rev Limiter / ShiftLigth',
+        link: '#',
+      },
+      {
+        title: 'General Settings',
+        link: '#',
+        caption: '(tacho output, fan control, relay control)',
+      },
+    ],
+  },
+  {
+    title: 'Firmware',
+    caption: '(rebuild, update, factory reset)',
+    icon: 'mdi-usb-flash-drive',
     link: 'https://chat.quasar.dev',
   },
 ];

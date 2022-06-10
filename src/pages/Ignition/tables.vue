@@ -2,19 +2,46 @@
   <div>
     <h4 class="q-mt-md q-mb-md">Ignition Tables</h4>
     <h6 class="q-mt-md q-mb-lg">you can view and edit ignition tables from here</h6>
-    <div class="row q-pa-lg" style="width: 100%">
-      <q-btn flat icon="download" color="primary" @click="requestTable" rounded>
-        <span class="q-mr-md" />get table info from EFI
-      </q-btn>
-      <span class="col-2 gt-xs"> </span>
-
-      <q-btn icon="file_upload" color="secondary" class="gt-xs" rounded @click="pathTable">
-        <span class="q-mr-md" />write tables to EFI
+    <div class="row q-pa-lg q-gutter-lg" style="width: 100%">
+      <q-btn icon="folder_open" color="secondary" class="gt-xs" outline>
+        Read table from file
       </q-btn>
 
-      <q-btn icon="file_upload" color="secondary" class="xs q-mt-md" rounded @click="pathTable">
-        <span class="q-mr-md" />write tables to EFI
+      <q-btn icon="save" color="secondary" class="gt-xs" outline> Save table to file </q-btn>
+
+      <q-btn icon="download" color="primary" @click="requestTable">
+        <span class="q-mr-md">get table info from EFI</span>
       </q-btn>
+
+      <q-btn
+        icon="file_upload"
+        color="secondary"
+        class="gt-xs"
+        @click="pathTable"
+        :disable="!paired"
+      >
+        write tables to EFI
+      </q-btn>
+
+      <q-btn
+        icon="file_upload"
+        color="secondary"
+        class="xs q-mt-md"
+        @click="pathTable"
+        :disable="!paired"
+      >
+        write tables to EFI
+      </q-btn>
+
+      <!--  
+      Ejemplo boton con animacion de loading  
+      <q-btn :loading="loading[3]" color="primary" @click="simulateProgress(3)" style="width: 150px">
+      Button
+      <template v-slot:loading>
+        <q-spinner-hourglass class="on-left" />
+        Loading...
+      </template>
+    </q-btn> -->
     </div>
 
     <q-linear-progress
@@ -53,16 +80,20 @@
             showColumnHeaders="false"
             class="ignition_table"
           />
+
+          <NotTableData v-if="tables.rpm_load === null" />
         </q-tab-panel>
 
         <q-tab-panel name="loadtemp">
           <div class="text-h6">Load/Temp</div>
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <NotTableData v-if="tables.rpm_load === null" />
         </q-tab-panel>
 
         <q-tab-panel name="rpmbattery">
           <div class="text-h6">RPM/Battery</div>
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <NotTableData v-if="tables.rpm_load === null" />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -79,6 +110,8 @@ import { storeKey } from '../../store';
 import { useStore } from 'vuex';
 import { IUSBCommand } from 'src/store/usb-layer/state';
 import { deepCompare } from 'src/types/compare';
+
+import NotTableData from 'src/components/NotTableData.vue';
 /** Ejemplo tablita:
  * load(tps)/rpm
  * [  * ]  [550 ] [ 950] [1200] [1650] [2200] [2800] [3400] [3900] [4400] [4900] [5400] [7200]
@@ -100,7 +133,7 @@ let intTable: NodeJS.Timeout | null = null;
 export default defineComponent({
   name: 'Ignition',
 
-  components: {},
+  components: { NotTableData },
   mounted() {
     getTableObserver(17, 'ignition_table');
   },
@@ -109,6 +142,7 @@ export default defineComponent({
   },
   methods: {
     requestTable() {
+      if (!this.paired) return;
       void this.store.dispatch('Ignition/requestIgnitionTableRPMTPS');
 
       const tableInterval = () => {
@@ -124,6 +158,7 @@ export default defineComponent({
       this.intTable = setInterval(tableInterval, 250);
     },
     pathTable() {
+      if (!this.paired) return;
       void this.store.dispatch('Ignition/uploadTableRPMTPS', this.tables.rpm_load);
     },
   },
@@ -135,6 +170,7 @@ export default defineComponent({
     let pong = {
       rpm_load: false,
     };
+
     const deReferenceRows = (value: unknown) =>
       JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
@@ -144,6 +180,8 @@ export default defineComponent({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       (): IUSBCommand => store.getters['UsbLayer/getCommand'](125) as IUSBCommand
     );
+
+    const paired = store.state.UsbLayer.paired;
 
     watchEffect(() => {
       if (tab.value) {
@@ -184,7 +222,14 @@ export default defineComponent({
       store,
       tables,
       intTable,
+      paired,
     };
   },
 });
 </script>
+
+<style>
+i {
+  margin-right: 1rem;
+}
+</style>

@@ -3,7 +3,7 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 import { IUSBCommand } from '../usb-layer/state';
 
-import { DashboardInterface, efiStatusMap } from './state';
+import { DashboardInterface, efiStatusMap, IEfiStatus } from './state';
 
 const actions: ActionTree<DashboardInterface, StateInterface> = {
   parseStatus({ commit, rootGetters, dispatch, rootState }) {
@@ -22,7 +22,9 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
         const battery = (((frame[6] << 8) + frame[7]) / 100).toFixed(2);
         const advance = (frame[8] << 8) + frame[9];
 
-        const efiStatus = efiStatusMap[frame[10] as keyof typeof efiStatusMap];
+        const efiStatus = efiStatusMap[
+          frame[10] as keyof typeof efiStatusMap
+        ] as IEfiStatus;
 
         commit('setDashboard', { rpm, temperature, load, battery, advance, efiStatus });
 
