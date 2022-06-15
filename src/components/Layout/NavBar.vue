@@ -78,7 +78,7 @@ const linksList = [
     innerItems: [
       {
         title: 'Warnup Enrichment (WUE)',
-        link: '#',
+        link: '#startup/wue',
       },
 
       {

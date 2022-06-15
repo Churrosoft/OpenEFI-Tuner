@@ -23,6 +23,16 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
+    path: '/startup',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: 'wue',
+        component: () => import('pages/StartUp/WUE.vue'),
+      },
+    ],
+  },
+  {
     path: '/dtc',
     component: () => import('layouts/MainLayout.vue'),
     children: [
