@@ -1,4 +1,4 @@
-@import "../../../css/app.scss";
+@import '../../../css/app.scss';
 
 .battery {
   &__digit-container {
@@ -10,7 +10,7 @@
     position: relative;
 
     h4 {
-      @extend dseg-display--style;
+      @extend dseg-display--style !optional;
     }
     &--volts {
       margin: 0;

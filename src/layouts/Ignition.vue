@@ -1,17 +1,17 @@
 <template>
-  <Menu />
+  <MainMenu />
 </template>
 
 <script lang="ts">
-import Menu from 'src/components/Layout/Menu.vue';
+import MainMenu from 'src/components/Layout/MainMenu.vue';
 
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Ignition',
+  name: 'IgnitionLayout',
 
   components: {
-    Menu,
+    MainMenu,
   },
 
   setup() {
