@@ -8,21 +8,37 @@
     <q-markdown
       style="max-width: 40rem"
       src="::: tip
-Use 'Live Tune' toogle for adjust this table on running engine
+Use 'Live Tunning' toogle for adjust this table on running engine
 :::"
     ></q-markdown>
 
-    <LineChart
-      dataKeyA="coolant"
-      dataKeyB="wue"
-      :data="mockData"
-      :margins="margins"
-    />
+    <div class="q-mt-xl row items-end">
+      <LineChart
+        dataKeyA="coolant"
+        dataKeyB="wue"
+        :data="mockData"
+        :margins="margins"
+      />
+
+      <span style="margin-left: 6rem"
+        ><canvas-datagrid
+          :data.prop="[{ wue: 'WUE %', coolant: 'cooltan' }, ...mockData]"
+          showRowHeaders="false"
+          showColumnHeaders="false"
+          class="wue_table"
+      /></span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import LineChart from 'src/components/LineChart.vue';
+import { onMounted, onBeforeUnmount } from 'vue';
+import {
+  cleanTableEvents,
+  getTableObserver,
+  ITableRow,
+} from 'src/types/tables';
 
 const mockData = [
   { wue: 180, coolant: -40 },
@@ -41,4 +57,12 @@ const margins = {
   x: [-50, 100],
   y: [200, 80],
 };
+
+onMounted(() => {
+  getTableObserver(2, 'wue_table');
+});
+
+onBeforeUnmount(() => {
+  cleanTableEvents('wue_table');
+});
 </script>

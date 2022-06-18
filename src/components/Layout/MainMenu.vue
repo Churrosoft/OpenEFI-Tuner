@@ -3,7 +3,7 @@
     <q-header elevated class="bg-black">
       <q-toolbar>
         <q-btn flat @click="toggleLeftDrawer" round dense icon="menu" />
-        <q-toolbar-title>OpenEFI | Tuner {{ t('hello') }}</q-toolbar-title>
+        <q-toolbar-title>OpenEFI | Tuner</q-toolbar-title>
         <q-space />
         <q-toggle
           @update:model-value="q.dark.toggle()"
@@ -59,7 +59,7 @@ import { defineComponent, ref } from 'vue';
 
 import { storeKey } from '../../store';
 import { useStore } from 'vuex';
-import { useI18n } from 'vue-i18n';
+//import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   name: 'Menu',
@@ -73,10 +73,12 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const $store = useStore(storeKey);
     const q = useQuasar();
-    const { t } = useI18n({
+
+    /*   const { t } = useI18n({
       inheritLocale: true,
       useScope: 'global',
-    });
+    }); // {{ t('hello') }} */
+
     return {
       q,
       t,

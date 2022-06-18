@@ -6,6 +6,7 @@ const langFiles = {
     hello: 'Hello world',
     tos: 'vue-i18n-next docs',
     term: 'access to {0}',
+    headerTitle: 'OpenEFI || Tuner',
   },
 
   /*   en,
