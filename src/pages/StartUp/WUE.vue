@@ -1,7 +1,17 @@
 <template>
   <div>
-    <!--  <h4 class="q-mt-md q-mb-md">DTC Status</h4>
-    <h6 class="q-mt-md q-mb-lg">you can view and remove dtc/fault codes from here</h6> -->
+    <h4 class="q-mt-md q-mb-md">Warmup Enrichment (WUE)</h4>
+    <h6 class="q-mt-md q-mb-lg">
+      this table (and graph) specifies the multiplier for fuel after
+      calculations during warmup, at fully warm, 100% must be specified
+    </h6>
+    <q-markdown
+      style="max-width: 40rem"
+      src="::: tip
+Use 'Live Tune' toogle for adjust this table on running engine
+:::"
+    ></q-markdown>
+
     <LineChart
       dataKeyA="coolant"
       dataKeyB="wue"
