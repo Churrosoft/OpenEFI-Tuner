@@ -25,16 +25,19 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      
+
       - name: Install
-        run: yarn --prefer-offline
+        run: |
+          yarn --prefer-offline
+          yarn global add @quasar/cli
+
       - name: Build
         run: yarn run build
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.8
         with:
           branch: gh-pages # The branch the action should deploy to.
-          folder: dist/pwa # The folder the action should deploy.
+          folder: dist/spa # The folder the action should deploy.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_BRANCH: master
