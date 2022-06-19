@@ -9,3 +9,8 @@ dseg-display {
     letter-spacing: 0.00735em;
   }
 }
+
+.grid-lines line {
+  stroke: gray;
+  stroke-opacity: 0.2;
+}

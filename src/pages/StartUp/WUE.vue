@@ -12,32 +12,59 @@ Use 'Live Tunning' toogle for adjust this table on running engine
 :::"
     ></q-markdown>
 
-    <div class="q-mt-xl row items-end">
+    <div class="q-mt-xl row items-stretch justify-center">
       <LineChart
         dataKeyA="coolant"
         dataKeyB="wue"
         :data="mockData"
         :margins="margins"
+        :size="{ width: 550, height: 550 }"
       />
 
-      <span style="margin-left: 6rem"
-        ><canvas-datagrid
+      <div style="margin-left: 6rem; width: 30vw" class="row">
+        <div style="width: 100%; font-size: 24px">
+          <q-toggle
+            v-model="liveTunning"
+            size="lg"
+            val="lg"
+            label="Live Tunning"
+          />
+        </div>
+        <SegmentDisplay
+          title="RPM"
+          value="1450"
+          style="max-width: 15rem; max-height: 8rem"
+          class="q-mr-md q-mb-md"
+        />
+        <SegmentDisplay
+          title="Temperature"
+          value="69.4"
+          unit="°C"
+          style="max-width: 15rem; max-height: 8rem"
+          class="q-mb-md"
+        />
+
+        <canvas-datagrid
+          style="max-width: 25vw"
           :data.prop="[{ wue: 'WUE %', coolant: 'cooltan' }, ...mockData]"
           showRowHeaders="false"
           showColumnHeaders="false"
           class="wue_table"
-      /></span>
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import LineChart from 'src/components/LineChart.vue';
-import { onMounted, onBeforeUnmount } from 'vue';
+import SegmentDisplay from 'src/components/SegmentDisplay/index.vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+
 import {
   cleanTableEvents,
   getTableObserver,
-  ITableRow,
+  // ITableRow,
 } from 'src/types/tables';
 
 const mockData = [
@@ -65,4 +92,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   cleanTableEvents('wue_table');
 });
+
+const liveTunning = ref(false);
 </script>

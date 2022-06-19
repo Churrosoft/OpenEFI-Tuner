@@ -52,8 +52,12 @@ onMounted(() => {
   const updateData = (key: number, x: number, y: number) => {
     dataWithKey = dataWithKey.map((el) => {
       if (el.LineChartIndex === key) {
-        el[dataKeyA as unknown as number] = x as unknown as { [key: string]: number };
-        el[dataKeyB as unknown as number] = y as unknown as { [key: string]: number };
+        el[dataKeyA as unknown as number] = x as unknown as {
+          [key: string]: number;
+        };
+        el[dataKeyB as unknown as number] = y as unknown as {
+          [key: string]: number;
+        };
       }
       return el;
     });
@@ -66,17 +70,26 @@ onMounted(() => {
     .domain(
       props.margins?.x ?? [
         0,
-        max(dataWithKey, (d) => d[dataKeyA as unknown as number] as unknown as number),
+        max(
+          dataWithKey,
+          (d) => d[dataKeyA as unknown as number] as unknown as number
+        ),
       ]
     )
     .range([0, width]);
 
-  svg.append('g').attr('transform', `translate(0, ${height})`).call(axisBottom(customX));
+  svg
+    .append('g')
+    .attr('transform', `translate(0, ${height})`)
+    .call(axisBottom(customX));
 
   const customY = scaleLinear()
     .domain(
       props.margins?.y ?? [
-        max(dataWithKey, (d) => d[dataKeyB as unknown as number] as unknown as number),
+        max(
+          dataWithKey,
+          (d) => d[dataKeyB as unknown as number] as unknown as number
+        ),
         0,
       ]
     )
@@ -124,7 +137,7 @@ onMounted(() => {
 
     svg
       .transition()
-      .select('.line')
+      .select('.line-g')
       .duration(0)
       .attr('d', myLine(dataWithKey as unknown));
   }
@@ -134,16 +147,57 @@ onMounted(() => {
     select(this).raise().attr('fill', '#69b3a2');
   }
 
-  let dragHandler = drag().on('start', dragstarted).on('drag', dragged).on('end', dragended);
+  let dragHandler = drag()
+    .on('start', dragstarted)
+    .on('drag', dragged)
+    .on('end', dragended);
 
+  // Add grid
+  const x = scaleLinear().range([0, width]).nice();
+
+  const y = scaleLinear().range([height, 0]);
+
+  const grid = (g) =>
+    g
+      .attr('stroke', 'currentColor')
+      .attr('stroke-opacity', 0.1)
+      .call((g) =>
+        g
+          .append('g')
+          .selectAll('line')
+          .data(x.ticks())
+          .join('line')
+          .attr('x1', (d) => 0.5 + x(d))
+          .attr('x2', (d) => 0.5 + x(d))
+          .attr('y1', 0 /* margin.top */)
+          .attr('y2', height /* - margin.bottom */)
+      )
+      .call((g) =>
+        g
+          .append('g')
+          .selectAll('line')
+          .data(y.ticks())
+          .join('line')
+          .attr('y1', (d) => 0.5 + y(d))
+          .attr('y2', (d) => 0.5 + y(d))
+          .attr('x1', 0 /* margin.left */)
+          .attr('x2', width /* - margin.right */)
+      );
   // Add the points
+
+  svg.append('g').call(grid);
+
   svg
     .append('g')
     .selectAll('dot')
     .data(dataWithKey)
     .join('circle')
-    .attr('cx', (d) => customX(d[dataKeyA as unknown as number] as unknown as number))
-    .attr('cy', (d) => customY(d[dataKeyB as unknown as number] as unknown as number))
+    .attr('cx', (d) =>
+      customX(d[dataKeyA as unknown as number] as unknown as number)
+    )
+    .attr('cy', (d) =>
+      customY(d[dataKeyB as unknown as number] as unknown as number)
+    )
     .attr('r', 5)
     .attr('fill', '#69b3a2')
     .call(dragHandler as unknown);
@@ -154,7 +208,7 @@ onMounted(() => {
     .attr('fill', 'none')
     .attr('stroke', '#69b3a2')
     .attr('stroke-width', 1.5)
-    .attr('class', 'line')
+    .attr('class', 'line-g')
     .attr('d', myLine as unknown as string);
 });
 </script>
