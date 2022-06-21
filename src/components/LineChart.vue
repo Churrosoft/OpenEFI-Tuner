@@ -25,6 +25,10 @@ interface LineChartProps {
     x: Array<number>;
     y: Array<number>;
   };
+  axisLabel?: {
+    x: string;
+    y: string;
+  };
 }
 
 type LineChartData = LineChartProps['data'] & { LineChartIndex: number };
@@ -48,6 +52,8 @@ onMounted(() => {
   let dataWithKey = data.map((d, i) => {
     return { ...d, LineChartIndex: i } as LineChartData;
   });
+
+  const dereferencedData = JSON.parse(JSON.stringify(dataWithKey));
 
   const updateData = (key: number, x: number, y: number) => {
     dataWithKey = dataWithKey.map((el) => {
@@ -188,6 +194,38 @@ onMounted(() => {
   svg.append('g').call(grid);
 
   svg
+    .append('path')
+    .datum(dereferencedData)
+    .attr('fill', 'none')
+    .attr('stroke', '#acacac')
+    .attr('stroke-width', 1.5)
+    .style('stroke-dasharray', '5,5')
+    .attr('d', myLine as unknown as string);
+
+  svg
+    .append('g')
+    .selectAll('dot')
+    .data(dereferencedData)
+    .join('circle')
+    .attr('cx', (d) =>
+      customX(d[dataKeyA as unknown as number] as unknown as number)
+    )
+    .attr('cy', (d) =>
+      customY(d[dataKeyB as unknown as number] as unknown as number)
+    )
+    .attr('r', 3)
+    .attr('fill', '#acacac');
+
+  svg
+    .append('path')
+    .datum(dataWithKey)
+    .attr('fill', 'none')
+    .attr('stroke', '#69b3a2')
+    .attr('stroke-width', 1.5)
+    .attr('class', 'line-g')
+    .attr('d', myLine as unknown as string);
+
+  svg
     .append('g')
     .selectAll('dot')
     .data(dataWithKey)
@@ -202,14 +240,27 @@ onMounted(() => {
     .attr('fill', '#69b3a2')
     .call(dragHandler as unknown);
 
-  svg
-    .append('path')
-    .datum(dataWithKey)
-    .attr('fill', 'none')
-    .attr('stroke', '#69b3a2')
-    .attr('stroke-width', 1.5)
-    .attr('class', 'line-g')
-    .attr('d', myLine as unknown as string);
+  props.axisLabel &&
+    svg
+      .append('text')
+      .style('text-anchor', 'end')
+      .attr('x', width - 4)
+      .attr('y', height - 8)
+      .attr('fill', 'currentColor')
+      .attr('class', 'text-h6')
+      .text(props.axisLabel.x);
+
+  props.axisLabel &&
+    svg
+      .append('text')
+      //.attr('transform', 'rotate(-90)') // TODO:Add prop for rotate Y Label
+      .attr('x', 5)
+      .attr('y', 4)
+      .attr('dy', '1em')
+      .attr('fill', 'currentColor')
+      .attr('class', 'text-h6')
+      .style('text-anchor', 'start')
+      .text(props.axisLabel.y);
 });
 </script>
 

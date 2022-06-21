@@ -9,7 +9,11 @@
       <q-list>
         <!--   <q-item-label header> Essential Links </q-item-label> -->
 
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+        <EssentialLink
+          v-for="link in essentialLinks"
+          :key="link.title"
+          v-bind="link"
+        />
       </q-list>
     </q-scroll-area>
   </q-drawer>
@@ -83,7 +87,7 @@ const linksList = [
 
       {
         title: 'Afterstart Enrichment (ASE)',
-        link: '#',
+        link: '#startup/ase',
       },
       {
         title: 'IDLE Advance / VE | IDLE Control',

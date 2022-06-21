@@ -30,6 +30,10 @@ const routes: RouteRecordRaw[] = [
         path: 'wue',
         component: () => import('pages/StartUp/WUE.vue'),
       },
+      {
+        path: 'ase',
+        component: () => import('pages/StartUp/ASE.vue'),
+      },
     ],
   },
   {

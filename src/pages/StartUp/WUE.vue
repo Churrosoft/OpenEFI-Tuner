@@ -19,6 +19,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
         :data="mockData"
         :margins="margins"
         :size="{ width: 550, height: 550 }"
+        :axisLabel="{ x: 'cooltan (°C)', y: 'WUE %' }"
       />
 
       <div style="margin-left: 6rem; width: 30vw" class="row">
@@ -32,7 +33,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
         </div>
         <SegmentDisplay
           title="RPM"
-          value="1450"
+          value="---- "
           style="max-width: 15rem; max-height: 8rem"
           class="q-mr-md q-mb-md"
         />
@@ -46,7 +47,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
 
         <canvas-datagrid
           style="max-width: 25vw"
-          :data.prop="[{ wue: 'WUE %', coolant: 'cooltan' }, ...mockData]"
+          :data.prop="[{ wue: 'WUE %', coolant: 'cooltan (°C)' }, ...mockData]"
           showRowHeaders="false"
           showColumnHeaders="false"
           class="wue_table"
