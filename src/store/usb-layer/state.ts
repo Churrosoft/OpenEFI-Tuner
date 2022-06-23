@@ -32,7 +32,12 @@ type tableCommands = 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27;
 // 30 => get all, 31 => delete X code, 32 => delete all
 type dtcCommands = 30 | 31 | 32;
 
-export type USBCommands = 100 | 200 | errorCommands | tableCommands | dtcCommands;
+export type USBCommands =
+  | 100
+  | 200
+  | errorCommands
+  | tableCommands
+  | dtcCommands;
 
 export function _arrayBufferToBase64(buffer: Uint8Array) {
   let binary = '';
@@ -41,8 +46,23 @@ export function _arrayBufferToBase64(buffer: Uint8Array) {
   for (let i = 0; i < len; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
-  return window.atob(binary);
+
+  try {
+    return window.atob(binary);
+  } catch (error) {
+    return binary;
+  }
 }
+
+export const findPayloadEnd = (payload: IUSBCommand['payload']) => {
+  const firstIndex = payload.indexOf(0xfa);
+
+  if (firstIndex === 125 || firstIndex === 126) return firstIndex;
+
+  if (firstIndex !== -1 && payload[firstIndex + 1] === 0xfa) {
+    return firstIndex;
+  }
+};
 
 export const createUSBCommand = (
   command: USBCommands,
@@ -56,11 +76,16 @@ export const createUSBCommand = (
     '0000' + crc([command, subcommand, ...payload].slice(0, 126)).toString(16)
   ).substr(-4); */
 
+  const filledPayload = new Uint8Array([
+    ...payload,
+    ...Array(126).fill(0xfa).slice(0, payload.length),
+  ]);
+
   return {
     protocol,
     command,
     /*     subcommand, */
-    payload,
+    payload: filledPayload,
     checksum,
   };
 };

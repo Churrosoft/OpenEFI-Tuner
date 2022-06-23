@@ -1,0 +1,28 @@
+.debug__console {
+  /*   width: 100%;
+ */
+  background-color: #151515;
+  padding: 2rem;
+  /*   max-height: 40vw;
+  overflow-y: scroll;
+ */
+  p {
+    text-align: left;
+    font-size: 1.25em;
+    font-family: monospace;
+    white-space: normal;
+    //  overflow: hidden;
+  }
+
+  color: #fff;
+
+  &--info {
+    color: #9cd9f0;
+  }
+  &--event {
+    color: #cdee69;
+  }
+  &--error {
+    color: #e09690;
+  }
+}

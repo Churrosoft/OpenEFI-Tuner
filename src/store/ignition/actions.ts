@@ -29,7 +29,9 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
     // por defecto, 17x17, luego hacer configurable'
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const endRowCommand = rootGetters['UsbLayer/getCommand'](127) as IUSBCommand;
+    const endRowCommand = rootGetters['UsbLayer/getCommand'](
+      127
+    ) as IUSBCommand;
     void dispatch('UsbLayer/removeCommand', endRowCommand, { root: true });
     // commit('clearTableRPM_TPS');
 
@@ -86,7 +88,9 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
     for (let rowIndex = 0; rowIndex < payload.length; rowIndex++) {
       const row = payload[rowIndex];
       Object.values(row).map((rowValue) => {
-        const table_x = new Uint8Array(new Int32Array([Number(rowValue) * 100]).buffer);
+        const table_x = new Uint8Array(
+          new Int32Array([Number(rowValue) * 100]).buffer
+        );
         dataRow[index] = table_x[0];
         dataRow[index + 1] = table_x[1];
         dataRow[index + 2] = table_x[2];
@@ -96,7 +100,11 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
       dataRow[0] = rowIndex;
       dataRow[1] = index - 2;
 
-      void dispatch('UsbLayer/sendMessage', { command: 22, payload: dataRow }, { root: true });
+      void dispatch(
+        'UsbLayer/sendMessage',
+        { command: 22, payload: dataRow },
+        { root: true }
+      );
 
       dataRow = Array(123).fill(0x0);
       index = 2;
@@ -109,11 +117,17 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
     outpayload[0] = (subcommand >> 8) & 0xff;
     outpayload[1] = subcommand & 0xff;
     await timeout(50);
-    void dispatch('UsbLayer/sendMessage', { command: 24, payload: outpayload }, { root: true });
+    void dispatch(
+      'UsbLayer/sendMessage',
+      { command: 24, payload: outpayload },
+      { root: true }
+    );
   },
   checkUploadResult({ dispatch, commit, rootGetters }) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const endRowCommand = rootGetters['UsbLayer/getCommand'](125) as IUSBCommand;
+    const endRowCommand = rootGetters['UsbLayer/getCommand'](
+      125
+    ) as IUSBCommand;
     void dispatch('UsbLayer/removeCommand', endRowCommand, { root: true });
     commit('setIgnitionLoading', false);
   },

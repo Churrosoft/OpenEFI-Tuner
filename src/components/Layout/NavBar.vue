@@ -127,6 +127,11 @@ const linksList = [
     icon: 'mdi-usb-flash-drive',
     link: 'https://chat.quasar.dev',
   },
+  {
+    title: 'Debug Console',
+    icon: 'bug_report',
+    link: '#debug',
+  },
 ];
 
 import { defineComponent } from 'vue';

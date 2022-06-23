@@ -22,6 +22,21 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
     }
     return null;
   },
+
+  getGroupedCommands: (state) => (commandsType: Array<USBCommands>) => {
+    if (state.pending_commands?.length) {
+      const resultCommands = [] as Array<IUSBCommand>;
+      state.pending_commands.map((_comm) => {
+        if (commandsType.some((el) => String(el) === String(_comm.command))) {
+          resultCommands.push(_comm);
+        }
+      });
+
+      if (resultCommands.length > 1) return resultCommands;
+      return null;
+    }
+    return null;
+  },
 };
 
 export default getters;

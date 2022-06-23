@@ -1,13 +1,17 @@
 <template>
   <div>
     <h4 class="q-mt-md q-mb-md">Ignition Tables</h4>
-    <h6 class="q-mt-md q-mb-lg">you can view and edit ignition tables from here</h6>
+    <h6 class="q-mt-md q-mb-lg">
+      you can view and edit ignition tables from here
+    </h6>
     <div class="row q-pa-lg q-gutter-lg" style="width: 100%">
       <q-btn icon="folder_open" color="secondary" class="gt-xs" outline>
         Read table from file
       </q-btn>
 
-      <q-btn icon="save" color="secondary" class="gt-xs" outline> Save table to file </q-btn>
+      <q-btn icon="save" color="secondary" class="gt-xs" outline>
+        Save table to file
+      </q-btn>
 
       <q-btn icon="download" color="primary" @click="requestTable">
         <span class="q-mr-md">get table info from EFI</span>
@@ -33,8 +37,8 @@
         write tables to EFI
       </q-btn>
 
-      <!--  
-      Ejemplo boton con animacion de loading  
+      <!--
+      Ejemplo boton con animacion de loading
       <q-btn :loading="loading[3]" color="primary" @click="simulateProgress(3)" style="width: 150px">
       Button
       <template v-slot:loading>
@@ -104,7 +108,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import { defineComponent, watchEffect, watch, toRaw } from 'vue';
-import { cleanTableEvents, getTableObserver, ITableRow } from 'src/types/tables';
+import {
+  cleanTableEvents,
+  getTableObserver,
+  ITableRow,
+} from 'src/types/tables';
 import { ref, reactive, computed } from 'vue';
 import { storeKey } from '../../store';
 import { useStore } from 'vuex';
@@ -142,7 +150,9 @@ export default defineComponent({
   },
   methods: {
     requestTable() {
-      if (!this.paired) return;
+      void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
+
+      /*   if (!this.paired) return;
       void this.store.dispatch('Ignition/requestIgnitionTableRPMTPS');
 
       const tableInterval = () => {
@@ -155,11 +165,14 @@ export default defineComponent({
         }
       };
 
-      this.intTable = setInterval(tableInterval, 250);
+      this.intTable = setInterval(tableInterval, 250); */
     },
     pathTable() {
       if (!this.paired) return;
-      void this.store.dispatch('Ignition/uploadTableRPMTPS', this.tables.rpm_load);
+      void this.store.dispatch(
+        'Ignition/uploadTableRPMTPS',
+        this.tables.rpm_load
+      );
     },
   },
 
@@ -174,11 +187,14 @@ export default defineComponent({
     const deReferenceRows = (value: unknown) =>
       JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
-    const tables = reactive({ rpm_load: deReferenceRows(ignitionTables.rpm_load) });
+    const tables = reactive({
+      rpm_load: deReferenceRows(ignitionTables.rpm_load),
+    });
 
     const uploadResult = computed(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      (): IUSBCommand => store.getters['UsbLayer/getCommand'](125) as IUSBCommand
+      (): IUSBCommand =>
+        store.getters['UsbLayer/getCommand'](125) as IUSBCommand
     );
 
     const paired = store.state.UsbLayer.paired;
@@ -210,7 +226,10 @@ export default defineComponent({
             return;
           }
           console.log('table have changed', toRaw(newTableValue));
-          void store.dispatch('Ignition/updateTableRPMTPS', newTableValue.rpm_load);
+          void store.dispatch(
+            'Ignition/updateTableRPMTPS',
+            newTableValue.rpm_load
+          );
           pong.rpm_load = false;
         }
       },
