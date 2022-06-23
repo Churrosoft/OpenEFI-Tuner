@@ -1,5 +1,5 @@
-import en from './en';
-import es from './es';
+/* import en from './en';
+import es from './es'; */
 
 const langFiles = {
   en: {

@@ -50,7 +50,7 @@ export function _arrayBufferToBase64(buffer: Uint8Array) {
   try {
     return window.atob(binary);
   } catch (error) {
-    return binary;
+    return null;
   }
 }
 
