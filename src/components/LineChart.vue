@@ -148,7 +148,8 @@ onMounted(() => {
       .attr('d', myLine(dataWithKey as unknown));
   }
 
-  function dragended(this: EnterElement, _event: unknown, _d: unknown) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function dragended(this: any, _event: unknown, _d: unknown) {
     select(this).attr('stroke', null);
     select(this).raise().attr('fill', '#69b3a2');
   }
@@ -238,7 +239,7 @@ onMounted(() => {
     )
     .attr('r', 5)
     .attr('fill', '#69b3a2')
-    .call(dragHandler as unknown);
+    .call(dragHandler);
 
   props.axisLabel &&
     svg

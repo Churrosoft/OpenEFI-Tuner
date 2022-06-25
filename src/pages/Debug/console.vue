@@ -57,7 +57,6 @@ watch(pollMessages, () => {
 });
 
 onUnmounted(() => {
-  //ollInteval;
   enableInterval = false;
   if (pollInterval !== null) {
     clearInterval(pollInterval);

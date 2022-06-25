@@ -6,9 +6,4 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  data: () => ({}),
-  methods: {},
-};
-</script>
+<script setup lang="ts"></script>

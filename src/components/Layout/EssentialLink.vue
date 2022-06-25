@@ -2,62 +2,49 @@
   <q-item
     clickable
     tag="a"
-    :target="link ? (link.startsWith('#') ? '' : '_blank') : ''"
-    :href="link"
+    :target="props.link ? (props.link.startsWith('#') ? '' : '_blank') : ''"
+    :href="props.link"
     v-if="!innerItems?.length"
   >
-    <q-item-section v-if="icon" avatar>
-      <q-icon :name="icon" />
+    <q-item-section v-if="props.icon" avatar>
+      <q-icon :name="props.icon" />
     </q-item-section>
 
-    <span v-if="!icon" class="q-mr-xl"> </span>
+    <span v-if="!props.icon" class="q-mr-xl"> </span>
 
     <q-item-section>
-      <q-item-label>{{ title }}</q-item-label>
+      <q-item-label>{{ props.title }}</q-item-label>
       <q-item-label caption>
-        {{ caption }}
+        {{ props.caption }}
       </q-item-label>
     </q-item-section>
   </q-item>
   <q-expansion-item
     expand-separator
-    v-if="innerItems?.length"
-    :icon="icon"
-    :label="title"
-    :caption="caption"
+    v-if="props.innerItems?.length"
+    :icon="props.icon"
+    :label="props.title"
+    :caption="props.caption"
   >
-    <EssentialLink v-for="link in innerItems" :key="link.title" v-bind="link" class="q-mr-md" />
+    <EssentialLink
+      v-for="link in props.innerItems"
+      :key="link.title"
+      v-bind="link"
+      class="q-mr-md"
+    />
   </q-expansion-item>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { defineProps } from 'vue';
 
-export default defineComponent({
-  name: 'EssentialLink',
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
+interface IEssentialLink {
+  title: string;
+  caption?: string;
+  link?: string;
+  icon?: string;
+  innerItems?: Array<IEssentialLink>;
+}
 
-    caption: {
-      type: String,
-      default: '',
-    },
-
-    link: {
-      type: String,
-      default: '#',
-    },
-
-    icon: {
-      type: String,
-      default: '',
-    },
-    innerItems: Array as PropType<
-      Array<{ title: string; caption?: string; link?: string; icon?: string }>
-    >,
-  },
-});
+const props = defineProps<IEssentialLink>();
 </script>
