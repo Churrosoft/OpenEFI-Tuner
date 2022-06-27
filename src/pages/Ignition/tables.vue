@@ -54,7 +54,7 @@
       rounded
       size="15px"
       animation-speed="600"
-      v-if="$store.state.Ignition.tables_loading"
+      v-if="store.state.Ignition.tables_loading"
     />
 
     <q-card>
@@ -104,10 +104,8 @@
   </div>
 </template>
 
-<script lang="ts">
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
-import { defineComponent, watchEffect, watch, toRaw } from 'vue';
+<script setup lang="ts">
+import { watchEffect, watch, toRaw, onMounted, onBeforeUnmount } from 'vue';
 import {
   cleanTableEvents,
   getTableObserver,
@@ -136,23 +134,42 @@ import NotTableData from 'src/components/NotTableData.vue';
  * [ 10 ]  (16.8) (16.3) (15.7) (15.9) (20.8) (28.4) (36.0) (34.4) (34.7) (37.2) (37.8) (39.7)
  * [  5 ]  (17.0) (16.5) (16.0) (16.0) (21.0) (28.5) (36.0) (34.4) (34.7) (37.4) (38.0) (40.0)
  */
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;
 
-export default defineComponent({
-  name: 'Ignition',
+let tab = ref('rpmload');
+const store = useStore(storeKey);
+const ignitionTables = store.state.Ignition.tables;
+let pong = {
+  rpm_load: false,
+};
 
-  components: { NotTableData },
-  mounted() {
-    getTableObserver(17, 'ignition_table');
-  },
-  beforeUnmount() {
-    cleanTableEvents('ignition_table');
-  },
-  methods: {
-    requestTable() {
-      void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
+const paired = computed(() => store.state.UsbLayer.paired);
+const deReferenceRows = (value: unknown) =>
+  JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
-      /*   if (!this.paired) return;
+const tables = reactive({
+  rpm_load: deReferenceRows(ignitionTables.rpm_load),
+});
+
+const uploadResult = computed(
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  (): IUSBCommand => store.getters['UsbLayer/getCommand'](125) as IUSBCommand
+);
+
+onMounted(() => {
+  getTableObserver(17, 'ignition_table');
+});
+
+onBeforeUnmount(() => {
+  cleanTableEvents('ignition_table');
+});
+
+function requestTable() {
+  void store.dispatch('Ignition/getIgnitionTableRPMTPS');
+
+  /*   if (!this.paired) return;
       void this.store.dispatch('Ignition/requestIgnitionTableRPMTPS');
 
       const tableInterval = () => {
@@ -166,85 +183,46 @@ export default defineComponent({
       };
 
       this.intTable = setInterval(tableInterval, 250); */
-    },
-    pathTable() {
-      if (!this.paired) return;
-      void this.store.dispatch(
-        'Ignition/uploadTableRPMTPS',
-        this.tables.rpm_load
-      );
-    },
-  },
+}
 
-  setup() {
-    const tab = ref('rpmload');
-    const store = useStore(storeKey);
-    const ignitionTables = store.state.Ignition.tables;
-    let pong = {
-      rpm_load: false,
-    };
+function pathTable() {
+  if (!paired.value) return;
+  void store.dispatch('Ignition/uploadTableRPMTPS', tables.rpm_load);
+}
 
-    const deReferenceRows = (value: unknown) =>
-      JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
+watchEffect(() => {
+  if (tab.value) {
+    cleanTableEvents('ignition_table');
 
-    const tables = reactive({
-      rpm_load: deReferenceRows(ignitionTables.rpm_load),
-    });
-
-    const uploadResult = computed(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      (): IUSBCommand =>
-        store.getters['UsbLayer/getCommand'](125) as IUSBCommand
-    );
-
-    const paired = store.state.UsbLayer.paired;
-
-    watchEffect(() => {
-      if (tab.value) {
-        cleanTableEvents('ignition_table');
-
-        getTableObserver(17, 'ignition_table');
-      }
-    });
-
-    watchEffect(() => {
-      tables.rpm_load = deReferenceRows(ignitionTables.rpm_load);
-    });
-
-    watchEffect(() => {
-      if (uploadResult.value) {
-        void store.dispatch('Ignition/checkUploadResult', uploadResult.value);
-      }
-    });
-
-    watch(
-      tables,
-      (newTableValue) => {
-        if (deepCompare(tables.rpm_load, toRaw(newTableValue).rpm_load)) {
-          if (!pong.rpm_load) {
-            pong.rpm_load = true;
-            return;
-          }
-          console.log('table have changed', toRaw(newTableValue));
-          void store.dispatch(
-            'Ignition/updateTableRPMTPS',
-            newTableValue.rpm_load
-          );
-          pong.rpm_load = false;
-        }
-      },
-      { deep: true }
-    );
-
-    return {
-      tab,
-      store,
-      tables,
-      intTable,
-      paired,
-    };
-  },
+    getTableObserver(17, 'ignition_table');
+  }
 });
+
+watchEffect(() => {
+  tables.rpm_load = deReferenceRows(ignitionTables.rpm_load);
+});
+
+watchEffect(() => {
+  if (uploadResult.value) {
+    void store.dispatch('Ignition/checkUploadResult', uploadResult.value);
+  }
+});
+
+watch(
+  tables,
+  (newTableValue) => {
+    if (deepCompare(tables.rpm_load, toRaw(newTableValue).rpm_load)) {
+      if (!pong.rpm_load) {
+        pong.rpm_load = true;
+        return;
+      }
+      console.log('table have changed', toRaw(newTableValue));
+      void store.dispatch('Ignition/updateTableRPMTPS', newTableValue.rpm_load);
+      pong.rpm_load = false;
+    }
+  },
+  { deep: true }
+);
 </script>
 
 <style>

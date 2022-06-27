@@ -14,16 +14,16 @@
       rounded
       size="15px"
       animation-speed="600"
-      v-if="store.parsedLoading || store.efiLoading"
+      v-if="dtcStore.parsedLoading || dtcStore.efiLoading"
     />
   </div>
 
   <div
     class="q-pa-md row items-start q-gutter-md"
-    v-if="store.parsedCodes !== null"
+    v-if="dtcStore.parsedCodes !== null"
   >
     <q-card
-      v-for="dtc in store.parsedCodes"
+      v-for="dtc in dtcStore.parsedCodes"
       :key="dtc.code"
       style="max-width: 300px"
     >
@@ -97,72 +97,63 @@
       <q-separator />
 
       <q-card-actions align="right">
-        <q-btn flat label="Yes" color="primary" v-close-popup  class="q-mr-xl"/>
+        <q-btn flat label="Yes" color="primary" v-close-popup class="q-mr-xl" />
         <q-btn flat label="No" color="secondary" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { ref } from 'vue';
 
 import { storeKey } from '../../store';
 import { useStore } from 'vuex';
 import { IDTCCode } from 'src/store/dtc_codes/state';
 
-export default defineComponent({
-  name: 'DTCStatus',
+const store = useStore(storeKey);
+let fixed = ref(false);
+let clearDtc = ref(false);
 
-  components: {},
+let codeInfo: IDTCCode = {
+  type: 'INFO',
+  description: '',
+  code: '',
+  info: [''],
+  symptoms: [''],
+  causes: [''],
+};
 
-  setup() {
-    const $store = useStore(storeKey);
+const dtcStore = computed(() => store.state.DtcCodes);
 
-    return {
-      store: $store.state.DtcCodes,
-      fixed: ref(false),
-      clearDtc: ref(false),
-      selectedCode: '',
-      codeInfo: {
-        code: '',
-        info: [''],
-        symptoms: [''],
-        causes: [''],
-      } as IDTCCode,
-      getClassName(code: string) {
-        switch (code) {
-          case 'ERR':
-            return 'text-white bg-red-6';
+function getClassName(code: IDTCCode['type']) {
+  switch (code) {
+    case 'ERR':
+      return 'text-white bg-red-6';
 
-          case 'WARN':
-            return 'text-white bg-warning';
+    case 'WARN':
+      return 'text-white bg-warning';
 
-          case 'INFO':
-            return 'text-white bg-indigo-8';
+    case 'INFO':
+      return 'text-white bg-indigo-8';
 
-          default:
-            return 'text-white bg-secondary';
-        }
-      },
-      requestEfiCodes() {
-        void $store.dispatch('DtcCodes/getDTCfromEFI');
-      },
-    };
-  },
-  methods: {
-    requestCodeInfo(mockCode: IDTCCode) {
-      this.fixed = true;
-      this.selectedCode = mockCode.code;
-      this.codeInfo = mockCode;
-    },
-    requestDtcDelete(code: IDTCCode) {
-      this.clearDtc = true;
-      this.selectedCode = code.code;
-      this.codeInfo = code;
-    },
-  },
-});
+    default:
+      return 'text-white bg-secondary';
+  }
+}
+
+function requestEfiCodes() {
+  void store.dispatch('DtcCodes/getDTCfromEFI');
+}
+
+function requestCodeInfo(mockCode: IDTCCode) {
+  fixed.value = true;
+  codeInfo = mockCode;
+}
+
+function requestDtcDelete(code: IDTCCode) {
+  clearDtc.value = true;
+  codeInfo = code;
+}
 </script>
-//
