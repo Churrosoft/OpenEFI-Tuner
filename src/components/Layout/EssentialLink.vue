@@ -36,8 +36,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
-
 interface IEssentialLink {
   title: string;
   caption?: string;

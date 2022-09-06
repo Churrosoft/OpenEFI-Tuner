@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { useStore } from 'vuex';
-import { storeKey } from '../../store';
+import { storeKey } from 'store/index';
 
 import EssentialLink from 'src/components/Layout/EssentialLink.vue';
 import linksList from './links';

@@ -6,7 +6,12 @@
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 import crc, { buf2hex } from '../crc';
-import { createUSBCommand, IUSBCommand, USBCommands, UsbLayerInterface } from './state';
+import {
+  createUSBCommand,
+  IUSBCommand,
+  USBCommands,
+  UsbLayerInterface,
+} from './state';
 
 const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   connected({ commit }, commandPayload) {
@@ -22,7 +27,10 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
       'Unknow';
 
     console.log(
-      `${typeString} Connected: \n` + `Major: ${major} \n` + `Minor: ${minor} \n` + `Rev: ${rev} \n`
+      `${typeString} Connected: \n` +
+        `Major: ${major} \n` +
+        `Minor: ${minor} \n` +
+        `Rev: ${rev} \n`
     );
     void commit('setPaired', { major, minor, rev, type });
     void commit('toogleConnect', false);
@@ -30,7 +38,10 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   sendMessage({ state }, { command, payload }) {
     let rawData = Array(128).fill(0x0);
 
-    rawData = [1, (command >> 8) & 0xff, command & 0xff, ...payload].slice(0, 128);
+    rawData = [1, (command >> 8) & 0xff, command & 0xff, ...payload].slice(
+      0,
+      128
+    );
     const calcrc = crc(rawData.slice(0, 126));
 
     rawData[126] = (calcrc >> 8) & 0xff;
@@ -71,8 +82,14 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     const payload = frame.slice(3, 126);
     const checksum = buf2hex(frame.slice(126, 128).buffer);
     // Todo este bardo para comparar los dos crc como string...
-    const localcrc = ('0000' + crc(frame.slice(0, 126)).toString(16)).substr(-4);
-    const usbComand = createUSBCommand(command as USBCommands, payload, localcrc);
+    const localcrc = ('0000' + crc(frame.slice(0, 126)).toString(16)).substr(
+      -4
+    );
+    const usbComand = createUSBCommand(
+      command as USBCommands,
+      payload,
+      localcrc
+    );
     console.debug(
       'Frame recibido\nProtocolo: ' +
         protocol +
@@ -84,7 +101,14 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
         checksum
     );
     if (checksum != localcrc) {
-      console.warn('Checksums no coinciden! \n' + 'Local: ' + localcrc + '\nEFI: ' + checksum);
+      console.warn(
+        'Checksums no coinciden! \n' +
+          'Local: ' +
+          localcrc +
+          '\nEFI: ' +
+          checksum
+      );
+      commit('addCommand', usbComand);
     } else {
       commit('addCommand', usbComand);
     }
@@ -97,7 +121,7 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   putCommand({ commit }, payload: IUSBCommand) {
     commit('addCommand', payload);
   },
-  initConnection({ commit },payload) {
+  initConnection({ commit }, payload) {
     commit('toogleConnect', payload);
   },
 };

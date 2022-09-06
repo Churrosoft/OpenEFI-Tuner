@@ -45,7 +45,7 @@
     </q-card>
   </div>
 
-  <q-dialog v-model="fixed">
+  <q-dialog v-model="fixed" v-if="codeInfo">
     <q-card>
       <q-card-section>
         <div class="text-h6">{{ codeInfo.code }} description</div>
@@ -88,7 +88,7 @@
     </q-card>
   </q-dialog>
 
-  <q-dialog v-model="clearDtc">
+  <q-dialog v-model="clearDtc" v-if="codeInfo">
     <q-card class="q-pa-md">
       <q-card-section>
         <div class="text-h5">Confirm delete code: {{ codeInfo.code }}?</div>
@@ -105,25 +105,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { ref } from 'vue';
-
-import { storeKey } from '../../store';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
-import { IDTCCode } from 'src/store/dtc_codes/state';
+
+import { IDTCCode } from 'store/dtc_codes';
+import { storeKey } from 'store/index';
 
 const store = useStore(storeKey);
+
 let fixed = ref(false);
 let clearDtc = ref(false);
-
-let codeInfo: IDTCCode = {
-  type: 'INFO',
-  description: '',
-  code: '',
-  info: [''],
-  symptoms: [''],
-  causes: [''],
-};
+let codeInfo = ref<IDTCCode | null>(null);
 
 const dtcStore = computed(() => store.state.DtcCodes);
 
@@ -149,11 +141,11 @@ function requestEfiCodes() {
 
 function requestCodeInfo(mockCode: IDTCCode) {
   fixed.value = true;
-  codeInfo = mockCode;
+  codeInfo.value = mockCode;
 }
 
 function requestDtcDelete(code: IDTCCode) {
   clearDtc.value = true;
-  codeInfo = code;
+  codeInfo.value = code;
 }
 </script>

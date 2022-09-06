@@ -57,7 +57,7 @@ import { useQuasar } from 'quasar';
 
 import { defineComponent, ref } from 'vue';
 
-import { storeKey } from '../../store';
+import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
 //import { useI18n } from 'vue-i18n';
 

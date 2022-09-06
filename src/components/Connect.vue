@@ -11,11 +11,10 @@
 </template>
 
 <script setup lang="ts">
-import { IUSBCommand } from 'src/store/usb-layer/state';
-
-import { Navigator, SerialPort } from '../types/webusb';
-import { storeKey } from '../store';
+import { IUSBCommand } from 'store/usb-layer';
+import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
+import { Navigator, SerialPort } from '../types/webusb';
 
 let serialCache: Array<number> = [];
 let intConnection: NodeJS.Timeout | null = null;

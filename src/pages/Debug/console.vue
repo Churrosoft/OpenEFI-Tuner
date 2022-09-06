@@ -32,8 +32,8 @@ import './styles.scss';
 
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { storeKey } from '../../store';
-import { IDebugMessage } from '../../store/debug/state';
+import { storeKey } from 'store/index';
+import { IDebugMessage } from '../../store/debug';
 
 const store = useStore(storeKey);
 const pollMessages = ref(false);

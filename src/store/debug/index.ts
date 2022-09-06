@@ -4,6 +4,7 @@ import state, { DebugInterface } from './state';
 import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
+export type { IDebugMessage } from './state';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const exampleModule: Module<DebugInterface, StateInterface> = {

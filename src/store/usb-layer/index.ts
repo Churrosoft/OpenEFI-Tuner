@@ -4,6 +4,7 @@ import state, { UsbLayerInterface } from './state';
 import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
+export type { IUSBCommand } from './state';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const exampleModule: Module<UsbLayerInterface, StateInterface> = {
@@ -11,7 +12,7 @@ const exampleModule: Module<UsbLayerInterface, StateInterface> = {
   actions,
   getters,
   mutations,
-  state
+  state,
 };
 
 export default exampleModule;

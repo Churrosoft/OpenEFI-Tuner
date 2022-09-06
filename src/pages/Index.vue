@@ -14,7 +14,7 @@ import { computed, watchEffect, onBeforeUnmount, onMounted } from 'vue';
 import { IUSBCommand } from 'src/store/usb-layer/state';
 import { mockUSBCommand } from 'src/store/usb-layer/mocks';
 
-import { storeKey } from '../store';
+import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
 
 import RPMGauge from 'components/Dashboard/RPMGauge.vue';

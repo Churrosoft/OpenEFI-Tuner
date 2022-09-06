@@ -117,7 +117,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
                 ]"
                 showRowHeaders="false"
                 showColumnHeaders="false"
-                class="asePercentage_table"
+                class="aseCycles_table"
               />
             </div>
           </div>
@@ -176,10 +176,12 @@ const margins = {
 
 onMounted(() => {
   getTableObserver(2, 'asePercentage_table');
+  getTableObserver(2, 'aseCycles_table');
 });
 
 onBeforeUnmount(() => {
   cleanTableEvents('asePercentage_table');
+  cleanTableEvents('aseCycles_table');
 });
 
 const liveTunning = ref(false);

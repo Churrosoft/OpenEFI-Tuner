@@ -4,6 +4,7 @@ import state, { DTCCodesInterface } from './state';
 import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
+export type { IDTCCode } from './state';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const exampleModule: Module<DTCCodesInterface, StateInterface> = {
@@ -11,7 +12,7 @@ const exampleModule: Module<DTCCodesInterface, StateInterface> = {
   actions,
   getters,
   mutations,
-  state
+  state,
 };
 
 export default exampleModule;

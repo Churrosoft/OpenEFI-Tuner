@@ -112,9 +112,9 @@ import {
   ITableRow,
 } from 'src/types/tables';
 import { ref, reactive, computed } from 'vue';
-import { storeKey } from '../../store';
+import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
-import { IUSBCommand } from 'src/store/usb-layer/state';
+import { IUSBCommand } from 'src/store/usb-layer';
 import { deepCompare } from 'src/types/compare';
 
 import NotTableData from 'src/components/NotTableData.vue';
