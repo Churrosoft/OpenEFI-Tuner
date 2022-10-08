@@ -45,7 +45,7 @@ watchEffect(() => {
       const command = mockUSBCommand(5, new Uint8Array([0xff]));
       void store.dispatch('UsbLayer/sendMessage', command);
     };
-    intDashboard = setInterval(dashboardInterval, 1000);
+    intDashboard = setInterval(dashboardInterval, 200);
   }
 });
 

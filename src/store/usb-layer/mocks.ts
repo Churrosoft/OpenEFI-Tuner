@@ -351,7 +351,7 @@ const mockedDebug = [
 const commands: Array<IUSBCommand> = [
   // mockUSBCommand(12, new Uint8Array([0, 0, 0, 0, 0])),
   ...mockedDTC,
-  ...mockedIgnition,
+  /* ...mockedIgnition, */
   ...mockedDebug,
 ];
 

@@ -13,6 +13,7 @@ export interface UsbLayerInterface {
   writer: null | WritableStreamDefaultWriter<Uint8Array>;
   connected: boolean;
   paired: boolean;
+  showLiveTunningBanner: boolean;
   firmware_ver: {
     type: string | null;
     major: string | null;
@@ -98,6 +99,8 @@ function state(): UsbLayerInterface {
 
     connected: false, // Cuando ya nos conectamos por serial
     paired: false, // Cuando le OpenEFI ya nos respondio
+
+    showLiveTunningBanner: true,
 
     firmware_ver: { type: null, major: null, minor: null, rev: null },
     pending_commands: [...mocks],

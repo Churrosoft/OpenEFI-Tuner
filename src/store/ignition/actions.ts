@@ -40,7 +40,7 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
 
     for (let ind = 0; ind < commandsLength; ind++) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const command = rootGetters['UsbLayer/getCommand'](126) as IUSBCommand;
+      const command = rootGetters['UsbLayer/getCommand'](130) as IUSBCommand;
       if (command !== null) {
         /*
         LOGICA PA' LA TABLA ACA'

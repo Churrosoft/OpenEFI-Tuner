@@ -167,22 +167,25 @@ onBeforeUnmount(() => {
 });
 
 function requestTable() {
-  void store.dispatch('Ignition/getIgnitionTableRPMTPS');
+  /*   void store.dispatch('Ignition/getIgnitionTableRPMTPS');
+   */
+  if (!paired.value) return;
+  void store.dispatch('Ignition/requestIgnitionTableRPMTPS');
 
-  /*   if (!this.paired) return;
-      void this.store.dispatch('Ignition/requestIgnitionTableRPMTPS');
+  const tableInterval = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const tableAvailable = store.getters['UsbLayer/getCommand'](
+      127
+    ) as IUSBCommand | null;
+    if (tableAvailable) {
+      console.log('table available');
+      void store.dispatch('Ignition/getIgnitionTableRPMTPS');
 
-      const tableInterval = () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        const tableAvailable = this.store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
-        if (tableAvailable) {
-          console.log('table available');
-          clearInterval(intTable as NodeJS.Timeout);
-          void this.store.dispatch('Ignition/getIgnitionTableRPMTPS');
-        }
-      };
+      clearInterval(intTable as NodeJS.Timeout);
+    }
+  };
 
-      this.intTable = setInterval(tableInterval, 250); */
+  intTable = setInterval(tableInterval, 250);
 }
 
 function pathTable() {
