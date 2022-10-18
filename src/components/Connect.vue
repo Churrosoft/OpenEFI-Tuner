@@ -40,7 +40,7 @@ const connectUsbDevice = () => {
 
 const startWorking = async (port: SerialPort) => {
   // El baudrate se podrriiia reconfigurar luego
-  await port.open({ baudRate: 512000 });
+  await port.open({ baudRate: 921600 /* 512000 */ });
 
   if (!port.writable) return;
   const writer = port.writable.getWriter();

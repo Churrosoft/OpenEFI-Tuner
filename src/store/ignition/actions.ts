@@ -4,6 +4,7 @@ import { ITableRow } from 'src/types/tables';
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 import { IUSBCommand } from '../usb-layer/state';
+import { defaultRPMTPS_TABLE } from './default';
 
 import { IgnitionInterface } from './state';
 
@@ -40,7 +41,7 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
 
     for (let ind = 0; ind < commandsLength; ind++) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const command = rootGetters['UsbLayer/getCommand'](130) as IUSBCommand;
+      const command = rootGetters['UsbLayer/getCommand'](126) as IUSBCommand;
       if (command !== null) {
         /*
         LOGICA PA' LA TABLA ACA'
@@ -64,6 +65,7 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
         }
         //  return;
         tableRow.push(commandRow);
+        console.log(commandRow);
         await timeout(10);
 
         void dispatch('UsbLayer/removeCommand', command, { root: true });
@@ -72,10 +74,14 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
     if (tableRow.length > 1) {
       commit('setTableRPM_TPS', tableRow);
     }
-
+    console.log(JSON.stringify(tableRow));
     commit('setIgnitionLoading', false);
   },
-
+  errorTableRPMTPS({ commit }) {
+    commit('setTable_RPMTPS_Status', 'error');
+    commit('setTableRPM_TPS', defaultRPMTPS_TABLE);
+    commit('setIgnitionLoading', false);
+  },
   updateTableRPMTPS({ commit }, payload: Array<ITableRow>) {
     commit('setTableRPM_TPS', payload);
   },

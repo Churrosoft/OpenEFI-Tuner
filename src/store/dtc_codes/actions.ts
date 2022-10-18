@@ -30,7 +30,7 @@ const actions: ActionTree<DTCCodesInterface, StateInterface> = {
 
     for (let ind = 0; ind < commandsLength; ind++) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const command = rootGetters['UsbLayer/getCommand'](130) as IUSBCommand;
+      const command = rootGetters['UsbLayer/getCommand'](140) as IUSBCommand;
       if (command !== null) {
         const chunk = command.payload.slice(0, 8);
         codes.push(_arrayBufferToBase64(chunk));

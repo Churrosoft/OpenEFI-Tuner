@@ -30,27 +30,27 @@ export const mockUSBCommand = (
 const mockedDTC = [
   //P06010
   mockUSBCommand(
-    30,
+    40,
     new Uint8Array([0x55, 0x44, 0x41, 0x32, 0x4d, 0x44, 0x45, 0x3d])
   ),
   //P060A // 55 44 41 32 4d 45 45 3d
   mockUSBCommand(
-    30,
+    40,
     new Uint8Array([0x55, 0x44, 0x41, 0x32, 0x4d, 0x45, 0x45, 0x3d])
   ),
   //P0632 // 55 44 41 32 4d 7a 49 4b
   mockUSBCommand(
-    30,
+    40,
     new Uint8Array([0x55, 0x44, 0x41, 0x32, 0x4d, 0x7a, 0x49, 0x4b])
   ),
   //P0648 // 55 44 41 32 4e 44 67 3d
   mockUSBCommand(
-    30,
+    40,
     new Uint8Array([0x55, 0x44, 0x41, 0x32, 0x4e, 0x44, 0x67, 0x3d])
   ),
   //P06426 // 55 44 41 32 4e 44 49 3d
   mockUSBCommand(
-    30,
+    40,
     new Uint8Array([0x55, 0x44, 0x41, 0x32, 0x4e, 0x44, 0x49, 0x3d])
   ),
 ];

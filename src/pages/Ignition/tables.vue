@@ -177,10 +177,16 @@ function requestTable() {
     const tableAvailable = store.getters['UsbLayer/getCommand'](
       127
     ) as IUSBCommand | null;
-    if (tableAvailable) {
-      console.log('table available');
-      void store.dispatch('Ignition/getIgnitionTableRPMTPS');
+    const tableError = store.getters['UsbLayer/getCommand'](
+      130
+    ) as IUSBCommand | null;
 
+    if (tableAvailable) {
+      void store.dispatch('Ignition/getIgnitionTableRPMTPS');
+      clearInterval(intTable as NodeJS.Timeout);
+    }
+    if (tableError) {
+      void store.dispatch('Ignition/errorTableRPMTPS');
       clearInterval(intTable as NodeJS.Timeout);
     }
   };

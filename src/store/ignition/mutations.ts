@@ -1,6 +1,6 @@
 import { ITableRow } from 'src/types/tables';
 import { MutationTree } from 'vuex';
-import { IgnitionInterface } from './state';
+import { IgnitionInterface, ITableStatus } from './state';
 
 const mutation: MutationTree<IgnitionInterface> = {
   setTableRPM_TPS(state, tableData: Array<ITableRow>) {
@@ -12,7 +12,9 @@ const mutation: MutationTree<IgnitionInterface> = {
   setIgnitionLoading(state, loading: boolean) {
     state.tables_loading = loading;
   },
-
+  setTable_RPMTPS_Status(state, status: ITableStatus) {
+    state.status.rpm_load = status;
+  },
 };
 
 export default mutation;
