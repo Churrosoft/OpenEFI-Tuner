@@ -32,7 +32,7 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
         }
       });
 
-      if (resultCommands.length > 1) return resultCommands;
+      if (resultCommands.length > 0) return resultCommands;
       return null;
     }
     return null;

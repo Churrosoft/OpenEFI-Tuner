@@ -2,12 +2,30 @@ import { MutationTree } from 'vuex';
 import { DashboardInterface } from './state';
 
 const mutation: MutationTree<DashboardInterface> = {
-  setDashboard(state, { rpm, temperature, battery, advance, efiStatus }: DashboardInterface) {
+  setDashboard(
+    state,
+    {
+      rpm,
+      temperature,
+      battery,
+      advance,
+      efiStatus,
+      tps,
+      AFR,
+      airTemperature,
+      injection,
+    }: DashboardInterface
+  ) {
     state.rpm = rpm;
     state.temperature = temperature;
     state.battery = battery;
     state.advance = advance;
     state.efiStatus = efiStatus;
+    //new
+    state.tps = tps;
+    state.AFR = AFR;
+    state.airTemperature = airTemperature;
+    state.injection = injection;
   },
   setDashboardConfig(
     state,

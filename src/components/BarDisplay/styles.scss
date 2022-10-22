@@ -1,0 +1,16 @@
+.BarDisplay {
+  width: 15rem;
+  height: 100%;
+  h5 {
+    margin: 0;
+  }
+  .q-linear-progress {
+    max-width: 100%;
+  }
+  &__container {
+    width: 100%;
+    /*  .q-linear-progress {
+      transform: rotate(-90deg);
+    } */
+  }
+}

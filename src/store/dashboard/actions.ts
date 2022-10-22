@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
+import { uint8ArrayToInt32 } from '../usb-layer';
 import { IUSBCommand } from '../usb-layer/state';
 
 import { DashboardInterface, efiStatusMap, IEfiStatus } from './state';
@@ -17,16 +18,40 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
         const frame = command.payload;
 
         const rpm = (frame[0] << 8) + frame[1];
-        const temperature = (frame[2] << 8) + frame[3];
+        /*   const temperature = (frame[2] << 8) + frame[3];
         const load = (((frame[4] << 8) + frame[5]) / 100).toFixed(2);
         const battery = (((frame[6] << 8) + frame[7]) / 100).toFixed(2);
-        const advance = (frame[8] << 8) + frame[9];
+        const advance = (frame[8] << 8) + frame[9]; */
 
-        const efiStatus = efiStatusMap[
-          frame[10] as keyof typeof efiStatusMap
-        ] as IEfiStatus;
+        // Sensors:
+        const sensor_tps = uint8ArrayToInt32(frame, 11);
+        const sensor_map = uint8ArrayToInt32(frame, 15);
+        const sensor_temp = uint8ArrayToInt32(frame, 19) / 100;
+        const sensor_iat = uint8ArrayToInt32(frame, 23) / 100;
+        const sensor_vbatt = uint8ArrayToInt32(frame, 27) / 100;
+        const sensor_lmb = uint8ArrayToInt32(frame, 31);
 
-        commit('setDashboard', { rpm, temperature, load, battery, advance, efiStatus });
+        // Ignition:
+        const advance = uint8ArrayToInt32(frame, 60) / 100;
+
+        // Injection:
+        const injectionTime1Bank = uint8ArrayToInt32(frame, 80) / 100;
+
+        const efiStatus = efiStatusMap[frame[10] as keyof typeof efiStatusMap] as IEfiStatus;
+        commit('setDashboard', {
+          rpm,
+          temperature: sensor_temp,
+          load: sensor_map,
+          battery: sensor_vbatt,
+          advance,
+          efiStatus,
+          tps: sensor_tps,
+          AFR: sensor_lmb,
+          airTemperature: sensor_iat,
+          injection: {
+            time_bank_1: injectionTime1Bank,
+          },
+        });
 
         void dispatch('UsbLayer/removeCommand', command, {
           root: true,

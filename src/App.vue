@@ -6,7 +6,8 @@ import { defineComponent } from 'vue';
 import { useQuasar } from 'quasar';
 import { setCssVar } from 'quasar';
 import { watch } from 'vue';
-
+/* import 'canvas-datagrid';
+ */
 //setCssVar('primary', '#33F')
 
 const myIcons: { [key: string]: string } = {

@@ -1,11 +1,71 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <RPMGauge />
-    <Battery :value="String(store.state.Dashboard.battery ?? '0000')" />
-    <q-btn color="secondary" class="gt-xs" rounded @click="requestMetadata">
-      <span class="q-mr-md" />Request Dashboard
-    </q-btn>
-  </q-page>
+  <q-btn color="secondary" class="gt-xs" rounded @click="requestMetadata">
+    <span class="q-mr-md" />Request Dashboard
+  </q-btn>
+  <div class="row items-center justify-evenly q-mt-xl">
+    <RPMGauge class="q-ml-md" />
+    <div class="col-8 q-ml-xl">
+      <div class="row items-center content-center">
+        <SegmentDisplay
+          :value="String(store.state.Dashboard.battery ?? '----').padStart(4, '0')"
+          title="Battery"
+          unit="v"
+          :maxValue="4"
+          class="q-ma-sm"
+        />
+        <SegmentDisplay
+          :value="String(store.state.Dashboard.temperature ?? '-----').padStart(5, '0')"
+          title="Temp Motor"
+          unit="°C"
+          :maxValue="5"
+          class="q-ma-sm"
+        />
+        <SegmentDisplay
+          :value="String(store.state.Dashboard.airTemperature ?? '----').padStart(4, '0')"
+          title="Air Temp"
+          unit="°C"
+          :maxValue="4"
+          class="q-ma-sm"
+        />
+        <SegmentDisplay
+          :value="String(store.state.Dashboard.AFR ?? '----')"
+          title="AFR"
+          unit="λ"
+          :maxValue="4"
+          class="q-ma-sm"
+        />
+        <SegmentDisplay
+          :value="String(store.state.Dashboard.load ?? '----')"
+          title="MAP"
+          unit="Kpa"
+          :maxValue="4"
+          class="q-ma-sm"
+        />
+        <SegmentDisplay
+          :value="String(store.state.Dashboard.injection.time_bank_1 ?? '----')"
+          title="T INY (ch1)"
+          unit="mS"
+          :maxValue="4"
+          class="q-ma-sm"
+        />
+        <SegmentDisplay
+          :value="String(store.state.Dashboard.injection.duty_1 ?? '----')"
+          title="T Duty (ch1)"
+          unit="%"
+          :maxValue="4"
+          class="q-ma-sm"
+        />
+        <SegmentDisplay
+          :value="String(store.state.Dashboard.advance ?? '----')"
+          title="Advance"
+          unit="°"
+          :maxValue="4"
+          class="q-ma-sm"
+        />
+        <BarDisplay title="TPS" class="q-ma-sm" :value="store.state.Dashboard.tps ?? undefined" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -21,17 +81,15 @@ import RPMGauge from 'components/Dashboard/RPMGauge.vue';
 import Battery from 'components/Dashboard/Battery/index.vue';
 
 import './dashboard.scss';
+import SegmentDisplay from 'src/components/SegmentDisplay/index.vue';
+import BarDisplay from 'src/components/BarDisplay/index.vue';
 
 let intDashboard: NodeJS.Timeout | null = null;
 const store = useStore(storeKey);
 
-const dashboardMetaData = computed(
-  (): IUSBCommand => store.getters['UsbLayer/getCommand'](14) as IUSBCommand
-);
+const dashboardMetaData = computed((): IUSBCommand => store.getters['UsbLayer/getCommand'](14) as IUSBCommand);
 
-const dashboardData = computed(
-  (): IUSBCommand => store.getters['UsbLayer/getCommand'](15) as IUSBCommand
-);
+const dashboardData = computed((): IUSBCommand => store.getters['UsbLayer/getCommand'](15) as IUSBCommand);
 
 function requestMetadata() {
   void store.dispatch('Dashboard/requestGaugeConfig');
@@ -45,7 +103,7 @@ watchEffect(() => {
       const command = mockUSBCommand(5, new Uint8Array([0xff]));
       void store.dispatch('UsbLayer/sendMessage', command);
     };
-    intDashboard = setInterval(dashboardInterval, 200);
+    intDashboard = setInterval(dashboardInterval, 1000);
   }
 });
 

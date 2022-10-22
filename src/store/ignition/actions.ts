@@ -65,7 +65,7 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
         }
         //  return;
         tableRow.push(commandRow);
-        console.log(commandRow);
+        /*  console.log(commandRow); */
         await timeout(10);
 
         void dispatch('UsbLayer/removeCommand', command, { root: true });
@@ -74,8 +74,8 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
     if (tableRow.length > 1) {
       commit('setTableRPM_TPS', tableRow);
     }
-    console.log(JSON.stringify(tableRow));
-    commit('setIgnitionLoading', false);
+    /*     console.log(JSON.stringify(tableRow));
+     */ commit('setIgnitionLoading', false);
   },
   errorTableRPMTPS({ commit }) {
     commit('setTable_RPMTPS_Status', 'error');
@@ -114,7 +114,7 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
 
       dataRow = Array(123).fill(0x0);
       index = 2;
-      await timeout(50);
+      await timeout(15);
     }
 
     const subcommand = 10;
@@ -122,7 +122,7 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
 
     outpayload[0] = (subcommand >> 8) & 0xff;
     outpayload[1] = subcommand & 0xff;
-    await timeout(50);
+    await timeout(15);
     void dispatch(
       'UsbLayer/sendMessage',
       { command: 24, payload: outpayload },
@@ -130,11 +130,19 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
     );
   },
   checkUploadResult({ dispatch, commit, rootGetters }) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const endRowCommand = rootGetters['UsbLayer/getCommand'](
-      125
-    ) as IUSBCommand;
-    void dispatch('UsbLayer/removeCommand', endRowCommand, { root: true });
+    const commandList = rootGetters['UsbLayer/getGroupedCommands']([
+      25, 32,
+    ]) as Array<IUSBCommand>;
+
+    if (commandList === null) return;
+
+    commandList.map((command) => {
+      if (command !== null) {
+        void dispatch('UsbLayer/removeCommand', command, {
+          root: true,
+        });
+      }
+    });
     commit('setIgnitionLoading', false);
   },
   someAction(/* context */) {

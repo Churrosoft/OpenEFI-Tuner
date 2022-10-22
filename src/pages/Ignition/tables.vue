@@ -78,7 +78,7 @@
         <q-tab-panel name="rpmload">
           <div class="text-h6 q-mb-md">RPM/Load (Kpa)</div>
           <canvas-datagrid
-            v-if="tables.rpm_load !== null"
+            v-if="tables.rpm_load !== null && tab === 'rpmload'"
             :data.prop="tables.rpm_load"
             showRowHeaders="false"
             showColumnHeaders="false"
@@ -137,6 +137,7 @@ import NotTableData from 'src/components/NotTableData.vue';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;
+let uploadInterval: NodeJS.Timeout | null = null;
 
 let tab = ref('rpmload');
 const store = useStore(storeKey);
@@ -155,7 +156,8 @@ const tables = reactive({
 
 const uploadResult = computed(
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  (): IUSBCommand => store.getters['UsbLayer/getCommand'](125) as IUSBCommand
+  (): IUSBCommand =>
+    store.getters['UsbLayer/getGroupedCommands']([25, 32]) as IUSBCommand
 );
 
 onMounted(() => {

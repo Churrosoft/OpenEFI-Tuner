@@ -1,12 +1,6 @@
 <template>
   <div class="q-mr-lg q-ml-xl">
-    <q-btn
-      color="primary"
-      @click="connectUsbDevice"
-      :disable="store.state.UsbLayer.paired"
-    >
-      Connect
-    </q-btn>
+    <q-btn color="primary" @click="connectUsbDevice" :disable="store.state.UsbLayer.paired"> Connect </q-btn>
   </div>
 </template>
 
@@ -40,7 +34,7 @@ const connectUsbDevice = () => {
 
 const startWorking = async (port: SerialPort) => {
   // El baudrate se podrriiia reconfigurar luego
-  await port.open({ baudRate: 921600 /* 512000 */ });
+  await port.open({ baudRate: 921600000 /* 921600 */ /* 512000 */ });
 
   if (!port.writable) return;
   const writer = port.writable.getWriter();
@@ -94,15 +88,8 @@ const startWorking = async (port: SerialPort) => {
           let command: Array<number>;
           let proccesed = 0;
 
-          for (
-            chunksProccesed = 0, j = serialCache.length;
-            chunksProccesed < j;
-            chunksProccesed += CHUNK_SIZE
-          ) {
-            command = serialCache.slice(
-              chunksProccesed,
-              chunksProccesed + CHUNK_SIZE
-            );
+          for (chunksProccesed = 0, j = serialCache.length; chunksProccesed < j; chunksProccesed += CHUNK_SIZE) {
+            command = serialCache.slice(chunksProccesed, chunksProccesed + CHUNK_SIZE);
             if (command.length > 127) {
               void store.dispatch('UsbLayer/recv', command);
               proccesed++;
