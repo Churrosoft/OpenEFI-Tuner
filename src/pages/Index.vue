@@ -78,7 +78,6 @@ import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
 
 import RPMGauge from 'components/Dashboard/RPMGauge.vue';
-import Battery from 'components/Dashboard/Battery/index.vue';
 
 import './dashboard.scss';
 import SegmentDisplay from 'src/components/SegmentDisplay/index.vue';
