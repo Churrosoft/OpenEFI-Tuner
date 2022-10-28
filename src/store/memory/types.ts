@@ -2,7 +2,7 @@
 
 import { deepCompare } from 'src/types/compare';
 import { ITableRow } from 'src/types/tables';
-import { computed, ComputedRef, reactive, toRaw, watch, watchEffect } from 'vue';
+import { computed, ComputedRef, reactive, ref, toRaw, watch, watchEffect } from 'vue';
 import { Store } from 'vuex';
 import { StateInterface } from '..';
 import { IUSBCommand } from '../usb-layer';
@@ -47,7 +47,7 @@ export interface IUseTable {
     uploadResult: string;
   };
   state: {
-    tableData: Array<ITableRow> | null;
+    tableData: ComputedRef<Array<ITableRow> | null>;
   };
 }
 
@@ -92,7 +92,7 @@ const deReferenceRows = (value: unknown) => JSON.parse(JSON.stringify(value)) as
 
 export const useTable = ({ store, actions, state, paired, intTable }: IUseTable) => {
   let pong = false;
-  const table = reactive({ data: deReferenceRows(state.tableData) });
+  const table = ref(deReferenceRows(state.tableData.value));
 
   const uploadResult = computed(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -101,7 +101,7 @@ export const useTable = ({ store, actions, state, paired, intTable }: IUseTable)
 
   // store => view update
   watchEffect(() => {
-    table.data = deReferenceRows(state.tableData);
+    table.value = deReferenceRows(state.tableData.value);
   });
 
   // view => store => HW update
@@ -131,5 +131,5 @@ export const useTable = ({ store, actions, state, paired, intTable }: IUseTable)
   const uploadTable = makeUploadTable({ store, paired, update: actions.update });
   const requestTable = makeTableRequest({ store, paired, intTable, actions: actions as IMakeTableRequest['actions'] });
 
-  return { uploadTable, requestTable, table: table.data };
+  return { uploadTable, requestTable, table };
 };

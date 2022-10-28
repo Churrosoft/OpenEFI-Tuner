@@ -60,26 +60,26 @@
         <q-tab-panel name="rpmload">
           <div class="text-h6 q-mb-md">RPM/Load (Kpa)</div>
           <canvas-datagrid
-            v-if="rpmMapTable.table !== null && tab === 'rpmload'"
-            :data.prop="rpmMapTable.table"
+            v-if="rpmMapTable.table.value !== null && tab === 'rpmload'"
+            :data.prop="rpmMapTable.table.value"
             showRowHeaders="false"
             showColumnHeaders="false"
             class="ignition_table"
           />
 
-          <NotTableData v-if="tables.rpm_load === null" />
+          <NotTableData v-if="rpmMapTable.table.value === null" />
         </q-tab-panel>
 
         <q-tab-panel name="loadtemp">
           <div class="text-h6">Load/Temp</div>
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          <NotTableData v-if="tables.rpm_load === null" />
+          <NotTableData v-if="rpmMapTable.table.value === null" />
         </q-tab-panel>
 
         <q-tab-panel name="rpmbattery">
           <div class="text-h6">RPM/Battery</div>
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          <NotTableData v-if="tables.rpm_load === null" />
+          <NotTableData v-if="rpmMapTable.table.value === null" />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import { watchEffect, onMounted, onBeforeUnmount } from 'vue';
 import { cleanTableEvents, getTableObserver } from 'src/types/tables';
-import { ref, reactive, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
 import NotTableData from 'src/components/NotTableData.vue';
@@ -101,7 +101,7 @@ let intTable: NodeJS.Timeout | null = null;
 let tab = ref('rpmload');
 
 const store = useStore(storeKey);
-const ignitionTables = store.state.Ignition.tables;
+const ignitionTables = computed(() => store.state.Ignition.tables.rpm_load);
 
 const paired = computed(() => store.state.UsbLayer.paired);
 
@@ -118,17 +118,13 @@ const rpmMapTable = useTable({
     uploadResult: 'Ignition/checkUploadResult',
   },
   state: {
-    tableData: ignitionTables.rpm_load,
+    tableData: ignitionTables,
   },
-});
-
-const tables = reactive({
-  rpm_load: rpmMapTable.table,
 });
 
 const pathTable = () => {
   if (tab.value === 'rpmload') {
-    rpmMapTable.uploadTable(tables.rpm_load);
+    rpmMapTable.uploadTable(rpmMapTable.table.value);
   }
 };
 const requestTable = () => {
@@ -138,8 +134,8 @@ const requestTable = () => {
 };
 
 watchEffect(() => {
-  if (rpmMapTable.table) {
-    console.log(rpmMapTable.table);
+  if (tab.value === 'rpmload') {
+    getTableObserver(17, 'ignition_table');
   }
 });
 
