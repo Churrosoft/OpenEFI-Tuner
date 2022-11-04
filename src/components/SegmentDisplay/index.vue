@@ -5,14 +5,10 @@
       <span class="battery__digit-container">
         <div class="battery__digit-container--digits">
           <h4 class="battery__dseg-display">
-            {{ props.value.padStart(maxValue ?? 5, '!') }}
+            {{ formatNumber(props.value) }}
           </h4>
           <h4 class="battery__dseg-display__background">
-            {{
-              Array(maxValue ?? 4)
-                .fill('8')
-                .join('')
-            }}
+            {{ Array(padSize).fill('8').join('') }}
           </h4>
         </div>
         <h4 class="battery__digit-container--volts">{{ props.unit }}</h4>
@@ -25,11 +21,26 @@
 import './styles.scss';
 
 interface ISegment {
-  value: string;
+  value?: string | number | null;
+  roundTo?: number;
   title?: string;
   unit?: string;
   maxValue?: number;
 }
 
 const props = defineProps<ISegment>();
+
+const padSize = props.maxValue ?? 5;
+
+const formatNumber = (n?: string | number | null) => {
+  if (!n) {
+    return ''.padStart(padSize, '-');
+  }
+  let numberFormated = String(
+    Number(n)
+      .toFixed(props.roundTo ?? 2)
+      .padStart(padSize + 1, '!')
+  );
+  return numberFormated;
+};
 </script>

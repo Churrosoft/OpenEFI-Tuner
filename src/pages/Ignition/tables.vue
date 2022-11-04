@@ -141,6 +141,7 @@ watchEffect(() => {
 
 onMounted(() => {
   if (tab.value === 'rpmload') {
+    cleanTableEvents('ignition_table');
     getTableObserver(17, 'ignition_table');
   }
 });

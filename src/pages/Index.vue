@@ -6,62 +6,38 @@
     <RPMGauge class="q-ml-md" />
     <div class="col-8 q-ml-xl">
       <div class="row items-center content-center">
+        <SegmentDisplay :value="store.state.Dashboard.battery" title="Battery" unit="v" :maxValue="4" class="q-ma-sm" />
         <SegmentDisplay
-          :value="String(store.state.Dashboard.battery ?? '----').padStart(4, '0')"
-          title="Battery"
-          unit="v"
-          :maxValue="4"
-          class="q-ma-sm"
-        />
-        <SegmentDisplay
-          :value="String(store.state.Dashboard.temperature ?? '-----').padStart(5, '0')"
+          :value="store.state.Dashboard.temperature"
           title="Temp Motor"
           unit="°C"
           :maxValue="5"
           class="q-ma-sm"
         />
         <SegmentDisplay
-          :value="String(store.state.Dashboard.airTemperature ?? '----').padStart(4, '0')"
+          :value="store.state.Dashboard.airTemperature"
           title="Air Temp"
           unit="°C"
           :maxValue="4"
           class="q-ma-sm"
         />
+        <SegmentDisplay :value="store.state.Dashboard.AFR" title="AFR" unit="λ" :maxValue="4" class="q-ma-sm" />
+        <SegmentDisplay :value="store.state.Dashboard.load" title="MAP" unit="Kpa" :maxValue="4" class="q-ma-sm" />
         <SegmentDisplay
-          :value="String(store.state.Dashboard.AFR ?? '----')"
-          title="AFR"
-          unit="λ"
-          :maxValue="4"
-          class="q-ma-sm"
-        />
-        <SegmentDisplay
-          :value="String(store.state.Dashboard.load ?? '----')"
-          title="MAP"
-          unit="Kpa"
-          :maxValue="4"
-          class="q-ma-sm"
-        />
-        <SegmentDisplay
-          :value="String(store.state.Dashboard.injection.time_bank_1 ?? '----')"
+          :value="store.state.Dashboard.injection.time_bank_1"
           title="T INY (ch1)"
           unit="mS"
           :maxValue="4"
           class="q-ma-sm"
         />
         <SegmentDisplay
-          :value="String(store.state.Dashboard.injection.duty_1 ?? '----')"
+          :value="store.state.Dashboard.injection.duty_1"
           title="T Duty (ch1)"
           unit="%"
           :maxValue="4"
           class="q-ma-sm"
         />
-        <SegmentDisplay
-          :value="String(store.state.Dashboard.advance ?? '----')"
-          title="Advance"
-          unit="°"
-          :maxValue="4"
-          class="q-ma-sm"
-        />
+        <SegmentDisplay :value="store.state.Dashboard.advance" title="Advance" unit="°" :maxValue="4" class="q-ma-sm" />
         <BarDisplay title="TPS" class="q-ma-sm" :value="store.state.Dashboard.tps ?? undefined" />
       </div>
     </div>
