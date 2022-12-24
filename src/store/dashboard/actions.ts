@@ -35,7 +35,7 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
         const advance = uint8ArrayToInt32(frame, 60) / 100;
 
         // Injection:
-        const injectionTime1Bank = uint8ArrayToInt32(frame, 80) / 100;
+        const injectionTime1Bank = uint8ArrayToInt32(frame, 80) / 1000;
 
         const efiStatus = efiStatusMap[frame[10] as keyof typeof efiStatusMap] as IEfiStatus;
         commit('setDashboard', {
