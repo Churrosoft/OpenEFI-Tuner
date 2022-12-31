@@ -61,7 +61,7 @@
           <div class="text-h6 q-mb-md">RPM/Load (Kpa)</div>
           <canvas-datagrid
             v-if="rpmMapTable.table.value !== null && tab === 'rpmload'"
-            :data.prop="rpmMapTable.table.value"
+            :data="rpmMapTable.table.value"
             showRowHeaders="false"
             showColumnHeaders="false"
             class="ignition_table"
@@ -93,7 +93,8 @@ import { ref, computed } from 'vue';
 import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
 import NotTableData from 'src/components/NotTableData.vue';
-import { useTable } from 'src/store/memory/types';
+import { makeInputChecks, TABLE_TYPES, useTable } from 'src/store/memory/types';
+import CRC32 from 'src/types/CRC32';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;
@@ -105,21 +106,26 @@ const ignitionTables = computed(() => store.state.Ignition.tables.rpm_load);
 
 const paired = computed(() => store.state.UsbLayer.paired);
 
+let loaded = false;
+
 const rpmMapTable = useTable({
   store,
   intTable,
   paired,
   actions: {
+    // estas quedarian dentro de memory/tables
     start: 'Ignition/requestIgnitionTableRPMTPS',
-    success: 'Ignition/getIgnitionTableRPMTPS',
+    success: 'Ignition/setTableRPM_TPS',
     error: 'Ignition/errorTableRPMTPS',
     update: 'Ignition/uploadTableRPMTPS',
+    // estas solas tendrian que quedar
     storeUpdate: 'Ignition/updateTableRPMTPS',
     uploadResult: 'Ignition/checkUploadResult',
   },
   state: {
     tableData: ignitionTables,
   },
+  table: TABLE_TYPES.IGNITION_RPM_TPS,
 });
 
 const pathTable = () => {
@@ -139,7 +145,35 @@ watchEffect(() => {
   }
 });
 
+watchEffect(() => {
+  if (rpmMapTable.table.value !== null && !store.state.Ignition.tables_loading && !loaded) {
+    loaded = true;
+    makeInputChecks({
+      store,
+      table: rpmMapTable.table.value,
+      tableClass: 'ignition_table',
+      updateCommand: 'Ignition/setTableRPM_TPS',
+    });
+    /*   setTimeout(() => {
+      const tableRef = document.getElementsByClassName('ignition_table');
+      if (tableRef[0]) {
+        tableRef[0].addEventListener(
+          'beforeendedit',
+          function (e) {
+            console.log(rpmMapTable.table.value);
+          },
+          false
+        );
+      }
+    }, 100); */
+  }
+});
+
 onMounted(() => {
+  const crc = new CRC32();
+  crc.update_4([0xf, 0xda, 0xdd]);
+  console.log(crc);
+
   if (tab.value === 'rpmload') {
     cleanTableEvents('ignition_table');
     getTableObserver(17, 'ignition_table');

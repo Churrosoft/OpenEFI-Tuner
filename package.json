@@ -13,19 +13,19 @@
     "start": "quasar dev"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.15.9",
     "canvas-datagrid": "^0.4.5",
     "canvas-gauges": "^2.1.7",
     "d3": "^7.4.4",
     "dseg": "^0.46.0",
-    "quasar": "^2.6.0",
+    "quasar": "^2.11.3",
     "vue": "^3.0.0",
     "vue-i18n": "^9.1.10",
     "vue-router": "^4.0.0",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@quasar/app-vite": "^1.0.0",
+    "@quasar/app-vite": "^1.1.3",
     "@quasar/quasar-app-extension-qmarkdown": "^2.0.0-beta.7",
     "@types/d3": "^7.4.0",
     "@types/node": "^12.20.21",

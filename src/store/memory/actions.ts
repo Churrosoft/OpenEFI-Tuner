@@ -4,16 +4,14 @@ import { StateInterface } from '../';
 import { MemoryInterface } from './state';
 import { ITableRow } from 'src/types/tables';
 import { IUSBCommand } from '../usb-layer';
+import { ITABLE_REF, TABLE_TYPES_MAPPING } from './types';
 
 export interface IRequestTable {
-  loadingAction: string;
+  selectedTable: ITABLE_REF;
 }
 export interface IGetTable {
   tableSize: number;
-  actions: {
-    loading: string;
-    setData: string;
-  };
+  setData: string;
 }
 
 function timeout(ms: number) {
@@ -24,8 +22,16 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
   toogleMenu({ commit, state }) {
     commit('toogleMenu', !state.toogleMenu);
   },
-  requestTable({ commit }, payload: IRequestTable) {
-    void commit(payload.loadingAction, null, { root: true });
+  requestTable({ dispatch }, payload: ITABLE_REF) {
+    /* void commit(payload.loadingAction, null, { root: true }); */
+
+    const command = 21;
+    const subcommand = TABLE_TYPES_MAPPING[payload].id;
+
+    const _payload = Array(123).fill(0x0);
+    _payload[0] = (subcommand >> 8) & 0xff;
+    _payload[1] = subcommand & 0xff;
+    void dispatch('UsbLayer/sendMessage', { command, payload: _payload }, { root: true });
   },
   async getTable({ commit, rootState, dispatch, rootGetters }, payload: IGetTable) {
     // llega la refe de la tabla y a que mutation tiene que mandar la tabla
@@ -66,11 +72,11 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
       }
     }
     if (tableRow.length > 1) {
-      void commit(payload.actions.setData, tableRow, { root: true });
+      void commit(payload.setData, tableRow, { root: true });
     }
-    void commit(payload.actions.loading, null, { root: true });
+    /* void commit(payload.actions.loading, null, { root: true }); */
   },
-  writeTable({ commit, state }, payload: Array<ITableRow>) {
+  writeTable({ commit, state }) {
     // llega refe de la tabla, data, y mutations para loading/resultado
     commit('toogleMenu', !state.toogleMenu);
   },
