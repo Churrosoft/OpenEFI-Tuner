@@ -93,11 +93,12 @@ export const makeTableRequest =
   };
 
 export const makeUploadTable =
-  ({ store, paired, update }: IMakeUploadTable) =>
+  ({ store, paired, update, table }: IMakeUploadTable) =>
   (tableValues: Array<ITableRow>) => {
     if (!paired.value) return;
     if (!tableValues) return;
 
+    void store.dispatch('Memory/writeTable', { data: tableValues, selectedTable: table });
     void store.dispatch(update, tableValues);
   };
 

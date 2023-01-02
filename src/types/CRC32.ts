@@ -37,12 +37,11 @@ class CRC32 {
     this.crc = -1;
   }
 
-  update(input: string | Buffer) {
-    input = Buffer.isBuffer(input) ? input : Buffer.from(input, 'binary');
-    return input.length > 10240 ? this.update_8(input) : this.update_4(input);
+  add(input: Uint8Array | number[]) {
+    return input.length > 10240 ? this.get_8(input) : this.get_4(input);
   }
 
-  update_4(input: string | any[] | Buffer) {
+  get_4(input: Uint8Array | number[]) {
     const len = input.length - 3;
     let i = 0;
 
@@ -56,10 +55,11 @@ class CRC32 {
       this.crc = (this.crc >>> 8) ^ CRC32_TABLE[(this.crc ^ input[i++]) & 0xff];
     }
 
-    this.crc = Math.abs(this.crc) - 1;
+    /*  this.crc = Math.abs(this.crc) - 1; */
+    return this;
   }
 
-  update_8(input: string | any[] | Buffer) {
+  get_8(input: Uint8Array | number[]) {
     const len = input.length - 7;
     let i = 0;
 
@@ -76,9 +76,11 @@ class CRC32 {
     while (i < len + 7) {
       this.crc = (this.crc >>> 8) ^ CRC32_TABLE[(this.crc ^ input[i++]) & 0xff];
     }
+    /*  this.crc = Math.abs(this.crc) - 1; */
+    return this;
   }
 
-  finalize() {
+  get() {
     return (this.crc ^ -1) >>> 0;
   }
 }

@@ -171,8 +171,9 @@ watchEffect(() => {
 
 onMounted(() => {
   const crc = new CRC32();
-  crc.update_4([0xf, 0xda, 0xdd]);
-  console.log(crc);
+  crc.add([0xf, 0xda, 0xdd]);
+  console.log(crc.get());
+  console.log(new CRC32().get_4([0xf, 0xda, 0xdd]).get());
 
   if (tab.value === 'rpmload') {
     cleanTableEvents('ignition_table');

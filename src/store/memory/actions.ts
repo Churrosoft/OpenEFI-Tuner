@@ -5,6 +5,8 @@ import { MemoryInterface } from './state';
 import { ITableRow } from 'src/types/tables';
 import { IUSBCommand } from '../usb-layer';
 import { ITABLE_REF, TABLE_TYPES_MAPPING } from './types';
+import { parseInt32 } from 'src/types/webusb';
+import CRC32 from 'src/types/CRC32';
 
 export interface IRequestTable {
   selectedTable: ITABLE_REF;
@@ -12,6 +14,11 @@ export interface IRequestTable {
 export interface IGetTable {
   tableSize: number;
   setData: string;
+}
+
+export interface IWriteTable {
+  selectedTable: ITABLE_REF;
+  data: Array<ITableRow>;
 }
 
 function timeout(ms: number) {
@@ -76,9 +83,52 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     }
     /* void commit(payload.actions.loading, null, { root: true }); */
   },
-  writeTable({ commit, state }) {
+  async writeTable({ commit, state, dispatch }, { selectedTable, data }: IWriteTable) {
     // llega refe de la tabla, data, y mutations para loading/resultado
-    commit('toogleMenu', !state.toogleMenu);
+
+    let dataRow = Array(123).fill(0x0);
+    const outputRaw: Array<number> = [];
+    let index = 2;
+
+    for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
+      const row = data[rowIndex];
+      Object.values(row).map((rowValue) => {
+        const table_x = parseInt32(Number(rowValue) * 100);
+        dataRow[index] = table_x[0];
+        dataRow[index + 1] = table_x[1];
+        dataRow[index + 2] = table_x[2];
+        dataRow[index + 3] = table_x[3];
+        outputRaw.push(...table_x);
+        index += 4;
+      });
+      dataRow[0] = rowIndex;
+      dataRow[1] = index - 2;
+
+      void dispatch('UsbLayer/sendMessage', { command: 22, payload: dataRow }, { root: true });
+
+      dataRow = Array(123).fill(0x0);
+      index = 2;
+      await timeout(15);
+    }
+
+    const subcommand = TABLE_TYPES_MAPPING[selectedTable].id;
+    const outpayload = Array(123).fill(0x0);
+
+    outpayload[0] = (subcommand >> 8) & 0xff;
+    outpayload[1] = subcommand & 0xff;
+
+    const crc32 = new CRC32().get_4(outputRaw.flat()).get();
+    const crc32_arr = parseInt32(crc32);
+
+    outpayload[2] = crc32_arr[0];
+    outpayload[3] = crc32_arr[1];
+    outpayload[4] = crc32_arr[2];
+    outpayload[5] = crc32_arr[3];
+
+    await timeout(15);
+    void dispatch('UsbLayer/sendMessage', { command: 24, payload: outpayload }, { root: true });
+
+    /*  commit('toogleMenu', !state.toogleMenu); */
   },
   resetTable({ commit, state }) {
     // borra tabla y setea valores por defecto, recibe ref y data
