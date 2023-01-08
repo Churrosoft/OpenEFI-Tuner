@@ -83,7 +83,7 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     }
     /* void commit(payload.actions.loading, null, { root: true }); */
   },
-  async writeTable({ commit, state, dispatch }, { selectedTable, data }: IWriteTable) {
+  async writeTable({ dispatch }, { selectedTable, data }: IWriteTable) {
     // llega refe de la tabla, data, y mutations para loading/resultado
 
     let dataRow = Array(123).fill(0x0);

@@ -30,6 +30,13 @@ export default defineComponent({
       }
     };
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    window.getStore = () =>
+      // @ts-expect-error asddsa
+      Array.from(document.querySelectorAll('*')).find((e) => e.__vue_app__).__vue_app__.config.globalProperties.$store
+        .state;
+
     watch(
       () => q.dark.isActive,
       (val) => {

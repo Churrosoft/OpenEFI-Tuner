@@ -8,8 +8,7 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
   },
   getCommand: (state) => (commandType: USBCommands) => {
     // si me dejo de hinchar las pelotas y uso todo en string directamente?
-    const command = String(commandType).slice(1, 3);
-
+    const command = String(commandType).slice(1);
     if (state.pending_commands) {
       let resultCommand: IUSBCommand | null = null;
       state.pending_commands.map((_comm) => {
@@ -19,6 +18,23 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
       });
 
       return resultCommand;
+    }
+    return null;
+  },
+
+  getCommandArr: (state) => (commandType: USBCommands) => {
+    const command = String(commandType).slice(1);
+
+    if (state.pending_commands) {
+      const resultCommand: Array<IUSBCommand> = [];
+
+      state.pending_commands.map((_comm) => {
+        if (String(_comm.command) === command) {
+          resultCommand.push(_comm);
+        }
+      });
+
+      return resultCommand.length ? resultCommand : null;
     }
     return null;
   },

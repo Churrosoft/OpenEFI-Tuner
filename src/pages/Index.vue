@@ -2,6 +2,8 @@
   <q-btn color="secondary" class="gt-xs" rounded @click="requestMetadata">
     <span class="q-mr-md" />Request Dashboard
   </q-btn>
+  <q-btn class="gt-xs" rounded @click="getConfig"> <span class="q-mr-md" />Request Config </q-btn>
+  <q-btn class="gt-xs" rounded @click="parseConfig"> <span class="q-mr-md" />Parse Config </q-btn>
   <div class="row items-center justify-evenly q-mt-xl">
     <RPMGauge class="q-ml-md" />
     <div class="col-8 q-ml-xl">
@@ -58,6 +60,7 @@ import RPMGauge from 'components/Dashboard/RPMGauge.vue';
 import './dashboard.scss';
 import SegmentDisplay from 'src/components/SegmentDisplay/index.vue';
 import BarDisplay from 'src/components/BarDisplay/index.vue';
+import { getInt32 } from 'src/types/webusb';
 
 let intDashboard: NodeJS.Timeout | null = null;
 const store = useStore(storeKey);
@@ -70,6 +73,30 @@ function requestMetadata() {
   void store.dispatch('Dashboard/requestGaugeConfig');
   localStorage.setItem('DashboardActive', 'true');
 }
+
+const getConfig = () => {
+  const command = mockUSBCommand(100, new Uint8Array([0xff]));
+  void store.dispatch('UsbLayer/sendMessage', command);
+};
+
+const parseConfig = () => {
+  const command = store.getters['UsbLayer/getCommandArr'](1102) as Array<IUSBCommand> | null;
+  const endChunkCommand = store.getters['UsbLayer/getCommand'](1103) as IUSBCommand | null;
+
+  let str = '';
+
+  if (command && endChunkCommand) {
+    command.map((cmd) => {
+      const string = new TextDecoder().decode(cmd.payload.slice(0, 100));
+      str += string;
+    });
+
+    const stringSize = getInt32(endChunkCommand.payload.slice(0, 4));
+    str = str.slice(0, stringSize);
+  }
+  console.log(JSON.parse(str)[0]);
+  console.log(command);
+};
 
 watchEffect(() => {
   if (dashboardMetaData.value) {
