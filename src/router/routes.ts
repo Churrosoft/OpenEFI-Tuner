@@ -21,7 +21,20 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-
+  {
+    path: '/injection',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        path: 'tables',
+        component: () => import('pages/Injection/tables.vue'),
+      },
+      {
+        path: 'config',
+        component: () => import('pages/Injection/config.vue'),
+      },
+    ],
+  },
   {
     path: '/startup',
     component: () => import('layouts/MainLayout.vue'),
@@ -51,9 +64,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/debug',
     component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/Debug/console.vue') },
-    ],
+    children: [{ path: '', component: () => import('pages/Debug/console.vue') }],
   },
 
   // Always leave this as last one,

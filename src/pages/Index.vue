@@ -75,27 +75,11 @@ function requestMetadata() {
 }
 
 const getConfig = () => {
-  const command = mockUSBCommand(100, new Uint8Array([0xff]));
-  void store.dispatch('UsbLayer/sendMessage', command);
+  void store.dispatch('Memory/getEFIConfiguration');
 };
 
 const parseConfig = () => {
-  const command = store.getters['UsbLayer/getCommandArr'](1102) as Array<IUSBCommand> | null;
-  const endChunkCommand = store.getters['UsbLayer/getCommand'](1103) as IUSBCommand | null;
-
-  let str = '';
-
-  if (command && endChunkCommand) {
-    command.map((cmd) => {
-      const string = new TextDecoder().decode(cmd.payload.slice(0, 100));
-      str += string;
-    });
-
-    const stringSize = getInt32(endChunkCommand.payload.slice(0, 4));
-    str = str.slice(0, stringSize);
-  }
-  console.log(JSON.parse(str)[0]);
-  console.log(command);
+  void store.dispatch('Memory/parseEFIConfiguration');
 };
 
 watchEffect(() => {

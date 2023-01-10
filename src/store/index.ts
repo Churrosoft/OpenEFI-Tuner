@@ -6,6 +6,8 @@ import UsbLayer from './usb-layer';
 import DtcCodes from './dtc_codes';
 import Layout from './layout';
 import Ignition from './ignition';
+import Injection from './injection';
+
 import Dashboard from './dashboard';
 import Debug from './debug';
 import Memory from './memory';
@@ -14,6 +16,8 @@ import { UsbLayerInterface } from './usb-layer/state';
 import { LayoutInterface } from './layout/state';
 import { DTCCodesInterface } from './dtc_codes/state';
 import { IgnitionInterface } from './ignition/state';
+import { InjectionInterface } from './injection/state';
+
 import { DashboardInterface } from './dashboard/state';
 import { DebugInterface } from './debug/state';
 import { MemoryInterface } from './memory/state';
@@ -35,6 +39,7 @@ export interface StateInterface {
   Layout: LayoutInterface;
   DtcCodes: DTCCodesInterface;
   Ignition: IgnitionInterface;
+  Injection: InjectionInterface;
   Dashboard: DashboardInterface;
   Debug: DebugInterface;
   Memory: MemoryInterface;
@@ -58,6 +63,7 @@ export default store(function (/* { ssrContext } */) {
       Layout,
       DtcCodes,
       Ignition,
+      Injection,
       Dashboard,
       Debug,
       Memory,

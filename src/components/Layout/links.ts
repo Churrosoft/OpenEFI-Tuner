@@ -36,13 +36,13 @@ const linksList = [
       {
         title: 'Tables',
         caption: '(AFR, Fuel VE, FuelPump)',
-        link: '#ignition/tables',
+        link: '#injection/tables',
       },
 
       {
         title: 'Configuration',
         caption: '(Calculations, DeadTime|PWM, FuelCutout)',
-        link: '#dtc',
+        link: '#injection/cfg',
       },
       {
         title: 'Advanced Configuration',

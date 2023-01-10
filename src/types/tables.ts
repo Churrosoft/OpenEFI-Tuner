@@ -17,9 +17,19 @@ export const styleMappings = {
     '33': '#ff9100',
     '36': '#ef5350',
   },
+  injection_ve: {
+    '20': '#536dfe',
+    '30': '#448aff',
+    '35': '#00b0ff',
+    '45': '#ff0',
+    '50': '#ffca28',
+    '60': '#ffc107',
+    '80': '#ff9100',
+    '90': '#ef5350',
+  },
 };
 
-let activeStyleMapping = styleMappings.ignition_rpm_load;
+let activeStyleMapping: { [_key: string]: `${string}` } = styleMappings.ignition_rpm_load;
 
 export const setActiveStyle = (style: keyof typeof styleMappings) => {
   activeStyleMapping = styleMappings[style];
@@ -43,8 +53,7 @@ const styleTableCells = (e: Event) => {
   const eventCell = e as unknown as cellEvent;
 
   // no colorear la' esquina:
-  if (Number(eventCell.cell.boundRowIndex) < 1 || Number(eventCell.cell.boundColumnIndex) < 1)
-    return;
+  if (Number(eventCell.cell.boundRowIndex) < 1 || Number(eventCell.cell.boundColumnIndex) < 1) return;
 
   for (const styleKey in activeStyleMapping) {
     const color = activeStyleMapping[styleKey as keyof typeof activeStyleMapping];
@@ -78,9 +87,7 @@ export const applyTableStyles = (
 export const getTableObserver = (cell_count: number, table_class: string) => {
   const table = document.querySelector(`.${table_class}`);
   if (!table) {
-    const observer = new MutationObserver((_, observer) =>
-      applyTableStyles(_, observer, cell_count, table_class)
-    );
+    const observer = new MutationObserver((_, observer) => applyTableStyles(_, observer, cell_count, table_class));
     const targetNode = document.body;
 
     observer.observe(targetNode, { childList: true, subtree: true });

@@ -1,9 +1,9 @@
 // aca dejo todos los types para manejo de tablas y ref de tablas
 
 import { IGNITION_RPMTPS_SIZE } from 'src/config';
-import { deepCompare } from 'src/types/compare';
+/* import { deepCompare } from 'src/types/compare'; */
 import { ITableRow } from 'src/types/tables';
-import { computed, ComputedRef, ref, toRaw, watch, watchEffect } from 'vue';
+import { computed, ComputedRef, ref, /* toRaw, watch, */ watchEffect } from 'vue';
 import { Store } from 'vuex';
 import { StateInterface } from '..';
 import { IUSBCommand } from '../usb-layer';
@@ -12,6 +12,9 @@ export type ITABLE_REF = typeof TABLE_TYPES[keyof typeof TABLE_TYPES];
 export const TABLE_REF_IGNITION_TPS_LOAD = 10;
 export const TABLE_REF_IGNITION_TMP_LOAD = 0x3;
 export const TABLE_REF_IGNITION_RPM_BATT = 0x4;
+
+// main VE table
+export const TABLE_REF_INJECTION_TPS_LOAD = 20;
 
 // config tuner:
 // eslint-disable-next-line prefer-const
@@ -147,14 +150,16 @@ const deReferenceRows = (value: unknown) => JSON.parse(JSON.stringify(value)) as
 
 export const TABLE_TYPES = {
   IGNITION_RPM_TPS: 'IGNITION_RPM_TPS',
+  INJECTION_RPM_TPS: 'INJECTION_RPM_TPS',
 } as const;
 
 export const TABLE_TYPES_MAPPING = {
   IGNITION_RPM_TPS: { id: TABLE_REF_IGNITION_TPS_LOAD, size: IGNITION_RPMTPS_SIZE },
+  INJECTION_RPM_TPS: { id: TABLE_REF_INJECTION_TPS_LOAD, size: IGNITION_RPMTPS_SIZE },
 } as const;
 
 export const useTable = ({ store, actions, state, paired, intTable, table: selectedTable }: IUseTable) => {
-  const pong = false;
+  /*  const pong = false; */
   const table = ref(deReferenceRows(state.tableData.value));
   const uploadResult = computed(
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call

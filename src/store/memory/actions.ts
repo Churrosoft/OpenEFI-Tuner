@@ -5,8 +5,9 @@ import { MemoryInterface } from './state';
 import { ITableRow } from 'src/types/tables';
 import { IUSBCommand } from '../usb-layer';
 import { ITABLE_REF, TABLE_TYPES_MAPPING } from './types';
-import { parseInt32 } from 'src/types/webusb';
+import { getInt32, parseInt32 } from 'src/types/webusb';
 import CRC32 from 'src/types/CRC32';
+import { mockUSBCommand } from '../usb-layer/mocks';
 
 export interface IRequestTable {
   selectedTable: ITABLE_REF;
@@ -138,6 +139,44 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
   resizeTable({ commit, state }) {
     // TDB, pero desde aca se cambiaria el tamaño de la tabla cuando cree el header de tabla nuevo en la flash
     commit('toogleMenu', !state.toogleMenu);
+  },
+
+  getEFIConfiguration({ commit, dispatch }) {
+    const command = mockUSBCommand(100, new Uint8Array([0xff]));
+    commit('cfg_loading', true);
+    dispatch('UsbLayer/sendMessage', command, { root: true });
+  },
+
+  parseEFIConfiguration({ state, commit, rootGetters }) {
+    const command = rootGetters['UsbLayer/getCommandArr'](1102) as Array<IUSBCommand> | null;
+    const endChunkCommand = rootGetters['UsbLayer/getCommand'](1103) as IUSBCommand | null;
+
+    let str = '';
+
+    if (command && endChunkCommand) {
+      command.map((cmd) => {
+        const string = new TextDecoder().decode(cmd.payload.slice(0, 100));
+        str += string;
+      });
+
+      const stringSize = getInt32(endChunkCommand.payload.slice(0, 4));
+      str = str.slice(0, stringSize);
+    }
+
+    const config = JSON.parse(str)[0];
+
+    commit('cfg_loading', false);
+    commit('cfg_data', config);
+
+    console.log(JSON.parse(str)[0]);
+  },
+
+  writeEFIConfiguration({ state, commit }) {
+    //
+  },
+
+  resetEFIConfiguration({ state, commit }) {
+    //
   },
 
   someAction(/* context */) {
