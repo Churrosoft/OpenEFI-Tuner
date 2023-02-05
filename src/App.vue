@@ -36,6 +36,14 @@ export default defineComponent({
       // @ts-expect-error asddsa
       Array.from(document.querySelectorAll('*')).find((e) => e.__vue_app__).__vue_app__.config.globalProperties.$store
         .state;
+    // @ts-expect-error ads
+    window.getActions = () =>
+      // @ts-expect-error asddsa
+      Array.from(document.querySelectorAll('*')).find((e) => e.__vue_app__).__vue_app__.config.globalProperties.$store
+        ._actions;
+
+    // @ts-expect-error ads
+    window.sendUsbMessage = (payload) => window.getActions()['UsbLayer/sendMessage'][0](payload);
 
     watch(
       () => q.dark.isActive,

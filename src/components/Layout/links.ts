@@ -42,7 +42,7 @@ const linksList = [
       {
         title: 'Configuration',
         caption: '(Calculations, DeadTime|PWM, FuelCutout)',
-        link: '#injection/cfg',
+        link: '#injection/config',
       },
       {
         title: 'Advanced Configuration',
