@@ -1,12 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { IUSBCommand } from 'src/types/commands';
 import mocks from './mocks';
-export interface IUSBCommand {
-  protocol: number;
-  command: number;
-  /*   subcommand: number; */
-  payload: Uint8Array;
-  checksum: string; // hace falta?
-}
+
 export interface UsbLayerInterface {
   connecting: boolean;
   usbd: null | unknown;
@@ -33,12 +28,7 @@ type tableCommands = 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27;
 // 30 => get all, 31 => delete X code, 32 => delete all
 type dtcCommands = 30 | 31 | 32;
 
-export type USBCommands =
-  | 100
-  | 200
-  | errorCommands
-  | tableCommands
-  | dtcCommands;
+export type USBCommands = 100 | 200 | errorCommands | tableCommands | dtcCommands;
 
 export function _arrayBufferToBase64(buffer: Uint8Array) {
   let binary = '';
@@ -67,6 +57,7 @@ export const findPayloadEnd = (payload: IUSBCommand['payload']) => {
 
 export const createUSBCommand = (
   command: USBCommands,
+  status: number, //TODO: new type
   payload: Uint8Array,
   checksum: string
 ): IUSBCommand => {
@@ -77,15 +68,12 @@ export const createUSBCommand = (
     '0000' + crc([command, subcommand, ...payload].slice(0, 126)).toString(16)
   ).substr(-4); */
 
-  const filledPayload = new Uint8Array([
-    ...payload,
-    ...Array(126).fill(0xfa).slice(0, payload.length),
-  ]);
+  const filledPayload = new Uint8Array([...payload, ...Array(126).fill(0xfa).slice(0, payload.length)]);
 
   return {
     protocol,
     command,
-    /*     subcommand, */
+    status,
     payload: filledPayload,
     checksum,
   };

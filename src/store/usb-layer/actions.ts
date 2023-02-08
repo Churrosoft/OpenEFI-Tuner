@@ -3,15 +3,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
+import { IUSBCommand } from 'src/types/commands';
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
-import crc, { buf2hex } from '../crc';
-import {
-  createUSBCommand,
-  IUSBCommand,
-  USBCommands,
-  UsbLayerInterface,
-} from './state';
+import crc, { buf2hex } from '../../types/crc';
+import { createUSBCommand, USBCommands, UsbLayerInterface } from './state';
 
 const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   connected({ commit }, commandPayload) {
@@ -21,48 +17,26 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     const rev = String((commandPayload[5] << 8) + commandPayload[6]);
 
     const typeString =
-      (type === '0' && 'OpenEFI') ||
-      (type === '1' && 'uEFI') ||
-      (type === '2' && 'DashDash') ||
-      'Unknow';
+      (type === '0' && 'OpenEFI') || (type === '1' && 'uEFI') || (type === '2' && 'DashDash') || 'Unknow';
 
-    console.log(
-      `${typeString} Connected: \n` +
-        `Major: ${major} \n` +
-        `Minor: ${minor} \n` +
-        `Rev: ${rev} \n`
-    );
+    console.log(`${typeString} Connected: \n` + `Major: ${major} \n` + `Minor: ${minor} \n` + `Rev: ${rev} \n`);
     void commit('setPaired', { major, minor, rev, type });
     void commit('toogleConnect', false);
   },
-  sendMessage({ state }, { command, payload }) {
+  sendMessage({ state }, { command, status, payload }) {
     let rawData = Array(128).fill(0x0);
 
-    rawData = [1, (command >> 8) & 0xff, command & 0xff, ...payload].slice(
-      0,
-      128
-    );
+    rawData = [1, command, status, ...payload].slice(0, 128);
     const calcrc = crc(rawData.slice(0, 126));
 
     rawData[126] = (calcrc >> 8) & 0xff;
     rawData[127] = calcrc & 0xff;
 
-    /*     const buffer = new Uint8Array(new ArrayBuffer(128));
-    const payloadBuffer = new Uint8Array(new ArrayBuffer(123));
-    if (payload) {
-      payloadBuffer.set(payload);
-    }
-    buffer.set([1, (Number(command) >> 8) & 0xff, Number(command) & 0xff]);
-    buffer.set(payloadBuffer, 3);
-
-    const calcrc = crc(buffer.slice(0, 126));
-    buffer.set([(calcrc >> 8) & 0xff, (calcrc >> 0) & 0xff, 126]); */
-
     const data = new Uint8Array(rawData);
 
     console.debug(
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `Frame enviado\nProtocolo: ${1}\nComando: ${command}\nPayload: ${payload}\nChecksum: ${calcrc}`
+      `Frame enviado\nProtocolo: ${1}\nComando: ${command}\nStatus: ${status}\nPayload: ${payload}\nChecksum: ${calcrc}`
     );
 
     // @ts-expect-error webusb e una japi y hermoso a la ve
@@ -78,36 +52,27 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   recv({ commit }, data) {
     const frame = new Uint8Array(data);
     const protocol = frame[0];
-    const command = (frame[1] << 8) + frame[2];
+    const command = frame[1];
+    const status = frame[2];
     const payload = frame.slice(3, 126);
     const checksum = buf2hex(frame.slice(126, 128).buffer);
     // Todo este bardo para comparar los dos crc como string...
-    const localcrc = ('0000' + crc(frame.slice(0, 126)).toString(16)).substr(
-      -4
-    );
-    const usbComand = createUSBCommand(
-      command as USBCommands,
-      payload,
-      localcrc
-    );
+    const localcrc = ('0000' + crc(frame.slice(0, 126)).toString(16)).substr(-4);
+    const usbComand = createUSBCommand(command as USBCommands, status, payload, localcrc);
     console.debug(
       'Frame recibido\nProtocolo: ' +
         protocol +
         '\nComando: ' +
         command +
+        '\nStatus: ' +
+        status +
         '\nPayload: ' +
         payload +
         '\nChecksum: ' +
         checksum
     );
     if (checksum != localcrc) {
-      console.warn(
-        'Checksums no coinciden! \n' +
-          'Local: ' +
-          localcrc +
-          '\nEFI: ' +
-          checksum
-      );
+      console.warn('Checksums no coinciden! \n' + 'Local: ' + localcrc + '\nEFI: ' + checksum);
       commit('addCommand', usbComand);
     } else {
       commit('addCommand', usbComand);

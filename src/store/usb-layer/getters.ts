@@ -1,12 +1,13 @@
+import { IUSBCommand } from 'src/types/commands';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../';
-import { IUSBCommand, USBCommands, UsbLayerInterface } from './state';
+import { USBCommands, UsbLayerInterface } from './state';
 
 const getters: GetterTree<UsbLayerInterface, StateInterface> = {
   someAction(/* context */) {
     // your code
   },
-  getCommand: (state) => (commandType: USBCommands) => {
+  getCommand: (state) => (commandType: USBCommands, status: number) => {
     // si me dejo de hinchar las pelotas y uso todo en string directamente?
     const command = String(commandType).slice(1);
     if (state.pending_commands) {
@@ -22,7 +23,7 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
     return null;
   },
 
-  getCommandArr: (state) => (commandType: USBCommands) => {
+  getCommandArr: (state) => (commandType: USBCommands, status: number) => {
     const command = String(commandType).slice(1);
 
     if (state.pending_commands) {
@@ -39,7 +40,7 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
     return null;
   },
 
-  getGroupedCommands: (state) => (commandsType: Array<USBCommands>) => {
+  getGroupedCommands: (state) => (commandsType: Array<{ commands: USBCommands; status: number }>) => {
     if (state.pending_commands?.length) {
       const resultCommands = [] as Array<IUSBCommand>;
       state.pending_commands.map((_comm) => {
