@@ -1,6 +1,6 @@
 import crc from './crc';
 
-enum _webserial_command_types {
+export enum _webserial_command_types {
   CORE = 0x00,
   TABLES = 0x10,
   EFI_CONFIG = 0x20,
@@ -8,7 +8,7 @@ enum _webserial_command_types {
   FW = 0xf0,
 }
 
-enum _webserial_command {
+export enum _webserial_command {
   // Core
   CORE_DEBUG = 0x00, // For debug messages. Not an actual command that we handle.
   CORE_PING = 0x01,
@@ -31,12 +31,12 @@ enum _webserial_command {
   FW_BOOTLOADER = 0xf1,
 }
 
-enum _webserial_command_status {
+export enum WS_status {
   CMD_ERR = 0b00000000,
   CMD_OK = 0b10000000,
 }
 
-enum _webserial_error_code {
+export enum _webserial_error_code {
   GENERIC_UNKNOWN_CMD = 0x7f,
   // Core
   //.. (none)

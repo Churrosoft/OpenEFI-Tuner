@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
-import { uint8ArrayToInt32 } from '../usb-layer';
-import { IUSBCommand } from '../usb-layer/state';
-
+import { IUSBCommand, uint8ArrayToInt32 } from '../usb-layer';
 import { DashboardInterface, efiStatusMap, IEfiStatus } from './state';
 
 const actions: ActionTree<DashboardInterface, StateInterface> = {

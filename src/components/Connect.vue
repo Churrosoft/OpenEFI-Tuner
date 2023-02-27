@@ -15,6 +15,14 @@ let intConnection: NodeJS.Timeout | null = null;
 
 const store = useStore(storeKey);
 
+const reconnect = () => {
+  (window as any).serial.getPorts().then((ports: unknown) => {
+    console.log(ports);
+  });
+};
+
+(navigator as any).usb.onconnect = reconnect;
+
 const connectUsbDevice = () => {
   // por ahora solo filtro por vendor
   const usbVendorId = 0x1209;
@@ -43,12 +51,13 @@ const startWorking = async (port: SerialPort) => {
 
   void store.dispatch('UsbLayer/sendMessage', {
     command: 1,
+    status: 0,
     payload: [0xff],
   });
 
   const pingInterval = () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const command = store.getters['UsbLayer/getCommand'](12) as IUSBCommand;
+    const command = store.getters['UsbLayer/getCommand'](0x1) as IUSBCommand;
     if (command) {
       clearInterval(intConnection as NodeJS.Timeout);
       void store.dispatch('UsbLayer/connected', command.payload);

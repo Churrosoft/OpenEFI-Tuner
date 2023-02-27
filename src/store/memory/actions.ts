@@ -3,11 +3,10 @@ import { StateInterface } from '../';
 
 import { MemoryInterface } from './state';
 import { ITableRow } from 'src/types/tables';
-import { IUSBCommand } from '../usb-layer';
 import { ITABLE_REF, TABLE_TYPES_MAPPING } from './types';
 import { getInt32, parseInt32 } from 'src/types/webusb';
 import CRC32 from 'src/types/CRC32';
-import { mockUSBCommand } from '../usb-layer/mocks';
+import { IUSBCommand, mockUSBCommand, WS_status } from 'src/types/commands';
 
 export interface IRequestTable {
   selectedTable: ITABLE_REF;
@@ -142,7 +141,7 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
   },
 
   getEFIConfiguration({ commit, dispatch }) {
-    const command = mockUSBCommand(100, new Uint8Array([0xff]));
+    const command = mockUSBCommand(100, WS_status.CMD_OK, new Uint8Array([0xff]));
     commit('cfg_loading', true);
     dispatch('UsbLayer/sendMessage', command, { root: true });
   },

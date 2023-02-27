@@ -26,7 +26,15 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   sendMessage({ state }, { command, status, payload }) {
     let rawData = Array(128).fill(0x0);
 
-    rawData = [1, command, status, ...payload].slice(0, 128);
+    /*     let serial_cmd = SerialMessage {
+      protocol: buf[0],
+      status: buf[1],
+      command: buf[2],
+      payload,
+      crc,
+  };
+   */
+    rawData = [1, status, command, ...payload].slice(0, 128);
     const calcrc = crc(rawData.slice(0, 126));
 
     rawData[126] = (calcrc >> 8) & 0xff;
@@ -52,8 +60,8 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   recv({ commit }, data) {
     const frame = new Uint8Array(data);
     const protocol = frame[0];
-    const command = frame[1];
-    const status = frame[2];
+    const command = frame[2];
+    const status = frame[1];
     const payload = frame.slice(3, 126);
     const checksum = buf2hex(frame.slice(126, 128).buffer);
     // Todo este bardo para comparar los dos crc como string...

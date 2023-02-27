@@ -9,7 +9,7 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
   },
   getCommand: (state) => (commandType: USBCommands, status: number) => {
     // si me dejo de hinchar las pelotas y uso todo en string directamente?
-    const command = String(commandType).slice(1);
+    const command = String(commandType); /* .slice(1) */
     if (state.pending_commands) {
       let resultCommand: IUSBCommand | null = null;
       state.pending_commands.map((_comm) => {
