@@ -7,9 +7,8 @@ import { useQuasar } from 'quasar';
 import { setCssVar } from 'quasar';
 import { watch } from 'vue';
 import { startWorking } from './store/usb-layer/serialInterface';
-/* import 'canvas-datagrid';
- */
-//setCssVar('primary', '#33F')
+import { Store, useStore } from 'vuex';
+import { storeKey } from './store';
 
 const myIcons: { [key: string]: string } = {
   'app:injector': 'img:/injector2.svg',
@@ -19,6 +18,7 @@ export default defineComponent({
   name: 'App',
   setup() {
     const q = useQuasar();
+    const store = useStore(storeKey) as unknown as Store<typeof storeKey>;
     // luego borrar estas dos lineas si dejo en ligth mode por defecto
     q.dark.set(true);
     setCssVar('secondary', '#DAD2D8');
@@ -46,23 +46,24 @@ export default defineComponent({
     // @ts-expect-error ads
     window.sendUsbMessage = (payload) => window.getActions()['UsbLayer/sendMessage'][0](payload);
 
-    // @ts-expect-error asddas
-    navigator.usb.addEventListener('connect', (event) => {
-      console.log('Device connected', event.device);
-      // @ts-expect-error asddas
-      window.serial.getPorts().then((e) => {
-        console.log(e);
-        // @ts-expect-error asddas
-        startWorking(e, window.getStore());
-      });
+    // initial page load
+    navigator.serial.getPorts().then((e) => {
+      console.log(e);
+      e[0] && startWorking(e[0], store);
     });
 
-    // @ts-expect-error asddas
-    navigator.usb.addEventListener('disconnect', (event) => {
-      console.log('Device disconnected', event.device);
+    // before update/connect
+    navigator.serial.onconnect = () => {
+      navigator.serial.getPorts().then((e) => {
+        e[0] && startWorking(e[0], store);
+      });
+    };
+
+    navigator.serial.ondisconnect = (event) => {
+      console.log('Device disconnected', event);
       // @ts-expect-error asddas
       window.getActions()['UsbLayer/reset'][0]();
-    });
+    };
 
     watch(
       () => q.dark.isActive,

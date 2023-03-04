@@ -1,13 +1,15 @@
 import { IUSBCommand } from 'store/usb-layer';
 import { storeKey } from 'store/index';
 import { Store } from 'vuex';
-import { SerialPort } from 'src/types/webusb';
 
 let serialCache: Array<number> = [];
 let intConnection: NodeJS.Timeout | null = null;
 
 export const startWorking = async (port: SerialPort, store: Store<typeof storeKey>) => {
   // El baudrate se podrriiia reconfigurar luego
+
+  console.log(port.getInfo());
+
   await port.open({ baudRate: 921600000 /* 921600 */ /* 512000 */ });
 
   if (!port.writable) return;

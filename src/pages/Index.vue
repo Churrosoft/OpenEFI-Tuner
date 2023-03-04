@@ -57,7 +57,6 @@ import RPMGauge from 'components/Dashboard/RPMGauge.vue';
 import './dashboard.scss';
 import SegmentDisplay from 'src/components/SegmentDisplay/index.vue';
 import BarDisplay from 'src/components/BarDisplay/index.vue';
-import { getInt32 } from 'src/types/webusb';
 import { IUSBCommand, mockUSBCommand, WS_status } from 'src/types/commands';
 
 let intDashboard: NodeJS.Timeout | null = null;
