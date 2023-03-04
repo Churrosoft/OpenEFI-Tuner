@@ -6,6 +6,7 @@ import { defineComponent } from 'vue';
 import { useQuasar } from 'quasar';
 import { setCssVar } from 'quasar';
 import { watch } from 'vue';
+import { startWorking } from './store/usb-layer/serialInterface';
 /* import 'canvas-datagrid';
  */
 //setCssVar('primary', '#33F')
@@ -44,6 +45,24 @@ export default defineComponent({
 
     // @ts-expect-error ads
     window.sendUsbMessage = (payload) => window.getActions()['UsbLayer/sendMessage'][0](payload);
+
+    // @ts-expect-error asddas
+    navigator.usb.addEventListener('connect', (event) => {
+      console.log('Device connected', event.device);
+      // @ts-expect-error asddas
+      window.serial.getPorts().then((e) => {
+        console.log(e);
+        // @ts-expect-error asddas
+        startWorking(e, window.getStore());
+      });
+    });
+
+    // @ts-expect-error asddas
+    navigator.usb.addEventListener('disconnect', (event) => {
+      console.log('Device disconnected', event.device);
+      // @ts-expect-error asddas
+      window.getActions()['UsbLayer/reset'][0]();
+    });
 
     watch(
       () => q.dark.isActive,

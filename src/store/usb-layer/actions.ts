@@ -86,7 +86,9 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
       commit('addCommand', usbComand);
     }
   },
-
+  reset({ commit }) {
+    commit('setDisconnected');
+  },
   setWriter({ commit }, serialWriter: WritableStreamDefaultWriter<Uint8Array>) {
     commit('setConnection', serialWriter);
   },

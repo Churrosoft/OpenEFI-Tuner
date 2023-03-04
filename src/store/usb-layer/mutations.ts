@@ -20,6 +20,7 @@ const mutation: MutationTree<UsbLayerInterface> = {
   setDisconnected(state) {
     state.connected = false;
     state.paired = false;
+    state.writer = null;
   },
   setPaired(state, { major, minor, rev, type }: IPaired['payload']) {
     state.firmware_ver = { major, minor, rev, type };
