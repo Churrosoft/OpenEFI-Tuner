@@ -26,14 +26,6 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
   sendMessage({ state }, { command, status, payload }) {
     let rawData = Array(128).fill(0x0);
 
-    /*     let serial_cmd = SerialMessage {
-      protocol: buf[0],
-      status: buf[1],
-      command: buf[2],
-      payload,
-      crc,
-  };
-   */
     rawData = [1, status, command, ...payload].slice(0, 128);
     const calcrc = crc(rawData.slice(0, 126));
 
@@ -43,12 +35,10 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     const data = new Uint8Array(rawData);
 
     console.debug(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `Frame enviado\nProtocolo: ${1}\nComando: ${command}\nStatus: ${status}\nPayload: ${payload}\nChecksum: ${calcrc}`
     );
 
-    // @ts-expect-error webusb e una japi y hermoso a la ve
-    void state.writer.write(data);
+    void state.writer?.write(data);
   },
   removeCommand({ state, commit }, command: IUSBCommand) {
     if (!command) return;

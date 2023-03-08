@@ -2,13 +2,11 @@
   <router-view />
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useQuasar } from 'quasar';
-import { setCssVar } from 'quasar';
-import { watch } from 'vue';
-import { startWorking } from './store/usb-layer/serialInterface';
+import { setCssVar, useQuasar } from 'quasar';
+import { defineComponent, watch } from 'vue';
 import { Store, useStore } from 'vuex';
 import { storeKey } from './store';
+import { startWorking } from './store/usb-layer/serialInterface';
 
 const myIcons: { [key: string]: string } = {
   'app:injector': 'img:/injector2.svg',
@@ -48,7 +46,6 @@ export default defineComponent({
 
     // initial page load
     navigator.serial.getPorts().then((e) => {
-      console.log(e);
       e[0] && startWorking(e[0], store);
     });
 
@@ -61,8 +58,8 @@ export default defineComponent({
 
     navigator.serial.ondisconnect = (event) => {
       console.log('Device disconnected', event);
-      // @ts-expect-error asddas
-      window.getActions()['UsbLayer/reset'][0]();
+
+      store.dispatch('UsbLayer/reset');
     };
 
     watch(
