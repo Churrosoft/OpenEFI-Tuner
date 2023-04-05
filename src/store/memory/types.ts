@@ -1,5 +1,6 @@
 // aca dejo todos los types para manejo de tablas y ref de tablas
 
+import { diff } from 'deep-object-diff';
 import { IGNITION_RPMTPS_SIZE } from 'src/config';
 /* import { deepCompare } from 'src/types/compare'; */
 import { ITableRow } from 'src/types/tables';
@@ -75,11 +76,13 @@ export const makeTableRequest =
     void store.dispatch(actions.start);
 
     const tableInterval = () => {
-      const tableAvailable = store.getters['UsbLayer/getCommand'](127) as IUSBCommand | null;
-      const tableError = store.getters['UsbLayer/getCommand'](130) as IUSBCommand | null;
+      // (18, 240)
+      const tableAvailable = store.getters['UsbLayer/getCommand'](18, 240) as IUSBCommand | null;
+      const tableError = store.getters['UsbLayer/getCommand'](18, 0x9f) as IUSBCommand | null;
 
       if (tableAvailable) {
         /* void store.dispatch(actions.success); */
+        console.debug('Table OK');
         void store.dispatch('Memory/getTable', {
           tableSize: TABLE_TYPES_MAPPING[table].size,
           setData: actions.success,
@@ -88,6 +91,7 @@ export const makeTableRequest =
       }
       if (tableError) {
         void store.dispatch(actions.error);
+        console.debug('Table error');
         clearInterval(intTable as NodeJS.Timeout);
       }
     };
@@ -97,11 +101,24 @@ export const makeTableRequest =
 
 export const makeUploadTable =
   ({ store, paired, update, table }: IMakeUploadTable) =>
-  (tableValues: Array<ITableRow>) => {
+  (tableValues: Array<ITableRow> | null, remoteTableValues: Array<ITableRow> | null) => {
     if (!paired.value) return;
     if (!tableValues) return;
+    if (!remoteTableValues) return;
 
-    void store.dispatch('Memory/writeTable', { data: tableValues, selectedTable: table });
+    const rowsToUpdate: Array<ITableRow & { index: number }> = [];
+
+    tableValues.map((newTableRow, tableRowIndex) => {
+      const rowDiff = diff(remoteTableValues[tableRowIndex], newTableRow);
+      if (Object.keys(rowDiff).length) {
+        rowsToUpdate.push({ index: tableRowIndex, ...newTableRow });
+      }
+    });
+
+    console.log(rowsToUpdate);
+    if (!rowsToUpdate.length) return;
+
+    void store.dispatch('Memory/writeTable', { data: rowsToUpdate, selectedTable: table });
     void store.dispatch(update, tableValues);
   };
 
@@ -162,8 +179,14 @@ export const useTable = ({ store, actions, state, paired, intTable, table: selec
   /*  const pong = false; */
   const table = ref(deReferenceRows(state.tableData.value));
   const uploadResult = computed(
+    // Protocolo: 1 Comando: 20 Status: 128
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    (): IUSBCommand => store.getters['UsbLayer/getGroupedCommands']([25, 32]) as IUSBCommand
+    (): IUSBCommand =>
+      store.getters['UsbLayer/getGroupedCommands']([
+        { command: 20, status: 128 },
+        { command: 20, status: 255 },
+        { command: 19, status: 128 },
+      ]) as IUSBCommand
   );
 
   // store => view update

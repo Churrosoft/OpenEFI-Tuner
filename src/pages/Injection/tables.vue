@@ -129,7 +129,7 @@ const veTable = useTable({
 
 const pathTable = () => {
   if (tab.value === 'rpmload') {
-    veTable.uploadTable(veTable.table.value);
+    veTable.uploadTable(veTable.table.value, store.state.Injection.table_cache.rpm_load);
   }
 };
 const requestTable = () => {

@@ -17,7 +17,8 @@ export default defineComponent({
   setup() {
     const q = useQuasar();
     const store = useStore(storeKey) as unknown as Store<typeof storeKey>;
-    // luego borrar estas dos lineas si dejo en ligth mode por defecto
+
+    // TODO: luego borrar estas dos lineas si dejo en ligth mode por defecto
     q.dark.set(true);
     setCssVar('secondary', '#DAD2D8');
 
@@ -29,6 +30,7 @@ export default defineComponent({
       }
     };
 
+    // FIXME: esto tendria que estar expuesto solo en modo dev
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     window.getStore = () =>
@@ -41,11 +43,13 @@ export default defineComponent({
       Array.from(document.querySelectorAll('*')).find((e) => e.__vue_app__).__vue_app__.config.globalProperties.$store
         ._actions;
 
+    // sendUsbMessage({ command:0x11 , status:0x23, payload:[0,0] })
     // @ts-expect-error ads
     window.sendUsbMessage = (payload) => window.getActions()['UsbLayer/sendMessage'][0](payload);
 
     // initial page load
     navigator.serial.getPorts().then((e) => {
+      // TODO: en caso de multiples dispositivos (openefi/dash a la vez) tengo que revisar a que estaba conectado previamente
       e[0] && startWorking(e[0], store);
     });
 
@@ -65,7 +69,6 @@ export default defineComponent({
     watch(
       () => q.dark.isActive,
       (val) => {
-        console.log(val ? 'On dark mode' : 'On light mode');
         if (val) {
           setCssVar('secondary', '#DAD2D8');
         } else {

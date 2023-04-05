@@ -18,7 +18,7 @@ export interface IGetTable {
 
 export interface IWriteTable {
   selectedTable: ITABLE_REF;
-  data: Array<ITableRow>;
+  data: Array<ITableRow & { index: number }>;
 }
 
 function timeout(ms: number) {
@@ -38,13 +38,16 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     const _payload = Array(123).fill(0x0);
     _payload[0] = (subcommand >> 8) & 0xff;
     _payload[1] = subcommand & 0xff;
-    void dispatch('UsbLayer/sendMessage', { command, payload: _payload }, { root: true });
+
+    // TODO: status/command son partes para seleccionar la tabla
+    void dispatch('UsbLayer/sendMessage', { command: 0x12, status: 0x11, payload: _payload }, { root: true });
+    //void dispatch('UsbLayer/sendMessage', { command, payload: _payload }, { root: true });
   },
   async getTable({ commit, rootState, dispatch, rootGetters }, payload: IGetTable) {
     // llega la refe de la tabla y a que mutation tiene que mandar la tabla
     const tableRow: Array<ITableRow> = [];
 
-    const endRowCommand = rootGetters['UsbLayer/getCommand'](127) as IUSBCommand;
+    const endRowCommand = rootGetters['UsbLayer/getCommand'](18, 240) as IUSBCommand;
     void dispatch('UsbLayer/removeCommand', endRowCommand, { root: true });
 
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
@@ -52,7 +55,7 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
 
     for (let ind = 0; ind < commandsLength; ind++) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const command = rootGetters['UsbLayer/getCommand'](126) as IUSBCommand;
+      const command = rootGetters['UsbLayer/getCommand'](18, 224) as IUSBCommand;
       if (command !== null) {
         /*
         LOGICA PA' LA TABLA ACA'
@@ -88,23 +91,26 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
 
     let dataRow = Array(123).fill(0x0);
     const outputRaw: Array<number> = [];
-    let index = 2;
+    let index = 1;
 
     for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {
       const row = data[rowIndex];
-      Object.values(row).map((rowValue) => {
-        const table_x = parseInt32(Number(rowValue) * 100);
-        dataRow[index] = table_x[0];
-        dataRow[index + 1] = table_x[1];
-        dataRow[index + 2] = table_x[2];
-        dataRow[index + 3] = table_x[3];
-        outputRaw.push(...table_x);
-        index += 4;
-      });
-      dataRow[0] = rowIndex;
-      dataRow[1] = index - 2;
+      Object.values(row)
+        .slice(1)
+        .map((rowValue) => {
+          const table_x = parseInt32(Number(rowValue) * 100);
+          dataRow[index] = table_x[0];
+          dataRow[index + 1] = table_x[1];
+          dataRow[index + 2] = table_x[2];
+          dataRow[index + 3] = table_x[3];
+          outputRaw.push(...table_x);
+          index += 4;
+        });
+      dataRow[0] = row.index;
+      // dataRow[1] = index - 2; // que bosta hice aca
 
-      void dispatch('UsbLayer/sendMessage', { command: 22, payload: dataRow }, { root: true });
+      // TODO: add table type to status
+      void dispatch('UsbLayer/sendMessage', { command: 0x13, status: 0x11, payload: dataRow }, { root: true });
 
       dataRow = Array(123).fill(0x0);
       index = 2;
@@ -126,7 +132,8 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     outpayload[5] = crc32_arr[3];
 
     await timeout(15);
-    void dispatch('UsbLayer/sendMessage', { command: 24, payload: outpayload }, { root: true });
+    // TODO: add table type to status
+    void dispatch('UsbLayer/sendMessage', { command: 0x14, status: 0x11, payload: dataRow }, { root: true });
 
     /*  commit('toogleMenu', !state.toogleMenu); */
   },

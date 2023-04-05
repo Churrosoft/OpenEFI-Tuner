@@ -18,6 +18,7 @@
     "canvas-datagrid": "^0.4.5",
     "canvas-gauges": "^2.1.7",
     "d3": "^7.4.4",
+    "deep-object-diff": "^1.1.9",
     "dseg": "^0.46.0",
     "quasar": "^2.11.3",
     "vue": "^3.0.0",

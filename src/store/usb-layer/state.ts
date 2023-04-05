@@ -20,10 +20,10 @@ export interface UsbLayerInterface {
 
 type errorCommands = 91 | 92 | 93;
 
-// 20 => get table metadata, 21 => get X table, 22 => response get X table,
+// 0x10 => get table metadata, 0x11 => get X table, 22 => response get X table,
 // 23 => reset X table, 24 => write X table , 25 => response write x table
 // 26 => begin data chunck , 27 => end data chunck (podrian ser un solo comando?)
-type tableCommands = 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27;
+type tableCommands = 0x10 | 0x12 | 22 | 23 | 24 | 25 | 26 | 27;
 
 // 30 => get all, 31 => delete X code, 32 => delete all
 type dtcCommands = 30 | 31 | 32;

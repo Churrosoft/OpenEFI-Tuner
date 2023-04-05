@@ -35,7 +35,8 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     const data = new Uint8Array(rawData);
 
     console.debug(
-      `Frame enviado\nProtocolo: ${1}\nComando: ${command}\nStatus: ${status}\nPayload: ${payload}\nChecksum: ${calcrc}`
+      `%c Frame enviado\nProtocolo: ${1}\nComando: ${command}\nStatus: ${status}\nPayload: ${payload}\nChecksum: ${calcrc}`,
+      'color: yellow;'
     );
 
     void state.writer?.write(data);
