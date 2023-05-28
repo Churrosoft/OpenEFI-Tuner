@@ -11,6 +11,7 @@ import Injection from './injection';
 import Dashboard from './dashboard';
 import Debug from './debug';
 import Memory from './memory';
+import Pmic from './pmic';
 
 import { UsbLayerInterface } from './usb-layer/state';
 import { LayoutInterface } from './layout/state';
@@ -21,6 +22,7 @@ import { InjectionInterface } from './injection/state';
 import { DashboardInterface } from './dashboard/state';
 import { DebugInterface } from './debug/state';
 import { MemoryInterface } from './memory/state';
+import { PMICInterface } from './pmic/state';
 
 /*
  * If not building with SSR mode, you can
@@ -43,6 +45,7 @@ export interface StateInterface {
   Dashboard: DashboardInterface;
   Debug: DebugInterface;
   Memory: MemoryInterface;
+  Pmic: PMICInterface;
 }
 
 // provide typings for `this.$store`
@@ -67,6 +70,7 @@ export default store(function (/* { ssrContext } */) {
       Dashboard,
       Debug,
       Memory,
+      Pmic,
     },
     /* getters: {
       UsbLayerGetters: UsbLayerGetters.getCommand as never,
