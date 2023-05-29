@@ -5,11 +5,34 @@ import { PMICInterface } from './state';
 import { IUSBCommand } from 'src/types/commands';
 
 const actions: ActionTree<PMICInterface, StateInterface> = {
-  toogleMenu({ commit, state }) {
-    commit('toogleMenu', !state.toogleMenu);
-  },
+  parseFastStatus({ rootState, rootGetters, commit }) {
+    const commandsLength = rootState.UsbLayer.pending_commands?.length;
+    if (!commandsLength) return;
 
-  parseFastStatus({ rootState, rootGetters }) {
+    const data = rootGetters['UsbLayer/getCommandArr'](1129, 224) as Array<IUSBCommand>;
+    const payload = [0];
+
+    data?.map((cmd) => payload.push(...cmd.payload.slice(0, 123).filter((ch) => ch)));
+    if (payload.length < 1) return;
+
+    const reconstituted = String.fromCharCode.apply(null, payload);
+    commit('updateFastStatus', JSON.parse(reconstituted));
+  },
+  parseInjectionStatus({ rootState, rootGetters, commit }) {
+    const commandsLength = rootState.UsbLayer.pending_commands?.length;
+    if (!commandsLength) return;
+
+    const data = rootGetters['UsbLayer/getCommandArr'](1130, 224) as Array<IUSBCommand>;
+
+    const payload = [0];
+
+    data?.map((cmd) => payload.push(...cmd.payload.slice(0, 123).filter((ch) => ch)));
+    if (payload.length < 1) return;
+
+    const reconstituted = String.fromCharCode.apply(null, payload);
+    commit('updateFastStatus', JSON.parse(reconstituted));
+  },
+  parseIgnitionStatus({ rootState, rootGetters, commit }) {
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
@@ -17,14 +40,11 @@ const actions: ActionTree<PMICInterface, StateInterface> = {
 
     const payload = [0];
 
-    data?.map((cmd) => payload.push(...cmd.payload.slice(0, 123)));
+    data?.map((cmd) => payload.push(...cmd.payload.slice(0, 123).filter((ch) => ch)));
+    if (payload.length < 1) return;
 
-    const reconstituted = String.fromCharCode.apply(
-      null,
-      payload.filter((ch) => ch)
-    );
-
-    console.log(JSON.parse(reconstituted));
+    const reconstituted = String.fromCharCode.apply(null, payload);
+    commit('updateFastStatus', JSON.parse(reconstituted));
   },
 };
 
