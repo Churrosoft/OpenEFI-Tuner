@@ -15,7 +15,8 @@ const actions: ActionTree<PMICInterface, StateInterface> = {
     data?.map((cmd) => payload.push(...cmd.payload.slice(0, 123).filter((ch) => ch)));
     if (payload.length < 1) return;
 
-    const reconstituted = String.fromCharCode.apply(null, payload);
+    const reconstituted = String.fromCharCode.apply(null, payload.slice(1));
+    console.debug(reconstituted);
     commit('updateFastStatus', JSON.parse(reconstituted));
   },
   parseInjectionStatus({ rootState, rootGetters, commit }) {
@@ -29,7 +30,7 @@ const actions: ActionTree<PMICInterface, StateInterface> = {
     data?.map((cmd) => payload.push(...cmd.payload.slice(0, 123).filter((ch) => ch)));
     if (payload.length < 1) return;
 
-    const reconstituted = String.fromCharCode.apply(null, payload);
+    const reconstituted = String.fromCharCode.apply(null, payload.slice(1));
     commit('updateFastStatus', JSON.parse(reconstituted));
   },
   parseIgnitionStatus({ rootState, rootGetters, commit }) {
@@ -43,7 +44,7 @@ const actions: ActionTree<PMICInterface, StateInterface> = {
     data?.map((cmd) => payload.push(...cmd.payload.slice(0, 123).filter((ch) => ch)));
     if (payload.length < 1) return;
 
-    const reconstituted = String.fromCharCode.apply(null, payload);
+    const reconstituted = String.fromCharCode.apply(null, payload.slice(1));
     commit('updateFastStatus', JSON.parse(reconstituted));
   },
 };
