@@ -26,12 +26,7 @@
     :label="props.title"
     :caption="props.caption"
   >
-    <EssentialLink
-      v-for="link in props.innerItems"
-      :key="link.title"
-      v-bind="link"
-      class="q-mr-md"
-    />
+    <EssentialLink v-for="link in props.innerItems" :key="link.title" v-bind="link" />
   </q-expansion-item>
 </template>
 

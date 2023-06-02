@@ -9,6 +9,8 @@ import { Store, useStore } from 'vuex';
 import { storeKey } from './store';
 import { startWorking } from './store/usb-layer/serialInterface';
 
+import 'canvas-datagrid';
+
 const myIcons: { [key: string]: string } = {
   'app:injector': 'img:/injector2.svg',
 };

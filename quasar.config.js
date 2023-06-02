@@ -75,22 +75,25 @@ module.exports = configure(function (/* ctx */) {
       // distDir
 
       // extendViteConf (viteConf) {},
-      // viteVuePluginOptions: {},
 
       // vitePlugins: [
       //   [ 'package-name', { ..options.. } ]
       // ]
 
-      vueLoaderOptions: {
-        isCustomElement: (tag) => {
-          return /canvas-datagrid/.test(tag);
+      viteVuePluginOptions: {
+        template: {
+          compilerOptions: {
+            isCustomElement: (tag) => {
+              return /.*canvas-datagrid.*/gi.test(tag);
+            },
+          },
         },
       },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      // https: true
+      // https: true,
       open: true, // opens browser window automatically
     },
 
