@@ -52,6 +52,9 @@ export default defineComponent({
     // @ts-expect-error ...
     window.sendUsbMessage = (payload) => window.getActions()['UsbLayer/sendMessage'][0](payload);
 
+    // @ts-expect-error ...
+    window.sendUsbMessageV2 = (payload) => window.getActions()['UsbLayer/sendCommand'][0](payload);
+
     // initial page load
     navigator.serial.getPorts().then((e) => {
       // TODO: en caso de multiples dispositivos (openefi/dash a la vez) tengo que revisar a que estaba conectado previamente

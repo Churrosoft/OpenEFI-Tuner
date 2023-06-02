@@ -1,4 +1,4 @@
-import { IUSBCommand } from 'store/usb-layer';
+import { IUSBCommand } from 'src/types/commands';
 import { storeKey } from 'store/index';
 import { Store } from 'vuex';
 

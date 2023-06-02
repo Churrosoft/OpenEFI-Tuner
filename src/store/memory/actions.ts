@@ -6,7 +6,7 @@ import { ITableRow } from 'src/types/tables';
 import { ITABLE_REF, TABLE_TYPES_MAPPING } from './types';
 import { getInt32, parseInt32 } from 'src/types/webusb';
 import CRC32 from 'src/types/CRC32';
-import { IUSBCommand, mockUSBCommand, WS_status } from 'src/types/commands';
+import { IUSBCommand, mockUSBCommand, SerialStatus } from 'src/types/commands';
 
 export interface IRequestTable {
   selectedTable: ITABLE_REF;
@@ -148,14 +148,14 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
   },
 
   getEFIConfiguration({ commit, dispatch }) {
-    const command = mockUSBCommand(100, WS_status.CMD_OK, new Uint8Array([0xff]));
+    const command = mockUSBCommand(100, SerialStatus.Ok, new Uint8Array([0xff]));
     commit('cfg_loading', true);
     dispatch('UsbLayer/sendMessage', command, { root: true });
   },
 
   parseEFIConfiguration({ state, commit, rootGetters }) {
-    const command = rootGetters['UsbLayer/getCommandArr'](1102) as Array<IUSBCommand> | null;
-    const endChunkCommand = rootGetters['UsbLayer/getCommand'](1103) as IUSBCommand | null;
+    const command = rootGetters['UsbLayer/getCommandArr'](102) as Array<IUSBCommand> | null;
+    const endChunkCommand = rootGetters['UsbLayer/getCommand'](103) as IUSBCommand | null;
 
     let str = '';
 

@@ -41,6 +41,29 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
 
     void state.writer?.write(data);
   },
+  sendCommand({ state }, { protocol, command, status, code, payload }) {
+    const _payload = payload ? [...payload, ...Array(123).fill(0x0)].slice(0, 123) : Array(123).fill(0x0);
+    const _protocol = protocol ?? 1;
+    const _status = status | code;
+
+    let rawData = Array(128).fill(0x0);
+
+    rawData = [_protocol, _status, command, ..._payload].slice(0, 128);
+
+    const data = new Uint8Array(rawData);
+
+    const calcrc = crc(rawData.slice(0, 126));
+
+    rawData[126] = (calcrc >> 8) & 0xff;
+    rawData[127] = calcrc & 0xff;
+
+    console.debug(
+      `%cFrame v2\n-- Protocolo: ${1}\n-- Comando: ${command}\n-- Status: ${status}\n-- Code: ${code}\n-- Checksum: ${calcrc}`,
+      'color: orange;'
+    );
+
+    void state.writer?.write(data);
+  },
   removeCommand({ state, commit }, command: IUSBCommand) {
     if (!command) return;
     const filteredCommands = state.pending_commands?.filter((comm) => {

@@ -72,9 +72,6 @@ export default store(function (/* { ssrContext } */) {
       Memory,
       Pmic,
     },
-    /* getters: {
-      UsbLayerGetters: UsbLayerGetters.getCommand as never,
-    }, */
     // enable strict mode (adds overhead!)
     // for dev mode and --debug builds only
     strict: !!process.env.DEBUGGING,

@@ -9,7 +9,7 @@ const actions: ActionTree<PMICInterface, StateInterface> = {
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
-    const data = rootGetters['UsbLayer/getCommandArr'](1129, 224) as Array<IUSBCommand>;
+    const data = rootGetters['UsbLayer/getCommandArr'](129, 224) as Array<IUSBCommand>;
     const payload = [0];
 
     data?.map((cmd) => payload.push(...cmd.payload.slice(0, 123).filter((ch) => ch)));
@@ -23,7 +23,7 @@ const actions: ActionTree<PMICInterface, StateInterface> = {
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
-    const data = rootGetters['UsbLayer/getCommandArr'](1130, 224) as Array<IUSBCommand>;
+    const data = rootGetters['UsbLayer/getCommandArr'](130, 224) as Array<IUSBCommand>;
 
     const payload = [0];
 
@@ -37,7 +37,7 @@ const actions: ActionTree<PMICInterface, StateInterface> = {
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
-    const data = rootGetters['UsbLayer/getCommandArr'](1131, 224) as Array<IUSBCommand>;
+    const data = rootGetters['UsbLayer/getCommandArr'](131, 224) as Array<IUSBCommand>;
 
     const payload = [0];
 
