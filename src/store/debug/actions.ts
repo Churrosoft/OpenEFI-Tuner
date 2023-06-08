@@ -1,10 +1,7 @@
+import { IUSBCommand } from 'src/types/commands';
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
-import {
-  findPayloadEnd,
-  IUSBCommand,
-  _arrayBufferToBase64,
-} from '../usb-layer/state';
+import { findPayloadEnd, _arrayBufferToBase64 } from '../usb-layer/state';
 
 import { DebugInterface, IDebugMessage } from './state';
 
@@ -20,9 +17,7 @@ const actions: ActionTree<DebugInterface, StateInterface> = {
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
-    const commandList = rootGetters['UsbLayer/getGroupedCommands']([
-      80, 81, 82, 83, 88,
-    ]) as Array<IUSBCommand>;
+    const commandList = rootGetters['UsbLayer/getGroupedCommands']([80, 81, 82, 83, 88]) as Array<IUSBCommand>;
 
     if (commandList === null) return;
 
@@ -35,15 +30,11 @@ const actions: ActionTree<DebugInterface, StateInterface> = {
           msg: _arrayBufferToBase64(chunk),
         } as IDebugMessage);
 
-        void dispatch('UsbLayer/removeCommand', command, {
+        void dispatch('UsbLayer/removeMesage', command, {
           root: true,
         });
       }
     });
-  },
-
-  someAction(/* context */) {
-    // your code
   },
 };
 

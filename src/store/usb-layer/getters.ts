@@ -1,29 +1,78 @@
-import { IUSBCommand } from 'src/types/commands';
+import { IUSBCommand, SerialCode, SerialCommand, SerialStatus } from 'src/types/commands';
 import { GetterTree } from 'vuex';
 import { StateInterface } from '../';
-import { USBCommands, UsbLayerInterface } from './state';
+import { UsbLayerInterface } from './state';
 
 const getters: GetterTree<UsbLayerInterface, StateInterface> = {
-  getCommand: (state) => (commandType: USBCommands, _status: number) => {
-    // si me dejo de hinchar las pelotas y uso todo en string directamente?
-    const command = String(commandType); /* .slice(1) */
+  getCommand: (state) => (command: SerialCommand, status: SerialStatus, code: SerialCode) => {
     if (state.pending_commands) {
-      let resultCommand: IUSBCommand | null = null;
-      state.pending_commands.map((_comm) => {
-        if (String(_comm.command) === command && resultCommand === null && !_status) {
-          resultCommand = _comm;
-        }
-        if (String(_comm.command) === command && resultCommand === null && _comm.status === _status) {
-          resultCommand = _comm;
-        }
-      });
+      for (let index = 0; index < state.pending_commands.length; index++) {
+        const element = state.pending_commands[index];
 
-      return resultCommand;
+        if (element.command === command && status === undefined && code === undefined) {
+          return element;
+        }
+
+        if (element.command === command && status === undefined && element.code === code) {
+          return element;
+        }
+
+        if (element.command === command && element.status === status && code === undefined) {
+          return element;
+        }
+        if (element.command === command && element.status === status && element.code === code) {
+          return element;
+        }
+      }
     }
     return null;
   },
+  getGroupedCommandsV2:
+    (state) => (cmdArray: Array<{ command: SerialCommand; status: SerialStatus; code: SerialCode }>) => {
+      const resultCommands: Array<IUSBCommand> = [];
 
-  getCommandArr: (state) => (commandType: USBCommands, _status: number) => {
+      if (state.pending_commands) {
+        for (let index = 0; index < state.pending_commands.length; index++) {
+          const element = state.pending_commands[index];
+
+          if (
+            cmdArray.some(
+              (cmd) => element.command === cmd.command && cmd.status === undefined && cmd.code === undefined
+            )
+          ) {
+            resultCommands.push(element);
+          }
+
+          if (
+            cmdArray.some(
+              (cmd) => element.command === cmd.command && cmd.status === undefined && element.code === cmd.code
+            )
+          ) {
+            resultCommands.push(element);
+          }
+
+          if (
+            cmdArray.some(
+              (cmd) => element.command === cmd.command && element.status === cmd.status && cmd.code === undefined
+            )
+          ) {
+            resultCommands.push(element);
+          }
+          if (
+            cmdArray.some(
+              (cmd) => element.command === cmd.command && element.status === cmd.status && element.code === cmd.code
+            )
+          ) {
+            resultCommands.push(element);
+          }
+        }
+      }
+
+      if (!resultCommands.length) return null;
+
+      return resultCommands;
+    },
+  getCommandArr: (state) => (commandType: SerialCommand, _status: SerialStatus) => {
     const command = String(commandType).slice(1);
 
     if (state.pending_commands) {
@@ -44,7 +93,7 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
     return null;
   },
 
-  getGroupedCommands: (state) => (commandsType: Array<{ command: USBCommands; status: number }>) => {
+  getGroupedCommands: (state) => (commandsType: Array<{ command: SerialCommand; status: SerialStatus }>) => {
     if (state.pending_commands?.length) {
       const resultCommands = [] as Array<IUSBCommand>;
       state.pending_commands.map((_comm) => {

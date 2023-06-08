@@ -1,4 +1,6 @@
 import crc from './crc';
+import { Store } from 'vuex';
+import { StateInterface } from 'src/store';
 
 export enum SerialCommand {
   Core = 0x00,
@@ -7,12 +9,13 @@ export enum SerialCommand {
   Debug = 0x90,
 }
 
-// 127 pa ashiba
+// 127 pa abajo siempre
 export enum SerialStatus {
   Error = 0b0000_0000,
-  Ok = 0b1000_0000,
-  DataChunk = 0b1110_0000,
-  DataChunkEnd = 0b1111_0000,
+  Ok = 0b0100_0000,
+  UploadOk = 0x7d,
+  DataChunk = 0x7e,
+  DataChunkEnd = 0x7f,
 }
 
 // 127 pa abajo (se podrian repetir los especificos por comando, no es el discriminador)
@@ -31,9 +34,9 @@ export enum SerialCode {
   TableCrcError = 52,
 
   // PMIC:
-  RequestFastStatus = 0x01,
-  RequestIgnitionStatus = 0x02,
-  RequestInjectionStatus = 0x03,
+  RequestFastStatus = 60,
+  RequestIgnitionStatus = 61,
+  RequestInjectionStatus = 62,
 }
 
 export interface IUSBCommand {
@@ -43,7 +46,28 @@ export interface IUSBCommand {
   code?: number; // optional for legacy code only
   payload: Uint8Array;
   checksum: string;
+  uuid?: string;
 }
+
+export const getUSBCommand = (
+  getters: Store<StateInterface>['getters'],
+  command: SerialCommand,
+  status?: SerialStatus,
+  code?: SerialCode
+) => {
+  return getters['UsbLayer/getCommand'](command, status, code) as IUSBCommand | null;
+};
+
+export const getGroupedUSBCommands = (
+  getters: Store<StateInterface>['getters'],
+  cmdArray: Array<{
+    command: SerialCommand;
+    status?: SerialStatus;
+    code?: SerialCode;
+  }>
+) => {
+  return getters['UsbLayer/getGroupedCommandsV2'](cmdArray) as Array<IUSBCommand> | null;
+};
 
 export const mockUSBCommand = (command = 1, status: number, payload: Uint8Array): IUSBCommand => {
   const protocol = 1;

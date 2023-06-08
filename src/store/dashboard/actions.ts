@@ -51,7 +51,7 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
           },
         });
 
-        void dispatch('UsbLayer/removeCommand', command, {
+        void dispatch('UsbLayer/removeMesage', command, {
           root: true,
         });
       }
@@ -91,7 +91,7 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
 
         commit('setDashboardConfig', { rpmTicks, maxRpm, highlights });
 
-        void dispatch('UsbLayer/removeCommand', command, {
+        void dispatch('UsbLayer/removeMesage', command, {
           root: true,
         });
       }

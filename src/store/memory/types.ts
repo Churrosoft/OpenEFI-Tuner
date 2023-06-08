@@ -2,14 +2,14 @@
 
 import { diff } from 'deep-object-diff';
 import { IGNITION_RPMTPS_SIZE } from 'src/config';
+import { getGroupedUSBCommands, getUSBCommand, IUSBCommand, SerialCommand, SerialStatus } from 'src/types/commands';
 /* import { deepCompare } from 'src/types/compare'; */
 import { ITableRow } from 'src/types/tables';
 import { computed, ComputedRef, ref, /* toRaw, watch, */ watchEffect } from 'vue';
 import { Store } from 'vuex';
 import { StateInterface } from '..';
-import { IUSBCommand } from '../usb-layer';
 
-export type ITABLE_REF = typeof TABLE_TYPES[keyof typeof TABLE_TYPES];
+export type ITABLE_REF = (typeof TABLE_TYPES)[keyof typeof TABLE_TYPES];
 export const TABLE_REF_IGNITION_TPS_LOAD = 10;
 export const TABLE_REF_IGNITION_TMP_LOAD = 0x3;
 export const TABLE_REF_IGNITION_RPM_BATT = 0x4;
@@ -77,8 +77,14 @@ export const makeTableRequest =
 
     const tableInterval = () => {
       // (18, 240)
-      const tableAvailable = store.getters['UsbLayer/getCommand'](18, 240) as IUSBCommand | null;
-      const tableError = store.getters['UsbLayer/getCommand'](18, 0x9f) as IUSBCommand | null;
+      /*       const tableAvailable = store.getters['UsbLayer/getCommand'](
+        SerialCommand.Table,
+        SerialStatus.DataChunkEnd
+      ) as IUSBCommand | null; */
+      // const tableError = store.getters['UsbLayer/getCommand'](18, 240) as IUSBCommand | null;
+
+      const tableAvailable = getUSBCommand(store.getters, SerialCommand.Table, SerialStatus.DataChunkEnd);
+      const tableError = getUSBCommand(store.getters, SerialCommand.Table, SerialStatus.Error);
 
       if (tableAvailable) {
         /* void store.dispatch(actions.success); */
@@ -181,12 +187,16 @@ export const useTable = ({ store, actions, state, paired, intTable, table: selec
   const uploadResult = computed(
     // Protocolo: 1 Comando: 20 Status: 128
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    (): IUSBCommand =>
+    (): Array<IUSBCommand> | null =>
+      getGroupedUSBCommands(store.getters, [
+        { command: SerialCommand.Table, status: SerialStatus.UploadOk },
+        { command: SerialCommand.Table, status: SerialStatus.Error },
+      ]) /*
       store.getters['UsbLayer/getGroupedCommands']([
         { command: 20, status: 128 },
         { command: 20, status: 255 },
         { command: 19, status: 128 },
-      ]) as IUSBCommand
+      ]) as IUSBCommand */
   );
 
   // store => view update
