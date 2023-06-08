@@ -1,6 +1,6 @@
-import { IUSBCommand } from 'store/usb-layer';
-import { storeKey } from 'store/index';
 import { Store } from 'vuex';
+import { storeKey } from 'store/index';
+import { IUSBCommand } from 'src/types/commands';
 
 let serialCache: Array<number> = [];
 let intConnection: NodeJS.Timeout | null = null;
@@ -8,7 +8,7 @@ let intConnection: NodeJS.Timeout | null = null;
 export const startWorking = async (port: SerialPort, store: Store<typeof storeKey>) => {
   // El baudrate se podrriiia reconfigurar luego
 
-  console.log(port.getInfo());
+  console.debug('portInfo:', port.getInfo());
 
   await port.open({ baudRate: 921600000 /* 921600 */ /* 512000 */ });
 
@@ -17,14 +17,12 @@ export const startWorking = async (port: SerialPort, store: Store<typeof storeKe
 
   void store.dispatch('UsbLayer/setWriter', writer);
 
-  void store.dispatch('UsbLayer/sendMessage', {
+  void store.dispatch('UsbLayer/sendCommand', {
     command: 1,
     status: 0,
-    payload: [0xff],
   });
 
   const pingInterval = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const command = store.getters['UsbLayer/getCommand'](0x1) as IUSBCommand;
     if (command) {
       clearInterval(intConnection as NodeJS.Timeout);
@@ -42,10 +40,13 @@ export const startWorking = async (port: SerialPort, store: Store<typeof storeKe
         const { value, done } = await reader.read();
         if (done) {
           // |reader| has been canceled.
-          // TODO: disparar accion para mostrar estado "desconectado"
+          void store.dispatch('UsbLayer/reset');
           break;
         }
-        if (!value) return;
+        if (!value) {
+          void store.dispatch('UsbLayer/reset');
+          return;
+        }
 
         /** Esto es medio un bardo pero:
          * dependiendo la cantidad de recursos que disponga Chrome al momento que se ejecute esto
@@ -68,7 +69,7 @@ export const startWorking = async (port: SerialPort, store: Store<typeof storeKe
           for (chunksProccesed = 0, j = serialCache.length; chunksProccesed < j; chunksProccesed += CHUNK_SIZE) {
             command = serialCache.slice(chunksProccesed, chunksProccesed + CHUNK_SIZE);
             if (command.length > 127) {
-              void store.dispatch('UsbLayer/recv', command);
+              void store.dispatch('UsbLayer/reciveFrame', command);
               proccesed++;
             }
           }
@@ -77,10 +78,11 @@ export const startWorking = async (port: SerialPort, store: Store<typeof storeKe
         }
       }
     } catch (error) {
-      // algun dia me saco la paja y agarro el error
+      console.warn('error mientras se procesaba el CDC: ', error);
+      void store.dispatch('UsbLayer/reset');
     } finally {
       reader.releaseLock();
     }
   }
-  // comp.$store.commit('setDisconnected');
+  void store.dispatch('UsbLayer/reset');
 };

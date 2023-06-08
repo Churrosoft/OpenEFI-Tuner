@@ -48,16 +48,16 @@
 
 <script setup lang="ts">
 import { computed, watchEffect, onBeforeUnmount, onMounted } from 'vue';
+import { IUSBCommand, mockUSBCommand, SerialStatus } from 'src/types/commands';
 
 import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
 
 import RPMGauge from 'components/Dashboard/RPMGauge.vue';
+import BarDisplay from 'src/components/BarDisplay/index.vue';
+import SegmentDisplay from 'src/components/SegmentDisplay/index.vue';
 
 import './dashboard.scss';
-import SegmentDisplay from 'src/components/SegmentDisplay/index.vue';
-import BarDisplay from 'src/components/BarDisplay/index.vue';
-import { IUSBCommand, mockUSBCommand, WS_status } from 'src/types/commands';
 
 let intDashboard: NodeJS.Timeout | null = null;
 const store = useStore(storeKey);
@@ -83,7 +83,7 @@ watchEffect(() => {
   if (dashboardMetaData.value) {
     void store.dispatch('Dashboard/updateGaugeConfig', dashboardMetaData.value);
     const dashboardInterval = () => {
-      const command = mockUSBCommand(5, WS_status.CMD_OK, new Uint8Array([0xff]));
+      const command = mockUSBCommand(5, SerialStatus.Ok, new Uint8Array([0xff]));
       void store.dispatch('UsbLayer/sendMessage', command);
     };
     intDashboard = setInterval(dashboardInterval, 1000);
@@ -103,7 +103,7 @@ onBeforeUnmount(() => {
 onMounted(() => {
   if (localStorage.getItem('DashboardActive')) {
     const dashboardInterval = () => {
-      const command = mockUSBCommand(5, WS_status.CMD_OK, new Uint8Array([0xff]));
+      const command = mockUSBCommand(5, SerialStatus.Ok, new Uint8Array([0xff]));
       if (!store.state.UsbLayer.connected) {
         clearInterval(intDashboard as NodeJS.Timeout);
         return;

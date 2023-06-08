@@ -1,5 +1,6 @@
+import { IUSBCommand } from 'src/types/commands';
 import { MutationTree } from 'vuex';
-import { IUSBCommand, UsbLayerInterface } from './state';
+import { UsbLayerInterface } from './state';
 
 interface IPaired {
   state: UsbLayerInterface;
@@ -13,7 +14,6 @@ interface IPaired {
 
 const mutation: MutationTree<UsbLayerInterface> = {
   setConnection(state, writer: WritableStreamDefaultWriter<Uint8Array>) {
-    //state.usbd = usbd;
     state.writer = writer;
     state.connected = true;
   },

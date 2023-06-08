@@ -6,7 +6,7 @@ import { ITableRow } from 'src/types/tables';
 import { ITABLE_REF, TABLE_TYPES_MAPPING } from './types';
 import { getInt32, parseInt32 } from 'src/types/webusb';
 import CRC32 from 'src/types/CRC32';
-import { IUSBCommand, mockUSBCommand, WS_status } from 'src/types/commands';
+import { getUSBCommand, IUSBCommand, mockUSBCommand, SerialCommand, SerialStatus } from 'src/types/commands';
 
 export interface IRequestTable {
   selectedTable: ITABLE_REF;
@@ -40,29 +40,27 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     _payload[1] = subcommand & 0xff;
 
     // TODO: status/command son partes para seleccionar la tabla
-    void dispatch('UsbLayer/sendMessage', { command: 0x12, status: 0x11, payload: _payload }, { root: true });
-    //void dispatch('UsbLayer/sendMessage', { command, payload: _payload }, { root: true });
+    void dispatch('UsbLayer/sendCommand', { command: 0x12, status: 0x11, payload: _payload }, { root: true });
   },
   async getTable({ commit, rootState, dispatch, rootGetters }, payload: IGetTable) {
     // llega la refe de la tabla y a que mutation tiene que mandar la tabla
     const tableRow: Array<ITableRow> = [];
 
-    const endRowCommand = rootGetters['UsbLayer/getCommand'](18, 240) as IUSBCommand;
+    const endRowCommand = getUSBCommand(rootGetters, SerialCommand.Table, SerialStatus.DataChunkEnd);
     void dispatch('UsbLayer/removeCommand', endRowCommand, { root: true });
 
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
     for (let ind = 0; ind < commandsLength; ind++) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const command = rootGetters['UsbLayer/getCommand'](18, 224) as IUSBCommand;
+      const command = getUSBCommand(rootGetters, SerialCommand.Table, SerialStatus.DataChunk);
       if (command !== null) {
         /*
         LOGICA PA' LA TABLA ACA'
         */
         if (!command?.payload) return;
         const commandRow: ITableRow = {};
-        for (let rowIndex = 0; rowIndex < payload.tableSize * 4 /* command?.payload.length */; rowIndex += 4) {
+        for (let rowIndex = 0; rowIndex < payload.tableSize * 4; rowIndex += 4) {
           const row = command?.payload;
           const buff = new Uint8Array(4);
 
@@ -73,18 +71,13 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
           const view = new DataView(buff.buffer, 0);
           commandRow[`col_${rowIndex}`] = String(view.getInt32(0, true) / 100);
         }
-        //  return;
         tableRow.push(commandRow);
-        /*  console.log(commandRow); */
-        await timeout(10);
-
         void dispatch('UsbLayer/removeCommand', command, { root: true });
       }
     }
     if (tableRow.length > 1) {
       void commit(payload.setData, tableRow, { root: true });
     }
-    /* void commit(payload.actions.loading, null, { root: true }); */
   },
   async writeTable({ dispatch }, { selectedTable, data }: IWriteTable) {
     // llega refe de la tabla, data, y mutations para loading/resultado
@@ -110,7 +103,7 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
       // dataRow[1] = index - 2; // que bosta hice aca
 
       // TODO: add table type to status
-      void dispatch('UsbLayer/sendMessage', { command: 0x13, status: 0x11, payload: dataRow }, { root: true });
+      void dispatch('UsbLayer/sendCommand', { command: 0x13, status: 0x11, payload: dataRow }, { root: true });
 
       dataRow = Array(123).fill(0x0);
       index = 2;
@@ -133,9 +126,7 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
 
     await timeout(15);
     // TODO: add table type to status
-    void dispatch('UsbLayer/sendMessage', { command: 0x14, status: 0x11, payload: dataRow }, { root: true });
-
-    /*  commit('toogleMenu', !state.toogleMenu); */
+    void dispatch('UsbLayer/sendCommand', { command: 0x14, status: 0x11, payload: dataRow }, { root: true });
   },
   resetTable({ commit, state }) {
     // borra tabla y setea valores por defecto, recibe ref y data
@@ -148,14 +139,14 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
   },
 
   getEFIConfiguration({ commit, dispatch }) {
-    const command = mockUSBCommand(100, WS_status.CMD_OK, new Uint8Array([0xff]));
+    const command = mockUSBCommand(100, SerialStatus.Ok, new Uint8Array([0xff]));
     commit('cfg_loading', true);
-    dispatch('UsbLayer/sendMessage', command, { root: true });
+    dispatch('UsbLayer/sendCommand', command, { root: true });
   },
 
   parseEFIConfiguration({ state, commit, rootGetters }) {
-    const command = rootGetters['UsbLayer/getCommandArr'](1102) as Array<IUSBCommand> | null;
-    const endChunkCommand = rootGetters['UsbLayer/getCommand'](1103) as IUSBCommand | null;
+    const command = rootGetters['UsbLayer/getCommandArr'](102) as Array<IUSBCommand> | null;
+    const endChunkCommand = rootGetters['UsbLayer/getCommand'](103) as IUSBCommand | null;
 
     let str = '';
 

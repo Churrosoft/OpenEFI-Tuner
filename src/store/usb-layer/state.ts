@@ -1,6 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { IUSBCommand } from 'src/types/commands';
-import mocks from './mocks';
+// import mocks from './mocks';
 
 export interface UsbLayerInterface {
   connecting: boolean;
@@ -17,18 +16,6 @@ export interface UsbLayerInterface {
   };
   pending_commands: Array<IUSBCommand> | null;
 }
-
-type errorCommands = 91 | 92 | 93;
-
-// 0x10 => get table metadata, 0x11 => get X table, 22 => response get X table,
-// 23 => reset X table, 24 => write X table , 25 => response write x table
-// 26 => begin data chunck , 27 => end data chunck (podrian ser un solo comando?)
-type tableCommands = 0x10 | 0x12 | 22 | 23 | 24 | 25 | 26 | 27;
-
-// 30 => get all, 31 => delete X code, 32 => delete all
-type dtcCommands = 30 | 31 | 32;
-
-export type USBCommands = 100 | 200 | errorCommands | tableCommands | dtcCommands;
 
 export function _arrayBufferToBase64(buffer: Uint8Array) {
   let binary = '';
@@ -55,30 +42,6 @@ export const findPayloadEnd = (payload: IUSBCommand['payload']) => {
   }
 };
 
-export const createUSBCommand = (
-  command: USBCommands,
-  status: number, //TODO: new type
-  payload: Uint8Array,
-  checksum: string
-): IUSBCommand => {
-  const protocol = 1;
-  /*   const subcommand = 0;
-
-  const checksum = (
-    '0000' + crc([command, subcommand, ...payload].slice(0, 126)).toString(16)
-  ).substr(-4); */
-
-  const filledPayload = new Uint8Array([...payload, ...Array(126).fill(0xfa).slice(0, payload.length)]);
-
-  return {
-    protocol,
-    command,
-    status,
-    payload: filledPayload,
-    checksum,
-  };
-};
-
 function state(): UsbLayerInterface {
   return {
     connecting: false,
@@ -91,7 +54,7 @@ function state(): UsbLayerInterface {
     showLiveTunningBanner: true,
 
     firmware_ver: { type: null, major: null, minor: null, rev: null },
-    pending_commands: [...mocks],
+    pending_commands: null,
   };
 }
 

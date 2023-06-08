@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/ban-ts-comment -->
 <template>
   <router-view />
 </template>
@@ -7,6 +8,8 @@ import { defineComponent, watch } from 'vue';
 import { Store, useStore } from 'vuex';
 import { storeKey } from './store';
 import { startWorking } from './store/usb-layer/serialInterface';
+
+import 'canvas-datagrid';
 
 const myIcons: { [key: string]: string } = {
   'app:injector': 'img:/injector2.svg',
@@ -30,22 +33,27 @@ export default defineComponent({
       }
     };
 
-    // FIXME: esto tendria que estar expuesto solo en modo dev
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    window.getStore = () =>
-      // @ts-expect-error asddsa
+    const getStore = () =>
+      // @ts-expect-error Sky- :|
       Array.from(document.querySelectorAll('*')).find((e) => e.__vue_app__).__vue_app__.config.globalProperties.$store
         .state;
-    // @ts-expect-error ads
-    window.getActions = () =>
-      // @ts-expect-error asddsa
+
+    const getActions = () =>
+      // @ts-expect-error ...
       Array.from(document.querySelectorAll('*')).find((e) => e.__vue_app__).__vue_app__.config.globalProperties.$store
         ._actions;
 
+    // @ts-expect-error ...
+    window.getStore = getStore;
+    // @ts-expect-error ...
+    window.getActions = getActions;
+
     // sendUsbMessage({ command:0x11 , status:0x23, payload:[0,0] })
-    // @ts-expect-error ads
+    // @ts-expect-error ...
     window.sendUsbMessage = (payload) => window.getActions()['UsbLayer/sendMessage'][0](payload);
+
+    // @ts-expect-error ...
+    window.sendUsbMessageV2 = (payload) => window.getActions()['UsbLayer/sendCommand'][0](payload);
 
     // initial page load
     navigator.serial.getPorts().then((e) => {

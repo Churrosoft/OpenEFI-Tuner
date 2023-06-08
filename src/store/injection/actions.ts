@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { IUSBCommand } from 'src/types/commands';
 import { ITableRow } from 'src/types/tables';
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
-import { IUSBCommand } from '../usb-layer/state';
 import { defaultInjectionVE } from './default';
 
 import { InjectionInterface } from './state';
@@ -25,14 +25,12 @@ const actions: ActionTree<InjectionInterface, StateInterface> = {
   uploadTableRPMTPS({ commit }) {
     commit('setInjectionLoading', true);
   },
-  checkUploadResult({ dispatch, commit, rootGetters }) {
-    const commandList = rootGetters['UsbLayer/getGroupedCommands']([25, 32]) as Array<IUSBCommand>;
+  checkUploadResult({ dispatch, commit }, payload: Array<IUSBCommand> | null) {
+    if (payload === null) return;
 
-    if (commandList === null) return;
-
-    commandList.map((command) => {
+    payload.map((command) => {
       if (command !== null) {
-        void dispatch('UsbLayer/removeCommand', command, {
+        void dispatch('UsbLayer/removeMesage', command, {
           root: true,
         });
       }
