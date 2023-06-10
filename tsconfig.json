@@ -22,6 +22,7 @@
     "src/**/*.vue",
     "src-pwa/*.d.ts",
     "src-bex/*.d.ts",
-    "src-ssr/*.d.ts"
+    "src-ssr/*.d.ts",
+    "src/types/dom.d.ts"
   ]
 }

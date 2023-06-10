@@ -6,6 +6,9 @@ export interface IgnitionInterface {
   tables: {
     rpm_load: Array<ITableRow> | null;
   };
+  table_cache: {
+    rpm_load: Array<ITableRow> | null;
+  };
   status: {
     rpm_load: ITableStatus;
   };
@@ -15,6 +18,9 @@ function state(): IgnitionInterface {
   return {
     tables_loading: false,
     tables: {
+      rpm_load: null,
+    },
+    table_cache: {
       rpm_load: null,
     },
     status: {

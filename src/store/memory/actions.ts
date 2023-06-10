@@ -3,10 +3,10 @@ import { StateInterface } from '../';
 
 import { MemoryInterface } from './state';
 import { ITableRow } from 'src/types/tables';
-import { ITABLE_REF, TABLE_TYPES_MAPPING } from './types';
 import { getInt32, parseInt32 } from 'src/types/webusb';
 import CRC32 from 'src/types/CRC32';
 import { getUSBCommand, IUSBCommand, mockUSBCommand, SerialCommand, SerialStatus } from 'src/types/commands';
+import { ITABLE_REF, TABLE_TYPES_MAPPING } from 'src/types/table';
 
 export interface IRequestTable {
   selectedTable: ITABLE_REF;

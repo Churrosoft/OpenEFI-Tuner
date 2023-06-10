@@ -87,25 +87,20 @@
 </template>
 
 <script setup lang="ts">
-import { watchEffect, onMounted, onBeforeUnmount } from 'vue';
-import { cleanTableEvents, getTableObserver } from 'src/types/tables';
-import { ref, computed } from 'vue';
-import { storeKey } from 'store/index';
+import { watchEffect, onMounted, onBeforeUnmount, ref, computed } from 'vue';
 import { useStore } from 'vuex';
+
+import { cleanTableEvents, getTableObserver } from 'src/types/tables';
+import { makeInputChecks, TABLE_TYPES, useTable } from 'src/types/table';
+import { storeKey } from 'store/index';
 import NotTableData from 'src/components/NotTableData.vue';
-import { makeInputChecks, TABLE_TYPES, useTable } from 'src/store/memory/types';
-import CRC32 from 'src/types/CRC32';
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let intTable: NodeJS.Timeout | null = null;
-
-let tab = ref('rpmload');
 
 const store = useStore(storeKey);
 const ignitionTables = computed(() => store.state.Ignition.tables.rpm_load);
-
 const paired = computed(() => store.state.UsbLayer.paired);
 
+let intTable: NodeJS.Timeout | null = null;
+let tab = ref('rpmload');
 let loaded = false;
 
 const rpmMapTable = useTable({
@@ -130,7 +125,7 @@ const rpmMapTable = useTable({
 
 const pathTable = () => {
   if (tab.value === 'rpmload') {
-    rpmMapTable.uploadTable(rpmMapTable.table.value);
+    rpmMapTable.uploadTable(rpmMapTable.table.value, store.state.Ignition.table_cache.rpm_load);
   }
 };
 const requestTable = () => {
@@ -170,11 +165,6 @@ watchEffect(() => {
 });
 
 onMounted(() => {
-  const crc = new CRC32();
-  crc.add([0xf, 0xda, 0xdd]);
-  console.log(crc.get());
-  console.log(new CRC32().get_4([0xf, 0xda, 0xdd]).get());
-
   if (tab.value === 'rpmload') {
     cleanTableEvents('ignition_table');
     getTableObserver(17, 'ignition_table');

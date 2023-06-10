@@ -5,6 +5,7 @@ import { IgnitionInterface, ITableStatus } from './state';
 const mutation: MutationTree<IgnitionInterface> = {
   setTableRPM_TPS(state, tableData: Array<ITableRow>) {
     state.tables.rpm_load = tableData;
+    state.table_cache.rpm_load = tableData;
     state.tables_loading = false;
   },
   clearTableRPM_TPS(state) {
