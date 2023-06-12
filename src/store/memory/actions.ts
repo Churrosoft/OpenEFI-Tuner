@@ -2,11 +2,18 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 
 import { MemoryInterface } from './state';
-import { ITableRow } from 'src/types/tables';
 import { getInt32, parseInt32 } from 'src/types/webusb';
 import CRC32 from 'src/types/CRC32';
-import { getUSBCommand, IUSBCommand, mockUSBCommand, SerialCommand, SerialStatus } from 'src/types/commands';
-import { ITABLE_REF, TABLE_TYPES_MAPPING } from 'src/types/table';
+import {
+  getUSBCommand,
+  IUSBCommand,
+  mockUSBCommand,
+  sendUSBCommand,
+  SerialCode,
+  SerialCommand,
+  SerialStatus,
+} from 'src/types/commands';
+import { ITABLE_REF, TABLE_TYPES_MAPPING, ITableRow } from 'src/types/table';
 
 export interface IRequestTable {
   selectedTable: ITABLE_REF;
@@ -30,17 +37,10 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     commit('toogleMenu', !state.toogleMenu);
   },
   requestTable({ dispatch }, payload: ITABLE_REF) {
-    /* void commit(payload.loadingAction, null, { root: true }); */
+    const tableID = TABLE_TYPES_MAPPING[payload].id;
 
-    const command = 21;
-    const subcommand = TABLE_TYPES_MAPPING[payload].id;
-
-    const _payload = Array(123).fill(0x0);
-    _payload[0] = (subcommand >> 8) & 0xff;
-    _payload[1] = subcommand & 0xff;
-
-    // TODO: status/command son partes para seleccionar la tabla
-    void dispatch('UsbLayer/sendCommand', { command: 0x12, status: 0x11, payload: _payload }, { root: true });
+    // SerialCode se utiliza para especificar la tabla
+    sendUSBCommand(dispatch, SerialCommand.TableGet, SerialStatus.Ok, tableID as SerialCode);
   },
   async getTable({ commit, rootState, dispatch, rootGetters }, payload: IGetTable) {
     // llega la refe de la tabla y a que mutation tiene que mandar la tabla
@@ -49,38 +49,51 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     const endRowCommand = getUSBCommand(rootGetters, SerialCommand.Table, SerialStatus.DataChunkEnd);
     void dispatch('UsbLayer/removeCommand', endRowCommand, { root: true });
 
+    //FIXME: todo esto podria usar getGroupedUSBCommands
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
+
+    const commandArr: Array<IUSBCommand> = [];
 
     for (let ind = 0; ind < commandsLength; ind++) {
       const command = getUSBCommand(rootGetters, SerialCommand.Table, SerialStatus.DataChunk);
       if (command !== null) {
-        /*
-        LOGICA PA' LA TABLA ACA'
-        */
-        if (!command?.payload) return;
-        const commandRow: ITableRow = {};
-        for (let rowIndex = 0; rowIndex < payload.tableSize * 4; rowIndex += 4) {
-          const row = command?.payload;
-          const buff = new Uint8Array(4);
-
-          buff[0] = row[rowIndex];
-          buff[1] = row[rowIndex + 1];
-          buff[2] = row[rowIndex + 2];
-          buff[3] = row[rowIndex + 3];
-          const view = new DataView(buff.buffer, 0);
-          commandRow[`col_${rowIndex}`] = String(view.getInt32(0, true) / 100);
-        }
-        tableRow.push(commandRow);
+        commandArr.push(command);
         void dispatch('UsbLayer/removeCommand', command, { root: true });
       }
     }
+
+    if (commandArr.length > 1) {
+      commandArr
+        .sort((a, b) => a.payload[0] - b.payload[0])
+        .map((command) => {
+          //LOGICA PA' LA TABLA ACA'
+          if (!command?.payload) return;
+
+          const commandRow: ITableRow = {};
+          const row = command?.payload;
+
+          for (let rowIndex = 1; rowIndex < payload.tableSize * 4 + 1; rowIndex += 4) {
+            const buff = new Uint8Array(4);
+
+            buff[0] = row[rowIndex];
+            buff[1] = row[rowIndex + 1];
+            buff[2] = row[rowIndex + 2];
+            buff[3] = row[rowIndex + 3];
+            const view = new DataView(buff.buffer, 0);
+            commandRow[`col_${rowIndex}`] = String(view.getInt32(0, true) / 100);
+          }
+          tableRow.push(commandRow);
+        });
+    }
+
     if (tableRow.length > 1) {
       void commit(payload.setData, tableRow, { root: true });
     }
   },
   async writeTable({ dispatch }, { selectedTable, data }: IWriteTable) {
     // llega refe de la tabla, data, y mutations para loading/resultado
+    const tableID = TABLE_TYPES_MAPPING[selectedTable].id;
 
     let dataRow = Array(123).fill(0x0);
     const outputRaw: Array<number> = [];
@@ -102,31 +115,33 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
       dataRow[0] = row.index;
       // dataRow[1] = index - 2; // que bosta hice aca
 
+      sendUSBCommand(dispatch, SerialCommand.TablePut, SerialStatus.Ok, tableID as SerialCode, new Uint8Array(dataRow));
+
       // TODO: add table type to status
-      void dispatch('UsbLayer/sendCommand', { command: 0x13, status: 0x11, payload: dataRow }, { root: true });
+      // void dispatch('UsbLayer/sendCommand', { command: 0x13, status: 0x11, payload: dataRow }, { root: true });
 
       dataRow = Array(123).fill(0x0);
-      index = 2;
+      index = 1;
       await timeout(15);
     }
 
-    const subcommand = TABLE_TYPES_MAPPING[selectedTable].id;
     const outpayload = Array(123).fill(0x0);
-
-    outpayload[0] = (subcommand >> 8) & 0xff;
-    outpayload[1] = subcommand & 0xff;
 
     const crc32 = new CRC32().get_4(outputRaw.flat()).get();
     const crc32_arr = parseInt32(crc32);
 
-    outpayload[2] = crc32_arr[0];
-    outpayload[3] = crc32_arr[1];
-    outpayload[4] = crc32_arr[2];
-    outpayload[5] = crc32_arr[3];
+    outpayload[0] = crc32_arr[0];
+    outpayload[1] = crc32_arr[1];
+    outpayload[2] = crc32_arr[2];
+    outpayload[3] = crc32_arr[3];
 
     await timeout(15);
+
+    sendUSBCommand(dispatch, SerialCommand.TableUpload, SerialStatus.Ok, tableID as SerialCode),
+      new Uint8Array(outpayload);
+
     // TODO: add table type to status
-    void dispatch('UsbLayer/sendCommand', { command: 0x14, status: 0x11, payload: dataRow }, { root: true });
+    //void dispatch('UsbLayer/sendCommand', { command: 0x14, status: 0x11, payload: dataRow }, { root: true });
   },
   resetTable({ commit, state }) {
     // borra tabla y setea valores por defecto, recibe ref y data

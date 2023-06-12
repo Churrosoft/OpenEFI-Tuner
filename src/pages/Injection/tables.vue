@@ -88,12 +88,18 @@
 
 <script setup lang="ts">
 import { watchEffect, onMounted, onBeforeUnmount } from 'vue';
-import { cleanTableEvents, getTableObserver, setActiveStyle } from 'src/types/tables';
 import { ref, computed } from 'vue';
 import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
 import NotTableData from 'src/components/NotTableData.vue';
-import { TABLE_TYPES, makeInputChecks, useTable } from 'src/types/table';
+import {
+  TABLE_TYPES,
+  makeInputChecks,
+  useTable,
+  cleanTableEvents,
+  getTableObserver,
+  setActiveStyle,
+} from 'src/types/table';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;

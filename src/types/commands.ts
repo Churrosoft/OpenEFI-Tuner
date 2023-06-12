@@ -5,6 +5,11 @@ import { StateInterface } from 'src/store';
 export enum SerialCommand {
   Core = 0x00,
   Table = 0x10,
+  TableGetMetaData = 0x11,
+  TableGet = 0x12,
+  TablePut = 0x13,
+  TableUpload = 0x14,
+  TableClear = 0x19,
   Pmic = 0x80,
   Debug = 0x90,
 }
@@ -67,6 +72,16 @@ export const getGroupedUSBCommands = (
   }>
 ) => {
   return getters['UsbLayer/getGroupedCommandsV2'](cmdArray) as Array<IUSBCommand> | null;
+};
+
+export const sendUSBCommand = (
+  dispatch: Store<StateInterface>['dispatch'],
+  command: SerialCommand,
+  status?: SerialStatus,
+  code?: SerialCode,
+  payload?: Uint8Array
+) => {
+  return dispatch('UsbLayer/sendCommand', { command, status, code, payload }, { root: true });
 };
 
 export const mockUSBCommand = (command = 1, status: number, payload: Uint8Array): IUSBCommand => {

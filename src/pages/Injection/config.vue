@@ -87,7 +87,7 @@ import {
   cleanTableEvents,
   getTableObserver,
   // ITableRow,
-} from 'src/types/tables';
+} from 'src/types/table';
 
 /* 220/7.2
 172/9.6

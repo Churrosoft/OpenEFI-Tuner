@@ -18,12 +18,12 @@ export const styleMappings = {
     '36': '#ef5350',
   },
   injection_ve: {
-    '20': '#536dfe',
-    '30': '#448aff',
-    '35': '#00b0ff',
-    '45': '#ff0',
-    '50': '#ffca28',
-    '60': '#ffc107',
+    '50': '#536dfe',
+    '55': '#448aff',
+    '60': '#00b0ff',
+    '65': '#ff0',
+    '70': '#ffca28',
+    '75': '#ffc107',
     '80': '#ff9100',
     '90': '#ef5350',
   },
@@ -100,8 +100,4 @@ export const getTableObserver = (cell_count: number, table_class: string) => {
 export const cleanTableEvents = (table_class: string) => {
   const table = document.querySelector(`.${table_class}`);
   table?.removeEventListener('rendercell', styleTableCells);
-};
-
-export type ITableRow = {
-  [k: `col_${string}`]: string;
 };

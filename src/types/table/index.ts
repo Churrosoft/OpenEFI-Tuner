@@ -1,11 +1,14 @@
 import { ComputedRef } from 'vue';
 import { Store } from 'vuex';
 
-import { ITableRow } from '../tables';
 import { StateInterface } from 'src/store';
 import { TABLE_TYPES } from './constants';
 
 export type ITABLE_REF = (typeof TABLE_TYPES)[keyof typeof TABLE_TYPES];
+
+export type ITableRow = {
+  [k: `col_${string}`]: string;
+};
 
 export interface IMakeTableRequest {
   paired: ComputedRef<boolean>;
@@ -54,5 +57,6 @@ export interface IEditEvent extends Event {
   abort: VoidFunction;
 }
 
+export * from './styling';
 export * from './constants';
 export * from './utils';

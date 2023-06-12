@@ -3,13 +3,13 @@
 import { diff } from 'deep-object-diff';
 import { getGroupedUSBCommands, getUSBCommand, IUSBCommand, SerialCommand, SerialStatus } from 'src/types/commands';
 /* import { deepCompare } from 'src/types/compare'; */
-import { ITableRow } from 'src/types/tables';
-import { computed, ComputedRef, ref, /* toRaw, watch, */ watchEffect } from 'vue';
+import { computed, ref, /* toRaw, watch, */ watchEffect } from 'vue';
 import { Store } from 'vuex';
 import {
   IEditEvent,
   IMakeTableRequest,
   IMakeUploadTable,
+  ITableRow,
   IUseTable,
   TABLE_STATUS_INTERVAL,
   TABLE_TYPES_MAPPING,

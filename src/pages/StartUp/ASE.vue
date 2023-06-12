@@ -2,9 +2,8 @@
   <div>
     <h4 class="q-mt-xs q-mb-md">Afterstart Enrichment (ASE)</h4>
     <p class="q-mt-xs q-mb-lg">
-      inmmediately after the engine has started it is normal to need additional
-      fuel. the curve (and taper on the next tab) specifies how much (5-40%) an
-      how long is the enrichment
+      inmmediately after the engine has started it is normal to need additional fuel. the curve (and taper on the next
+      tab) specifies how much (5-40%) an how long is the enrichment
     </p>
     <q-markdown
       style="max-width: 40rem"
@@ -40,12 +39,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
 
             <div style="margin-left: 6rem; width: 30vw" class="row">
               <div style="width: 100%; font-size: 24px; user-select: none">
-                <q-toggle
-                  v-model="liveTunning"
-                  size="lg"
-                  val="lg"
-                  label="Live Tunning"
-                />
+                <q-toggle v-model="liveTunning" size="lg" val="lg" label="Live Tunning" />
               </div>
               <SegmentDisplay
                 title="RPM"
@@ -63,10 +57,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
 
               <canvas-datagrid
                 style="max-width: 25vw"
-                :data.prop="[
-                  { asePercentage: 'ASE %', coolant: 'cooltan (°C)' },
-                  ...mockData,
-                ]"
+                :data.prop="[{ asePercentage: 'ASE %', coolant: 'cooltan (°C)' }, ...mockData]"
                 showRowHeaders="false"
                 showColumnHeaders="false"
                 class="asePercentage_table"
@@ -88,12 +79,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
 
             <div style="margin-left: 6rem; width: 30vw" class="row">
               <div style="width: 100%; font-size: 24px; user-select: none">
-                <q-toggle
-                  v-model="liveTunning"
-                  size="lg"
-                  val="lg"
-                  label="Live Tunning"
-                />
+                <q-toggle v-model="liveTunning" size="lg" val="lg" label="Live Tunning" />
               </div>
               <SegmentDisplay
                 title="RPM"
@@ -111,10 +97,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
 
               <canvas-datagrid
                 style="max-width: 25vw"
-                :data.prop="[
-                  { aseTaper: 'ASE Engine cycles', coolant: 'cooltan (°C)' },
-                  ...mockTaperData,
-                ]"
+                :data.prop="[{ aseTaper: 'ASE Engine cycles', coolant: 'cooltan (°C)' }, ...mockTaperData]"
                 showRowHeaders="false"
                 showColumnHeaders="false"
                 class="aseCycles_table"
@@ -136,7 +119,7 @@ import {
   cleanTableEvents,
   getTableObserver,
   // ITableRow,
-} from 'src/types/tables';
+} from 'src/types/table';
 
 const mockData = [
   { asePercentage: 45, coolant: -40 },

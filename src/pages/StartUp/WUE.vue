@@ -2,8 +2,8 @@
   <div>
     <h4 class="q-mt-md q-mb-md">Warmup Enrichment (WUE)</h4>
     <h6 class="q-mt-md q-mb-lg">
-      this table (and graph) specifies the multiplier for fuel after
-      calculations during warmup, at fully warm, 100% must be specified
+      this table (and graph) specifies the multiplier for fuel after calculations during warmup, at fully warm, 100%
+      must be specified
     </h6>
     <q-markdown
       style="max-width: 40rem"
@@ -24,19 +24,9 @@ Use 'Live Tunning' toogle for adjust this table on running engine
 
       <div style="margin-left: 6rem; width: 30vw" class="row">
         <div style="width: 100%; font-size: 24px">
-          <q-toggle
-            v-model="liveTunning"
-            size="lg"
-            val="lg"
-            label="Live Tunning"
-          />
+          <q-toggle v-model="liveTunning" size="lg" val="lg" label="Live Tunning" />
         </div>
-        <SegmentDisplay
-          title="RPM"
-          value="---- "
-          style="max-width: 15rem; max-height: 8rem"
-          class="q-mr-md q-mb-md"
-        />
+        <SegmentDisplay title="RPM" value="---- " style="max-width: 15rem; max-height: 8rem" class="q-mr-md q-mb-md" />
         <SegmentDisplay
           title="Temperature"
           value="69.4"
@@ -66,7 +56,7 @@ import {
   cleanTableEvents,
   getTableObserver,
   // ITableRow,
-} from 'src/types/tables';
+} from 'src/types/table';
 
 const mockData = [
   { wue: 180, coolant: -40 },

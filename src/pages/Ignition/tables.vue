@@ -90,8 +90,7 @@
 import { watchEffect, onMounted, onBeforeUnmount, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 
-import { cleanTableEvents, getTableObserver } from 'src/types/tables';
-import { makeInputChecks, TABLE_TYPES, useTable } from 'src/types/table';
+import { makeInputChecks, TABLE_TYPES, useTable, cleanTableEvents, getTableObserver } from 'src/types/table';
 import { storeKey } from 'store/index';
 import NotTableData from 'src/components/NotTableData.vue';
 

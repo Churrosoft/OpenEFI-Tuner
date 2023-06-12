@@ -1,11 +1,12 @@
 import { IGNITION_RPMTPS_SIZE } from 'src/config';
 
+// injection
 export const TABLE_REF_IGNITION_TPS_LOAD = 10;
-export const TABLE_REF_IGNITION_TMP_LOAD = 0x3;
-export const TABLE_REF_IGNITION_RPM_BATT = 0x4;
+export const TABLE_REF_IGNITION_TMP_LOAD = 20;
+export const TABLE_REF_IGNITION_RPM_BATT = 30;
 
 // main VE table
-export const TABLE_REF_INJECTION_TPS_LOAD = 20;
+export const TABLE_REF_INJECTION_TPS_LOAD = 1;
 
 // config tuner:
 // eslint-disable-next-line prefer-const

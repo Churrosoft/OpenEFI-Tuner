@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { IUSBCommand } from 'src/types/commands';
-import { ITableRow } from 'src/types/tables';
+import { ITableRow } from 'src/types/table';
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 import { defaultRPMTPS_TABLE } from './default';
