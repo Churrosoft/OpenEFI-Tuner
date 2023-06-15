@@ -51,13 +51,12 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     commit('setCommands', filteredCommands);
   },
   sendCommand({ state }, { protocol, command, status, code, payload }) {
-    const _payload = payload ? [...payload, ...Array(123).fill(0x0)].slice(0, 123) : Array(123).fill(0x0);
+    const _payload = payload ? [...payload, ...Array(122).fill(0x0)].slice(0, 122) : Array(122).fill(0x0);
     const _protocol = protocol ?? 1;
-    const _status = status | code;
 
     let rawData = Array(128).fill(0x0);
 
-    rawData = [_protocol, _status, command, ..._payload].slice(0, 128);
+    rawData = [_protocol, status, code, command, ..._payload].slice(0, 128);
 
     const calcrc = crc(rawData.slice(0, 126));
 
@@ -88,10 +87,11 @@ const actions: ActionTree<UsbLayerInterface, StateInterface> = {
     const frame = new Uint8Array(data);
 
     const protocol = frame[0];
-    const command = frame[2];
-    const status = frame[1]; //>> 4; //FIXME: revisar status/code y fixear en el firmware primero
-    const code = frame[1] << 4;
-    const payload = frame.slice(3, 126);
+    const status = frame[1];
+    const code = frame[2];
+    const command = frame[3];
+
+    const payload = frame.slice(4, 126);
     const checksum = buf2hex(frame.slice(126, 128).buffer);
 
     // Todo este bardo para comparar los dos crc como string...

@@ -51,11 +51,7 @@ const getters: GetterTree<UsbLayerInterface, StateInterface> = {
             resultCommands.push(element);
           }
 
-          if (
-            cmdArray.some(
-              (cmd) => element.command === cmd.command && element.status === cmd.status && cmd.code === undefined
-            )
-          ) {
+          if (cmdArray.some((cmd) => element.command === cmd.command && element.status === cmd.status && !cmd.code)) {
             resultCommands.push(element);
           }
           if (

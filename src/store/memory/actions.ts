@@ -5,6 +5,7 @@ import { MemoryInterface } from './state';
 import { getInt32, parseInt32 } from 'src/types/webusb';
 import CRC32 from 'src/types/CRC32';
 import {
+  getGroupedUSBCommands,
   getUSBCommand,
   IUSBCommand,
   mockUSBCommand,
@@ -42,28 +43,18 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     // SerialCode se utiliza para especificar la tabla
     sendUSBCommand(dispatch, SerialCommand.TableGet, SerialStatus.Ok, tableID as SerialCode);
   },
-  async getTable({ commit, rootState, dispatch, rootGetters }, payload: IGetTable) {
+  async getTable({ commit, dispatch, rootGetters }, payload: IGetTable) {
     // llega la refe de la tabla y a que mutation tiene que mandar la tabla
     const tableRow: Array<ITableRow> = [];
 
     const endRowCommand = getUSBCommand(rootGetters, SerialCommand.Table, SerialStatus.DataChunkEnd);
     void dispatch('UsbLayer/removeCommand', endRowCommand, { root: true });
 
-    //FIXME: todo esto podria usar getGroupedUSBCommands
-    const commandsLength = rootState.UsbLayer.pending_commands?.length;
-    if (!commandsLength) return;
+    const commandArr = getGroupedUSBCommands(rootGetters, [
+      { command: SerialCommand.Table, status: SerialStatus.DataChunk },
+    ]);
 
-    const commandArr: Array<IUSBCommand> = [];
-
-    for (let ind = 0; ind < commandsLength; ind++) {
-      const command = getUSBCommand(rootGetters, SerialCommand.Table, SerialStatus.DataChunk);
-      if (command !== null) {
-        commandArr.push(command);
-        void dispatch('UsbLayer/removeCommand', command, { root: true });
-      }
-    }
-
-    if (commandArr.length > 1) {
+    if (commandArr && endRowCommand) {
       commandArr
         .sort((a, b) => a.payload[0] - b.payload[0])
         .map((command) => {
@@ -84,6 +75,7 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
             commandRow[`col_${rowIndex}`] = String(view.getInt32(0, true) / 100);
           }
           tableRow.push(commandRow);
+          void dispatch('UsbLayer/removeCommand', command, { root: true });
         });
     }
 
@@ -95,7 +87,7 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     // llega refe de la tabla, data, y mutations para loading/resultado
     const tableID = TABLE_TYPES_MAPPING[selectedTable].id;
 
-    let dataRow = Array(123).fill(0x0);
+    let dataRow = Array(122).fill(0x0);
     const outputRaw: Array<number> = [];
     let index = 1;
 
@@ -113,19 +105,15 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
           index += 4;
         });
       dataRow[0] = row.index;
-      // dataRow[1] = index - 2; // que bosta hice aca
 
       sendUSBCommand(dispatch, SerialCommand.TablePut, SerialStatus.Ok, tableID as SerialCode, new Uint8Array(dataRow));
 
-      // TODO: add table type to status
-      // void dispatch('UsbLayer/sendCommand', { command: 0x13, status: 0x11, payload: dataRow }, { root: true });
-
-      dataRow = Array(123).fill(0x0);
+      dataRow = Array(122).fill(0x0);
       index = 1;
       await timeout(15);
     }
 
-    const outpayload = Array(123).fill(0x0);
+    const outpayload = Array(122).fill(0x0);
 
     const crc32 = new CRC32().get_4(outputRaw.flat()).get();
     const crc32_arr = parseInt32(crc32);
@@ -139,9 +127,6 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
 
     sendUSBCommand(dispatch, SerialCommand.TableUpload, SerialStatus.Ok, tableID as SerialCode),
       new Uint8Array(outpayload);
-
-    // TODO: add table type to status
-    //void dispatch('UsbLayer/sendCommand', { command: 0x14, status: 0x11, payload: dataRow }, { root: true });
   },
   resetTable({ commit, state }) {
     // borra tabla y setea valores por defecto, recibe ref y data

@@ -75,12 +75,6 @@
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
           <NotTableData v-if="rpmMapTable.table.value === null" />
         </q-tab-panel>
-
-        <q-tab-panel name="rpmbattery">
-          <div class="text-h6">RPM/Battery</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          <NotTableData v-if="rpmMapTable.table.value === null" />
-        </q-tab-panel>
       </q-tab-panels>
     </q-card>
   </div>
@@ -99,8 +93,9 @@ const ignitionTables = computed(() => store.state.Ignition.tables.rpm_load);
 const paired = computed(() => store.state.UsbLayer.paired);
 
 let intTable: NodeJS.Timeout | null = null;
-let tab = ref('rpmload');
-let loaded = false;
+let tab = ref<'rpmload' | 'loadtemp'>('rpmload');
+let rpm_load_loaded = false;
+let temp_load_loaded = false;
 
 const rpmMapTable = useTable({
   store,
@@ -140,26 +135,18 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
-  if (rpmMapTable.table.value !== null && !store.state.Ignition.tables_loading && !loaded) {
-    loaded = true;
+  if (rpmMapTable.table.value !== null && !store.state.Ignition.tables_loading && !rpm_load_loaded) {
+    rpm_load_loaded = true;
     makeInputChecks({
       store,
       table: rpmMapTable.table.value,
       tableClass: 'ignition_table',
       updateCommand: 'Ignition/setTableRPM_TPS',
     });
-    /*   setTimeout(() => {
-      const tableRef = document.getElementsByClassName('ignition_table');
-      if (tableRef[0]) {
-        tableRef[0].addEventListener(
-          'beforeendedit',
-          function (e) {
-            console.log(rpmMapTable.table.value);
-          },
-          false
-        );
-      }
-    }, 100); */
+  }
+
+  if (rpmMapTable.table.value !== null && !store.state.Ignition.tables_loading && !temp_load_loaded) {
+    temp_load_loaded = true;
   }
 });
 

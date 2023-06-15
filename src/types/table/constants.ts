@@ -1,7 +1,7 @@
 import { IGNITION_RPMTPS_SIZE } from 'src/config';
 
 // injection
-export const TABLE_REF_IGNITION_TPS_LOAD = 0x02;
+export const TABLE_REF_IGNITION_TPS_LOAD = 0x10;
 export const TABLE_REF_IGNITION_TMP_LOAD = 20;
 export const TABLE_REF_IGNITION_RPM_BATT = 30;
 

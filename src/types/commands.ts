@@ -18,9 +18,9 @@ export enum SerialCommand {
 export enum SerialStatus {
   Error = 0b0000_0000,
   Ok = 0b0100_0000,
-  UploadOk = 0x7d,
-  DataChunk = 0x7e,
-  DataChunkEnd = 0x7f,
+  UploadOk = 0x7c,
+  DataChunk = 0x7d,
+  DataChunkEnd = 0x7e,
 }
 
 // 127 pa abajo (se podrian repetir los especificos por comando, no es el discriminador)
