@@ -31,6 +31,10 @@ export const makeTableRequest =
     void store.dispatch(actions.start);
 
     const tableInterval = () => {
+      //FIXME: no genera error (get tabla invalida)
+      // Frame recibido [v2]-- Protocolo: 0x1-- Comando: 0x10-- Status: 0x33-- Code: 0x330-- Checksum: a20e
+      // frame enviado luego de enviar un write a la tabla 2
+      // Frame recibido [v2]-- Protocolo: 0x1-- Comando: 0x10-- Status: 0x33-- Code: 0x330-- Checksum: 2387
       const tableAvailable = getUSBCommand(store.getters, SerialCommand.Table, SerialStatus.DataChunkEnd);
       const tableError = getUSBCommand(store.getters, SerialCommand.Table, SerialStatus.Error);
 
