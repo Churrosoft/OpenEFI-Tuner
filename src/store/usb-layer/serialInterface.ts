@@ -1,15 +1,14 @@
 import { Store } from 'vuex';
-import { storeKey } from 'store/index';
-import { IUSBCommand } from 'src/types/commands';
+import { StateInterface } from 'store/index';
+import { SerialCommand, getUSBCommand, sendUSBCommand } from 'src/types/commands';
+
+const CHUNK_SIZE = 128;
 
 let serialCache: Array<number> = [];
 let intConnection: NodeJS.Timeout | null = null;
 
-export const startWorking = async (port: SerialPort, store: Store<typeof storeKey>) => {
+export const startWorking = async (port: SerialPort, store: Store<StateInterface>) => {
   // El baudrate se podrriiia reconfigurar luego
-
-  console.debug('portInfo:', port.getInfo());
-
   await port.open({ baudRate: 921600000 /* 921600 */ /* 512000 */ });
 
   if (!port.writable) return;
@@ -17,13 +16,10 @@ export const startWorking = async (port: SerialPort, store: Store<typeof storeKe
 
   void store.dispatch('UsbLayer/setWriter', writer);
 
-  void store.dispatch('UsbLayer/sendCommand', {
-    command: 1,
-    status: 0,
-  });
+  sendUSBCommand(store.dispatch, SerialCommand.CorePing);
 
   const pingInterval = () => {
-    const command = store.getters['UsbLayer/getCommand'](0x1) as IUSBCommand;
+    const command = getUSBCommand(store.getters, SerialCommand.CorePing);
     if (command) {
       clearInterval(intConnection as NodeJS.Timeout);
       void store.dispatch('UsbLayer/connected', command.payload);
@@ -56,7 +52,6 @@ export const startWorking = async (port: SerialPort, store: Store<typeof storeKe
          * y el resto guardarlo en una variable temporal hasta que "caiga" el resto por la api de Chrome
          * tmb se podria procesar el CRC aca pero lo vengo haciendo en el store
          */
-        const CHUNK_SIZE = 128;
 
         serialCache = [...serialCache, ...value];
 

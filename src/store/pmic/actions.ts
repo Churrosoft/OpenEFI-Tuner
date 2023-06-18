@@ -2,51 +2,83 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 
 import { PMICInterface } from './state';
-import { IUSBCommand, SerialCommand, SerialStatus, getGroupedUSBCommands } from 'src/types/commands';
+import {
+  SerialCommand,
+  SerialStatus,
+  getGroupedUSBCommands,
+  getUSBCommand,
+  removeUSBCommand,
+} from 'src/types/commands';
 
 const actions: ActionTree<PMICInterface, StateInterface> = {
-  parseFastStatus({ rootState, rootGetters, commit }) {
+  parseFastStatus({ rootState, rootGetters, commit, dispatch }) {
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
-    //const data = rootGetters['UsbLayer/getCommandArr'](129, 224) as Array<IUSBCommand>;
-    const data = getGroupedUSBCommands(rootGetters, [{ command: SerialCommand.Pmic, status: SerialStatus.DataChunk }]);
+    const data = getGroupedUSBCommands(rootGetters, [
+      { command: SerialCommand.PmicFastStatus, status: SerialStatus.DataChunk },
+    ]);
+    const dataEnd = getUSBCommand(rootGetters, SerialCommand.PmicFastStatus, SerialStatus.DataChunkEnd);
+
+    if (!dataEnd || !data) {
+      return;
+    }
+
     const payload = [0];
 
     data?.map((cmd) => payload.push(...cmd.payload.slice(0, 122).filter((ch) => ch)));
-    if (payload.length < 1) return;
-
     const reconstituted = String.fromCharCode.apply(null, payload.slice(1));
-    console.debug(reconstituted);
+
+    data?.map((cmd) => removeUSBCommand(dispatch, cmd));
+    removeUSBCommand(dispatch, dataEnd);
+
     commit('updateFastStatus', JSON.parse(reconstituted));
   },
-  parseInjectionStatus({ rootState, rootGetters, commit }) {
+  parseInjectionStatus({ rootState, rootGetters, commit, dispatch }) {
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
-    const data = getGroupedUSBCommands(rootGetters, [{ command: SerialCommand.Pmic, status: SerialStatus.DataChunk }]);
+    const data = getGroupedUSBCommands(rootGetters, [
+      { command: SerialCommand.PmicInjectionStatus, status: SerialStatus.DataChunk },
+    ]);
+    const dataEnd = getUSBCommand(rootGetters, SerialCommand.PmicInjectionStatus, SerialStatus.DataChunkEnd);
+
+    if (!dataEnd || !data) {
+      return;
+    }
 
     const payload = [0];
 
     data?.map((cmd) => payload.push(...cmd.payload.slice(0, 122).filter((ch) => ch)));
-    if (payload.length < 1) return;
-
     const reconstituted = String.fromCharCode.apply(null, payload.slice(1));
-    commit('updateFastStatus', JSON.parse(reconstituted));
+
+    data?.map((cmd) => removeUSBCommand(dispatch, cmd));
+    removeUSBCommand(dispatch, dataEnd);
+
+    commit('updateInjectionStatus', JSON.parse(reconstituted));
   },
-  parseIgnitionStatus({ rootState, rootGetters, commit }) {
+  parseIgnitionStatus({ rootState, rootGetters, commit, dispatch }) {
     const commandsLength = rootState.UsbLayer.pending_commands?.length;
     if (!commandsLength) return;
 
-    const data = getGroupedUSBCommands(rootGetters, [{ command: SerialCommand.Pmic, status: SerialStatus.DataChunk }]);
+    const data = getGroupedUSBCommands(rootGetters, [
+      { command: SerialCommand.PmicIgnitionStatus, status: SerialStatus.DataChunk },
+    ]);
+    const dataEnd = getUSBCommand(rootGetters, SerialCommand.PmicIgnitionStatus, SerialStatus.DataChunkEnd);
+
+    if (!dataEnd || !data) {
+      return;
+    }
 
     const payload = [0];
 
     data?.map((cmd) => payload.push(...cmd.payload.slice(0, 122).filter((ch) => ch)));
-    if (payload.length < 1) return;
-
     const reconstituted = String.fromCharCode.apply(null, payload.slice(1));
-    commit('updateFastStatus', JSON.parse(reconstituted));
+
+    data?.map((cmd) => removeUSBCommand(dispatch, cmd));
+    removeUSBCommand(dispatch, dataEnd);
+
+    commit('updateIgnitionStatus', JSON.parse(reconstituted));
   },
 };
 

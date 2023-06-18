@@ -1,26 +1,11 @@
 <template>
   <div>
     <h4 class="q-mt-md q-mb-md">Debug Utils</h4>
-    <h6 class="q-mt-md q-mb-lg">
-      por ahora solo una consolita con colorinche'
-    </h6>
+    <h6 class="q-mt-md q-mb-lg">por ahora solo una consolita con colorinche'</h6>
 
-    <q-toggle
-      class="q-mr-md"
-      v-model="pollMessages"
-      size="md"
-      label="Poll for messages"
-    />
-    <q-scroll-area
-      class="debug__console q-mt-md"
-      style="height: 35vw; width: 100%"
-      v-if="messages"
-    >
-      <p
-        v-for="message in messages"
-        :class="getMessageClass(message.type)"
-        :key="message.msg"
-      >
+    <q-toggle class="q-mr-md" v-model="pollMessages" size="md" label="Poll for messages" />
+    <q-scroll-area class="debug__console q-mt-md" style="height: 35vw; width: 100%" v-if="messages">
+      <p v-for="message in messages" :class="getMessageClass(message.type)" :key="message.msg">
         {{ getMessageDecorator(message) }}
       </p>
     </q-scroll-area>
@@ -36,7 +21,7 @@ import { storeKey } from 'store/index';
 import { IDebugMessage } from '../../store/debug';
 
 const store = useStore(storeKey);
-const pollMessages = ref(false);
+const pollMessages = ref(true);
 let enableInterval = false;
 let pollInterval: null | NodeJS.Timeout = null;
 

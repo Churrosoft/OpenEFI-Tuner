@@ -4,13 +4,24 @@ import { StateInterface } from 'src/store';
 
 export enum SerialCommand {
   Core = 0x00,
+  CorePing = 0x01,
+
+  // Tables:
   Table = 0x10,
   TableGetMetaData = 0x11,
   TableGet = 0x12,
   TablePut = 0x13,
   TableUpload = 0x14,
   TableClear = 0x19,
+
+  // Engine configuration:
+  EngineCfgGet = 0x61,
+
+  // PMIC:
   Pmic = 0x80,
+  PmicFastStatus = 0x81,
+  PmicInjectionStatus = 0x82,
+  PmicIgnitionStatus = 0x83,
   Debug = 0x90,
 }
 
@@ -82,6 +93,10 @@ export const sendUSBCommand = (
   payload?: Uint8Array
 ) => {
   return dispatch('UsbLayer/sendCommand', { command, status, code, payload }, { root: true });
+};
+
+export const removeUSBCommand = (dispatch: Store<StateInterface>['dispatch'], command: IUSBCommand) => {
+  return dispatch('UsbLayer/removeCommand', command, { root: true });
 };
 
 export const mockUSBCommand = (command = 1, status: number, payload: Uint8Array): IUSBCommand => {

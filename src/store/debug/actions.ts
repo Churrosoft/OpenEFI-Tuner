@@ -26,7 +26,7 @@ const actions: ActionTree<DebugInterface, StateInterface> = {
         const chunk = command.payload.slice(0, findPayloadEnd(command.payload));
 
         commit('appendDebugMessage', {
-          type: mapMessageType[command.command as 80 | 81 | 82 | 83],
+          type: mapMessageType[command.command as keyof typeof mapMessageType],
           msg: _arrayBufferToBase64(chunk),
         } as IDebugMessage);
 

@@ -5,7 +5,7 @@
 <script lang="ts">
 import { setCssVar, useQuasar } from 'quasar';
 import { defineComponent, watch } from 'vue';
-import { Store, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import { storeKey } from './store';
 import { startWorking } from './store/usb-layer/serialInterface';
 
@@ -15,11 +15,19 @@ const myIcons: { [key: string]: string } = {
   'app:injector': 'img:/injector2.svg',
 };
 
+declare global {
+  interface Window {
+    getStore: () => void;
+    getActions: () => { [_key: string]: [(payload: unknown) => void] };
+    sendUsbMessage: (payload: unknown) => void;
+  }
+}
+
 export default defineComponent({
   name: 'App',
   setup() {
     const q = useQuasar();
-    const store = useStore(storeKey) as unknown as Store<typeof storeKey>;
+    const store = useStore(storeKey);
 
     // TODO: luego borrar estas dos lineas si dejo en ligth mode por defecto
     q.dark.set(true);
@@ -28,7 +36,6 @@ export default defineComponent({
     q.iconMapFn = (iconName) => {
       const icon = myIcons[iconName];
       if (icon !== void 0) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         return { icon: icon };
       }
     };
@@ -43,17 +50,9 @@ export default defineComponent({
       Array.from(document.querySelectorAll('*')).find((e) => e.__vue_app__).__vue_app__.config.globalProperties.$store
         ._actions;
 
-    // @ts-expect-error ...
     window.getStore = getStore;
-    // @ts-expect-error ...
     window.getActions = getActions;
-
-    // sendUsbMessage({ command:0x11 , status:0x23, payload:[0,0] })
-    // @ts-expect-error ...
-    window.sendUsbMessage = (payload) => window.getActions()['UsbLayer/sendMessage'][0](payload);
-
-    // @ts-expect-error ...
-    window.sendUsbMessageV2 = (payload) => window.getActions()['UsbLayer/sendCommand'][0](payload);
+    window.sendUsbMessage = (payload) => window.getActions()['UsbLayer/sendCommand'][0](payload);
 
     // initial page load
     navigator.serial.getPorts().then((e) => {

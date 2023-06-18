@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { storeKey } from 'store/index';
-import { Store, useStore } from 'vuex';
+import { useStore } from 'vuex';
 import { startWorking } from 'src/store/usb-layer/serialInterface';
 
 const store = useStore(storeKey);
@@ -19,7 +19,7 @@ const connectUsbDevice = () => {
     .requestPort({ filters: [{ usbVendorId }] })
     .then((port) => {
       void store.dispatch('UsbLayer/initConnection', true);
-      void startWorking(port, store as unknown as Store<typeof storeKey>);
+      void startWorking(port, store);
     })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((_e) => {

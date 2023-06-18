@@ -60,13 +60,16 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-
   {
     path: '/debug',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/Debug/console.vue') }],
   },
-
+  {
+    path: '/pmic',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/PMIC/index.vue') }],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

@@ -1277,6 +1277,11 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/canvas-gauges@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@types/canvas-gauges/-/canvas-gauges-2.1.4.tgz#063881264597d098e78cf5ad921e8ed20ae2ad16"
+  integrity sha512-JTvqQWrqcrgzCp/9+uzwUvPef2qAEnBJvm+bL9kvulzhXapDeNaGQXCIAZp+hOryusjOyndvP1za2HZooUV0XA==
+
 "@types/chrome@^0.0.208":
   version "0.0.208"
   resolved "https://registry.yarnpkg.com/@types/chrome/-/chrome-0.0.208.tgz#c52992e46723c783d3fd84a8b90dd8b3e87af67f"

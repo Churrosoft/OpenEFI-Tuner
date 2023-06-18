@@ -52,6 +52,12 @@ const linksList = [
     ],
   },
   {
+    title: 'PMIC',
+    caption: 'read pmic status',
+    icon: 'settings_input_component',
+    link: '#pmic',
+  },
+  {
     title: 'Startup / IDLE',
     caption: '',
     icon: 'mdi-car-speed-limiter',

@@ -2,13 +2,13 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 
 import { MemoryInterface } from './state';
-import { getInt32, parseInt32 } from 'src/types/webusb';
+import { parseInt32 } from 'src/types/webusb';
 import CRC32 from 'src/types/CRC32';
 import {
   getGroupedUSBCommands,
   getUSBCommand,
-  IUSBCommand,
   mockUSBCommand,
+  removeUSBCommand,
   sendUSBCommand,
   SerialCode,
   SerialCommand,
@@ -144,28 +144,30 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     dispatch('UsbLayer/sendCommand', command, { root: true });
   },
 
-  parseEFIConfiguration({ state, commit, rootGetters }) {
-    const command = rootGetters['UsbLayer/getCommandArr'](102) as Array<IUSBCommand> | null;
-    const endChunkCommand = rootGetters['UsbLayer/getCommand'](103) as IUSBCommand | null;
+  parseEFIConfiguration({ rootState, rootGetters, commit, dispatch }) {
+    const commandsLength = rootState.UsbLayer.pending_commands?.length;
+    if (!commandsLength) return;
 
-    let str = '';
+    const data = getGroupedUSBCommands(rootGetters, [
+      { command: SerialCommand.EngineCfgGet, status: SerialStatus.DataChunk },
+    ]);
+    const dataEnd = getUSBCommand(rootGetters, SerialCommand.EngineCfgGet, SerialStatus.DataChunkEnd);
 
-    if (command && endChunkCommand) {
-      command.map((cmd) => {
-        const string = new TextDecoder().decode(cmd.payload.slice(0, 100));
-        str += string;
-      });
-
-      const stringSize = getInt32(endChunkCommand.payload.slice(0, 4));
-      str = str.slice(0, stringSize);
+    if (!dataEnd || !data) {
+      return;
     }
 
-    const config = JSON.parse(str)[0];
+    const payload = [0];
 
+    data?.map((cmd) => payload.push(...cmd.payload.slice(0, 122).filter((ch) => ch)));
+    const reconstituted = String.fromCharCode.apply(null, payload.slice(1));
+
+    data?.map((cmd) => removeUSBCommand(dispatch, cmd));
+    removeUSBCommand(dispatch, dataEnd);
+
+    console.log(JSON.parse(reconstituted));
     commit('cfg_loading', false);
-    commit('cfg_data', config);
-
-    console.log(JSON.parse(str)[0]);
+    commit('cfg_data', JSON.parse(reconstituted));
   },
 
   writeEFIConfiguration({ state, commit }) {
