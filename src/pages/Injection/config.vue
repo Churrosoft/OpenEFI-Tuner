@@ -71,6 +71,9 @@ Use 'Live Tunning' toogle for adjust this table on running engine
         <q-tab-panel name="injFlow">
           <div class="q-mt-xl row items-stretch justify-center"><InjectionForm /></div>
         </q-tab-panel>
+        <q-tab-panel name="fuelcfg">
+          <fuelCalculations />
+        </q-tab-panel>
       </q-tab-panels>
     </q-card>
   </div>
@@ -79,6 +82,7 @@ Use 'Live Tunning' toogle for adjust this table on running engine
 <script setup lang="ts">
 import LineChart from 'src/components/LineChart.vue';
 import InjectionForm from 'src/components/Injection/form.vue';
+import fuelCalculations from 'src/components/Injection/fuelCalculations.vue';
 
 import SegmentDisplay from 'src/components/SegmentDisplay/index.vue';
 import { onMounted, onBeforeUnmount, ref } from 'vue';

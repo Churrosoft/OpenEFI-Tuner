@@ -3,8 +3,8 @@ import { StateInterface } from '../';
 import { MemoryInterface } from './state';
 
 const getters: GetterTree<MemoryInterface, StateInterface> = {
-  someAction(/* context */) {
-    // your code
+  getEFIConfig(state) {
+    return state.efi_cfg;
   },
 };
 

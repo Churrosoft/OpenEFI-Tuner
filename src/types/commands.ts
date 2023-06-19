@@ -1,4 +1,4 @@
-import crc from './crc';
+import crc from '../utils/crc';
 import { Store } from 'vuex';
 import { StateInterface } from 'src/store';
 
@@ -13,6 +13,10 @@ export enum SerialCommand {
   TablePut = 0x13,
   TableUpload = 0x14,
   TableClear = 0x19,
+
+  // RealTime Data;
+  DashboardCfg = 0x51,
+  DashboardGet = 0x52,
 
   // Engine configuration:
   EngineCfgGet = 0x61,
@@ -109,30 +113,6 @@ export const mockUSBCommand = (command = 1, status: number, payload: Uint8Array)
     protocol,
     command,
     status,
-    payload: filledPayload,
-    checksum,
-  };
-};
-
-export const createUSBCommand = (
-  command: SerialCommand,
-  status: SerialStatus,
-  code: SerialCode,
-  payload?: Uint8Array,
-  protocol?: number
-): IUSBCommand => {
-  const _payload = payload ?? Array(126).fill(0x0);
-  const _protocol = protocol ?? 1;
-  const _status = status | code;
-
-  const checksum = ('0000' + crc([command, status, ..._payload].slice(0, 26)).toString(16)).slice(-4);
-
-  const filledPayload = new Uint8Array([..._payload, ...Array(126).fill(0xfa).slice(0, _payload.length)]);
-
-  return {
-    protocol: _protocol,
-    command,
-    status: _status,
     payload: filledPayload,
     checksum,
   };

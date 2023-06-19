@@ -1,11 +1,12 @@
 import { Store } from 'vuex';
 import { StateInterface } from 'store/index';
-import { SerialCommand, getUSBCommand, sendUSBCommand } from 'src/types/commands';
+import { SerialCommand, SerialStatus, getUSBCommand, sendUSBCommand } from 'src/types/commands';
 
 const CHUNK_SIZE = 128;
 
 let serialCache: Array<number> = [];
 let intConnection: NodeJS.Timeout | null = null;
+let cfgInt: NodeJS.Timeout | null = null;
 
 export const startWorking = async (port: SerialPort, store: Store<StateInterface>) => {
   // El baudrate se podrriiia reconfigurar luego
@@ -16,7 +17,7 @@ export const startWorking = async (port: SerialPort, store: Store<StateInterface
 
   void store.dispatch('UsbLayer/setWriter', writer);
 
-  sendUSBCommand(store.dispatch, SerialCommand.CorePing);
+  void sendUSBCommand(store.dispatch, SerialCommand.CorePing);
 
   const pingInterval = () => {
     const command = getUSBCommand(store.getters, SerialCommand.CorePing);
@@ -24,10 +25,20 @@ export const startWorking = async (port: SerialPort, store: Store<StateInterface
       clearInterval(intConnection as NodeJS.Timeout);
       void store.dispatch('UsbLayer/connected', command.payload);
       void store.dispatch('UsbLayer/removeCommand', command);
+      void sendUSBCommand(store.dispatch, SerialCommand.EngineCfgGet);
+    }
+  };
+
+  const cfgInterval = () => {
+    const command = getUSBCommand(store.getters, SerialCommand.EngineCfgGet, SerialStatus.DataChunkEnd);
+    if (command) {
+      clearInterval(cfgInt as NodeJS.Timeout);
+      void store.dispatch('Memory/parseEFIConfiguration');
     }
   };
 
   intConnection = setInterval(pingInterval, 50);
+  cfgInt = setInterval(cfgInterval, 150);
 
   while (port.readable) {
     const reader = port.readable.getReader();

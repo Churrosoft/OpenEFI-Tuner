@@ -1,3 +1,7 @@
+export const uint8ArrayToInt32 = (arr: Array<number> | Uint8Array, from = 0): number => {
+  return Number((arr[from + 1] << 8) + (arr[from + 2] << 16) + (arr[from + 3] << 24) + arr[from]);
+};
+
 export const parseInt32 = (n: number | string) => new Uint8Array(new Int32Array([Number(n)]).buffer);
 
 export const getInt32 = (n: Array<number> | Uint8Array) => {

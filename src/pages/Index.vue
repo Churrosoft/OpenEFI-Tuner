@@ -1,9 +1,5 @@
 <template>
-  <q-btn color="secondary" class="gt-xs" rounded @click="requestMetadata">
-    <span class="q-mr-md" />Request Dashboard
-  </q-btn>
-  <q-btn class="gt-xs" rounded @click="getConfig"> <span class="q-mr-md" />Request Config </q-btn>
-  <q-btn class="gt-xs" rounded @click="parseConfig"> <span class="q-mr-md" />Parse Config </q-btn>
+  <q-btn color="secondary" class="gt-xs" rounded @click="requestMetadata"> Request Dashboard </q-btn>
   <div class="row items-center justify-evenly q-mt-xl">
     <RPMGauge class="q-ml-md" />
     <div class="col-8 q-ml-xl">
@@ -48,7 +44,7 @@
 
 <script setup lang="ts">
 import { computed, watchEffect, onBeforeUnmount, onMounted } from 'vue';
-import { IUSBCommand, mockUSBCommand, SerialStatus } from 'src/types/commands';
+import { getUSBCommand, sendUSBCommand, SerialCommand } from 'src/types/commands';
 
 import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
@@ -62,37 +58,36 @@ import './dashboard.scss';
 let intDashboard: NodeJS.Timeout | null = null;
 const store = useStore(storeKey);
 
-const dashboardMetaData = computed((): IUSBCommand => store.getters['UsbLayer/getCommand'](14) as IUSBCommand);
+//const dashboardMetaData = computed((): IUSBCommand => store.getters['UsbLayer/getCommand'](14) as IUSBCommand);
 
-const dashboardData = computed((): IUSBCommand => store.getters['UsbLayer/getCommand'](15) as IUSBCommand);
+const dashboardData = computed(() => getUSBCommand(store.getters, SerialCommand.DashboardGet));
 
 function requestMetadata() {
-  void store.dispatch('Dashboard/requestGaugeConfig');
-  localStorage.setItem('DashboardActive', 'true');
+  //void store.dispatch('Dashboard/requestGaugeConfig');
+  // const dashboardInterval = () => {
+  //   sendUSBCommand(store.dispatch, SerialCommand.DashboardGet);
+  // };
+  // intDashboard = setInterval(dashboardInterval, 1000);
+
+  // localStorage.setItem('DashboardActive', 'true');
+
+  sendUSBCommand(store.dispatch, SerialCommand.DashboardGet);
 }
 
-const getConfig = () => {
-  void store.dispatch('Memory/getEFIConfiguration');
-};
-
-const parseConfig = () => {
-  void store.dispatch('Memory/parseEFIConfiguration');
-};
-
-watchEffect(() => {
-  if (dashboardMetaData.value) {
-    void store.dispatch('Dashboard/updateGaugeConfig', dashboardMetaData.value);
-    const dashboardInterval = () => {
-      const command = mockUSBCommand(5, SerialStatus.Ok, new Uint8Array([0xff]));
-      void store.dispatch('UsbLayer/sendMessage', command);
-    };
-    intDashboard = setInterval(dashboardInterval, 1000);
-  }
-});
+// watchEffect(() => {
+//   if (dashboardMetaData.value) {
+//     void store.dispatch('Dashboard/updateGaugeConfig', dashboardMetaData.value);
+//     const dashboardInterval = () => {
+//       const command = mockUSBCommand(5, SerialStatus.Ok, new Uint8Array([0xff]));
+//       void store.dispatch('UsbLayer/sendMessage', command);
+//     };
+//     intDashboard = setInterval(dashboardInterval, 1000);
+//   }
+// });
 
 watchEffect(() => {
   if (dashboardData.value) {
-    void store.dispatch('Dashboard/parseStatus', dashboardData.value);
+    void store.dispatch('Dashboard/parseStatus');
   }
 });
 
@@ -103,12 +98,11 @@ onBeforeUnmount(() => {
 onMounted(() => {
   if (localStorage.getItem('DashboardActive')) {
     const dashboardInterval = () => {
-      const command = mockUSBCommand(5, SerialStatus.Ok, new Uint8Array([0xff]));
       if (!store.state.UsbLayer.connected) {
         clearInterval(intDashboard as NodeJS.Timeout);
         return;
       }
-      void store.dispatch('UsbLayer/sendMessage', command);
+      sendUSBCommand(store.dispatch, SerialCommand.DashboardGet);
     };
     localStorage.removeItem('DashboardActive');
     intDashboard = setInterval(dashboardInterval, 1000);

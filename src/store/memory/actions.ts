@@ -2,8 +2,8 @@ import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 
 import { MemoryInterface } from './state';
-import { parseInt32 } from 'src/types/webusb';
-import CRC32 from 'src/types/CRC32';
+import { parseInt32 } from 'src/utils/numbers';
+import CRC32 from 'src/utils/CRC32';
 import {
   getGroupedUSBCommands,
   getUSBCommand,
@@ -34,9 +34,6 @@ function timeout(ms: number) {
 }
 
 const actions: ActionTree<MemoryInterface, StateInterface> = {
-  toogleMenu({ commit, state }) {
-    commit('toogleMenu', !state.toogleMenu);
-  },
   requestTable({ dispatch }, payload: ITABLE_REF) {
     const tableID = TABLE_TYPES_MAPPING[payload].id;
 
@@ -128,14 +125,14 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     sendUSBCommand(dispatch, SerialCommand.TableUpload, SerialStatus.Ok, tableID as SerialCode),
       new Uint8Array(outpayload);
   },
-  resetTable({ commit, state }) {
+  resetTable({ commit }) {
     // borra tabla y setea valores por defecto, recibe ref y data
-    commit('toogleMenu', !state.toogleMenu);
+    commit('toogleMenu');
   },
 
-  resizeTable({ commit, state }) {
+  resizeTable({ commit }) {
     // TDB, pero desde aca se cambiaria el tamaño de la tabla cuando cree el header de tabla nuevo en la flash
-    commit('toogleMenu', !state.toogleMenu);
+    commit('toogleMenu');
   },
 
   getEFIConfiguration({ commit, dispatch }) {
@@ -163,9 +160,8 @@ const actions: ActionTree<MemoryInterface, StateInterface> = {
     const reconstituted = String.fromCharCode.apply(null, payload.slice(1));
 
     data?.map((cmd) => removeUSBCommand(dispatch, cmd));
-    removeUSBCommand(dispatch, dataEnd);
+    void removeUSBCommand(dispatch, dataEnd);
 
-    console.log(JSON.parse(reconstituted));
     commit('cfg_loading', false);
     commit('cfg_data', JSON.parse(reconstituted));
   },

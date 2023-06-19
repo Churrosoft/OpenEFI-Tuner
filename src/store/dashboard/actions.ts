@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
-import { IUSBCommand, uint8ArrayToInt32 } from '../usb-layer';
 import { DashboardInterface, efiStatusMap, IEfiStatus } from './state';
+import { getUSBCommand, IUSBCommand, SerialCommand } from 'src/types/commands';
+import { uint8ArrayToInt32 } from 'src/utils/numbers';
 
 const actions: ActionTree<DashboardInterface, StateInterface> = {
   parseStatus({ commit, rootGetters, dispatch, rootState }) {
@@ -10,8 +11,8 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
     if (!commandsLength) return;
 
     for (let ind = 0; ind < commandsLength; ind++) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const command = rootGetters['UsbLayer/getCommand'](15) as IUSBCommand;
+      const command = getUSBCommand(rootGetters, SerialCommand.DashboardGet);
+
       if (command !== null) {
         const frame = command.payload;
 
@@ -22,20 +23,40 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
         const advance = (frame[8] << 8) + frame[9]; */
 
         // Sensors:
-        const sensor_tps = uint8ArrayToInt32(frame, 11);
-        const sensor_map = uint8ArrayToInt32(frame, 15);
-        const sensor_temp = uint8ArrayToInt32(frame, 19) / 100;
-        const sensor_iat = uint8ArrayToInt32(frame, 23) / 100;
-        const sensor_vbatt = uint8ArrayToInt32(frame, 27) / 100;
-        const sensor_lmb = uint8ArrayToInt32(frame, 31);
+        const sensor_tps = uint8ArrayToInt32(frame, 2) / 100;
+        const sensor_map = uint8ArrayToInt32(frame, 6) / 100;
+        const sensor_temp = uint8ArrayToInt32(frame, 10) / 100;
+        const sensor_iat = uint8ArrayToInt32(frame, 41) / 100;
+        const sensor_vbatt = uint8ArrayToInt32(frame, 18) / 100;
+        const sensor_lmb = uint8ArrayToInt32(frame, 22);
 
         // Ignition:
         const advance = uint8ArrayToInt32(frame, 60) / 100;
 
         // Injection:
         const injectionTime1Bank = uint8ArrayToInt32(frame, 80) / 1000;
+        const injectionBaseAir = uint8ArrayToInt32(frame, 84) / 1000;
+        const injectionBaseFuel = uint8ArrayToInt32(frame, 88) / 1000;
 
         const efiStatus = efiStatusMap[frame[10] as keyof typeof efiStatusMap] as IEfiStatus;
+
+        console.log({
+          rpm,
+          temperature: sensor_temp,
+          load: sensor_map,
+          battery: sensor_vbatt,
+          advance,
+          efiStatus,
+          tps: sensor_tps,
+          AFR: sensor_lmb,
+          airTemperature: sensor_iat,
+          injection: {
+            time_bank_1: injectionTime1Bank,
+            base_air: injectionBaseAir,
+            base_fuel: injectionBaseFuel,
+          },
+        });
+
         commit('setDashboard', {
           rpm,
           temperature: sensor_temp,
@@ -48,6 +69,8 @@ const actions: ActionTree<DashboardInterface, StateInterface> = {
           airTemperature: sensor_iat,
           injection: {
             time_bank_1: injectionTime1Bank,
+            base_air: injectionBaseAir,
+            base_fuel: injectionBaseFuel,
           },
         });
 

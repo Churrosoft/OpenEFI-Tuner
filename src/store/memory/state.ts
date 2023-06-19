@@ -1,18 +1,14 @@
+import { IEFICfg } from 'src/types/efi_config';
+
 export interface MemoryInterface {
-  toogleMenu: boolean;
-  efi_cfg: {
-    loading: boolean;
-    data: any | null;
-  };
+  efi_cfg_loading: boolean;
+  efi_cfg: IEFICfg | null;
 }
 
 function state(): MemoryInterface {
   return {
-    toogleMenu: false,
-    efi_cfg: {
-      loading: false,
-      data: null,
-    },
+    efi_cfg: null,
+    efi_cfg_loading: false,
   };
 }
 

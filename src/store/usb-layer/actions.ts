@@ -1,7 +1,7 @@
 import { IUSBCommand } from 'src/types/commands';
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
-import crc, { buf2hex } from '../../types/crc';
+import crc, { buf2hex } from '../../utils/crc';
 import { UsbLayerInterface } from './state';
 
 const actions: ActionTree<UsbLayerInterface, StateInterface> = {
