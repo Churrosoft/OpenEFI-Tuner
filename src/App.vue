@@ -9,6 +9,8 @@ import { useStore } from 'vuex';
 import { storeKey } from './store';
 import { startWorking } from './store/usb-layer/serialInterface';
 
+import { testParser } from './utils/config/parser';
+
 import 'canvas-datagrid';
 
 const myIcons: { [key: string]: string } = {
@@ -20,6 +22,7 @@ declare global {
     getStore: () => void;
     getActions: () => { [_key: string]: [(payload: unknown) => void] };
     sendUsbMessage: (payload: unknown) => void;
+    testParser: () => void;
   }
 }
 
@@ -72,6 +75,8 @@ export default defineComponent({
 
       store.dispatch('UsbLayer/reset');
     };
+
+    window.testParser = testParser;
 
     watch(
       () => q.dark.isActive,

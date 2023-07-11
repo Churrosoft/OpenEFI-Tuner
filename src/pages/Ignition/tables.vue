@@ -5,7 +5,7 @@
     <div class="row q-pa-lg q-gutter-lg" style="width: 100%">
       <q-btn icon="folder_open" color="secondary" class="gt-xs" outline> Read table from file </q-btn>
 
-      <q-btn icon="save" color="secondary" class="gt-xs" outline> Save table to file </q-btn>
+      <q-btn icon="save" color="secondary" class="gt-xs" outline>Save table to file </q-btn>
 
       <q-btn icon="download" color="primary" @click="requestTable">
         <span class="q-mr-md">get table info from EFI</span>
