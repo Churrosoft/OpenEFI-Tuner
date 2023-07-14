@@ -1,3 +1,4 @@
+import { ITableRow } from '.';
 export interface TableStyles {
   style: {
     cellWidth: number;
@@ -6,33 +7,18 @@ export interface TableStyles {
   getBoundingClientRect: () => { width: number };
 }
 
-export const styleMappings = {
-  ignition_rpm_load: {
-    '5': '#536dfe',
-    '10': '#448aff',
-    '14': '#00b0ff',
-    '23': '#ff0',
-    '27': '#ffca28',
-    '30': '#ffc107',
-    '33': '#ff9100',
-    '36': '#ef5350',
-  },
-  injection_ve: {
-    '50': '#536dfe',
-    '55': '#448aff',
-    '60': '#00b0ff',
-    '65': '#ff0',
-    '70': '#ffca28',
-    '75': '#ffc107',
-    '80': '#ff9100',
-    '90': '#ef5350',
-  },
+let activeStyleMapping = {
+  max: Number.MIN_SAFE_INTEGER,
+  min: Number.MAX_SAFE_INTEGER,
+  reverseColor: false,
 };
 
-let activeStyleMapping: { [_key: string]: `${string}` } = styleMappings.ignition_rpm_load;
-
-export const setActiveStyle = (style: keyof typeof styleMappings) => {
-  activeStyleMapping = styleMappings[style];
+export const setActiveStyle = (max: number, min: number, reverseColor: boolean) => {
+  activeStyleMapping = {
+    max,
+    min,
+    reverseColor,
+  };
 };
 
 interface cellEvent {
@@ -49,18 +35,67 @@ interface cellEvent {
   };
 }
 
+export function getTableRanges(tableValues: Array<ITableRow>) {
+  // slice para sacar los headers
+  const rawValues = tableValues
+    .slice(1)
+    .map((row) => Object.values(row).slice(1))
+    .flat();
+
+  let min = Number.MAX_SAFE_INTEGER;
+  let max = Number.MIN_SAFE_INTEGER;
+
+  //Find min and max
+  rawValues.map((val) => {
+    const v = parseFloat(val);
+    if (v < min) min = v;
+    if (v > max) max = v;
+  });
+
+  return { min, max };
+}
+
+// from: https://github.com/rusefi/msqur/blob/208d9400e2f790992c59df35956d92ad577f697f/src/view/msqur.js#L149
+export const getTableCellColor = (cellValue: string, intensity = 0.6) => {
+  const range = activeStyleMapping.max - activeStyleMapping.min;
+
+  let r = 0,
+    g = 0,
+    b = 0;
+
+  //MegaTune coloring scheme
+  let percent = (parseFloat(cellValue) - activeStyleMapping.min) / range;
+
+  if (activeStyleMapping.reverseColor) percent = 1.0 - percent;
+
+  if (percent < 0.33) {
+    r = 1.0;
+    g = Math.min(1.0, percent * 3);
+    b = 0.0;
+  } else if (percent < 0.66) {
+    r = Math.min(1.0, (0.66 - percent) * 3);
+    g = 1.0;
+    b = 0.0;
+  } else {
+    r = 0.0;
+    g = Math.min(1.0, (1.0 - percent) * 3);
+    b = 1.0 - g;
+  }
+
+  r = Math.round((r * intensity + (1.0 - intensity)) * 255);
+  g = Math.round((g * intensity + (1.0 - intensity)) * 255);
+  b = Math.round((b * intensity + (1.0 - intensity)) * 255);
+
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+};
+
 const styleTableCells = (e: Event) => {
   const eventCell = e as unknown as cellEvent;
 
   // no colorear la' esquina:
   if (Number(eventCell.cell.boundRowIndex) < 1 || Number(eventCell.cell.boundColumnIndex) < 1) return;
 
-  for (const styleKey in activeStyleMapping) {
-    const color = activeStyleMapping[styleKey as keyof typeof activeStyleMapping];
-    if (Number(eventCell.cell.value) >= Number(styleKey)) {
-      eventCell.ctx.fillStyle = color;
-    }
-  }
+  eventCell.ctx.fillStyle = getTableCellColor(eventCell.cell.value);
 };
 
 export const applyTableStyles = (

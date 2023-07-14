@@ -1,9 +1,17 @@
-import mock from './mock';
-//data.getElementsByName("ignitionTable")[0].textContent.split("\n").map(str => str.trim()).filter(str => str).map(str => str.split(" "))
-
 type nulleableString = string | null | undefined;
 
-const strTo2DArray = (str: nulleableString): Array<Array<string>> | null => {
+declare global {
+  interface HTMLElement {
+    attributes: {
+      rows: Node;
+      columns: Node;
+      digits: Node;
+      units: Node;
+    };
+  }
+}
+
+export const strTo2DArray = (str: nulleableString): Array<Array<string>> | null => {
   if (str === null || str === undefined) return null;
 
   if (str.length) {
@@ -18,7 +26,7 @@ const strTo2DArray = (str: nulleableString): Array<Array<string>> | null => {
   return null;
 };
 
-const strToArray = (str: nulleableString): Array<string> | null => {
+export const strToArray = (str: nulleableString): Array<string> | null => {
   if (str === null || str === undefined) return null;
 
   if (str.length) {
@@ -32,18 +40,7 @@ const strToArray = (str: nulleableString): Array<string> | null => {
   return null;
 };
 
-declare global {
-  interface HTMLElement {
-    attributes: {
-      rows: Node;
-      columns: Node;
-      digits: Node;
-      units: Node;
-    };
-  }
-}
-
-const getFromXmlDom = (xml: Document, query: string) => {
+export const getFromXmlDom = (xml: Document, query: string) => {
   const data = xml.getElementsByName(query)?.[0]?.textContent ?? null;
   const rows = xml.getElementsByName(query)?.[0]?.attributes?.rows?.textContent ?? null;
   const columns = xml.getElementsByName(query)?.[0]?.attributes?.columns?.textContent ?? null;
@@ -52,18 +49,4 @@ const getFromXmlDom = (xml: Document, query: string) => {
   const _raw = xml.getElementsByName(query);
 
   return { data, rows, columns, digits, units, _raw };
-};
-
-export const testParser = () => {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(mock, 'text/xml');
-
-  const tableData = getFromXmlDom(xmlDoc, 'ignitionTable');
-  const ignitionLoad = getFromXmlDom(xmlDoc, 'ignitionLoadBins');
-  const ignitionRpm = getFromXmlDom(xmlDoc, 'ignitionRpmBins');
-
-  console.log(ignitionRpm);
-
-  console.log(strTo2DArray(tableData.data));
-  console.log(strToArray(ignitionLoad.data));
 };

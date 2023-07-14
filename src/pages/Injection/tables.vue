@@ -3,11 +3,18 @@
     <h4 class="q-mt-md q-mb-md">Injection Tables</h4>
     <h6 class="q-mt-md q-mb-lg">you can view and edit injection tables from here</h6>
     <div class="row q-pa-lg q-gutter-lg" style="width: 100%">
-      <q-btn icon="folder_open" color="secondary" class="gt-xs" outline> Read table from file </q-btn>
-
+      <q-file
+        style="max-width: 300px"
+        v-model="fileUpload"
+        filled
+        rounded
+        label="Read table from file"
+        multiple
+        accept=".msq"
+      />
       <q-btn icon="save" color="secondary" class="gt-xs" outline> Save table to file </q-btn>
 
-      <q-btn icon="download" color="primary" @click="requestTable">
+      <q-btn icon="download" color="primary" @click="requestTable" type="file">
         <span class="q-mr-md">get table info from EFI</span>
       </q-btn>
 
@@ -58,7 +65,7 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="rpmload">
-          <div class="text-h6 q-mb-md">RPM/LOAD (VE Table)</div>
+          <div class="text-h6 q-mb-md">RPM/LOAD VE Table</div>
           <canvas-datagrid
             v-if="veTable.table.value !== null && tab === 'rpmload'"
             :data="veTable.table.value"
@@ -71,15 +78,16 @@
         </q-tab-panel>
 
         <q-tab-panel name="af">
-          <div class="text-h6">Load/Temp</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          <NotTableData />
-        </q-tab-panel>
+          <div class="text-h6 q-mb-md">RPM/LOAD AF Table</div>
+          <canvas-datagrid
+            v-if="veTable.table.value !== null && tab === 'rpmload'"
+            :data="veTable.table.value"
+            showRowHeaders="false"
+            showColumnHeaders="false"
+            class="Injection_table"
+          />
 
-        <q-tab-panel name="rpmbattery">
-          <div class="text-h6">RPM/Battery</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          <NotTableData />
+          <NotTableData v-if="veTable.table.value === null" />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -99,12 +107,15 @@ import {
   cleanTableEvents,
   getTableObserver,
   setActiveStyle,
+  getTableRanges,
 } from 'src/types/table';
+import { parseTable } from 'src/utils/config';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;
 
 let tab = ref('rpmload');
+let fileUpload = ref();
 
 const store = useStore(storeKey);
 const InjectionTables = computed(() => store.state.Injection.tables.rpm_load);
@@ -151,6 +162,28 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
+  if (fileUpload.value) {
+    const reader = new FileReader();
+    const parser = new DOMParser();
+
+    reader.onload = () => {
+      const xmlDoc = parser.parseFromString(reader.result?.toString() ?? '', 'text/xml');
+
+      const table = parseTable(xmlDoc, 'VE');
+      if (!table) return;
+
+      const sortedTable = [table[0], ...table.slice(1).reverse()];
+
+      //TODO: *SIEMPRE* setear los colores antes de meter una tabla nueva
+      const ranges = getTableRanges(sortedTable);
+      setActiveStyle(ranges.max, ranges.min, true);
+      store.dispatch('Injection/getInjectionTableRPMTPS', sortedTable);
+    };
+    reader.readAsText(fileUpload.value[0]);
+  }
+});
+
+watchEffect(() => {
   if (veTable.table.value !== null && !store.state.Injection.tables_loading && !loaded) {
     loaded = true;
     makeInputChecks({
@@ -164,7 +197,7 @@ watchEffect(() => {
 
 onMounted(() => {
   if (tab.value === 'rpmload') {
-    setActiveStyle('injection_ve');
+    //setActiveStyle('injection_ve');
     cleanTableEvents('Injection_table');
     getTableObserver(17, 'Injection_table');
   }

@@ -6,11 +6,13 @@ import { getGroupedUSBCommands, getUSBCommand, IUSBCommand, SerialCommand, Seria
 import { computed, ref, /* toRaw, watch, */ watchEffect } from 'vue';
 import { Store } from 'vuex';
 import {
+  getTableRanges,
   IEditEvent,
   IMakeTableRequest,
   IMakeUploadTable,
   ITableRow,
   IUseTable,
+  setActiveStyle,
   TABLE_STATUS_INTERVAL,
   TABLE_TYPES_MAPPING,
 } from '.';
@@ -123,6 +125,10 @@ export const useTable = ({ store, actions, state, paired, intTable, table: selec
 
   // store => view update
   watchEffect(() => {
+    if (state.tableData.value) {
+      const ranges = getTableRanges(state.tableData.value);
+      setActiveStyle(ranges.max, ranges.min, true);
+    }
     table.value = deReferenceRows(state.tableData.value);
   });
 

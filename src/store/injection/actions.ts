@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { IUSBCommand } from 'src/types/commands';
-import { ITableRow } from 'src/types/tables';
 import { ActionTree } from 'vuex';
 import { StateInterface } from '../';
 import { defaultInjectionVE } from './default';
 
 import { InjectionInterface } from './state';
+import { ITableRow } from 'src/types/table';
 
 const actions: ActionTree<InjectionInterface, StateInterface> = {
   requestInjectionTableRPMTPS({ commit }) {
