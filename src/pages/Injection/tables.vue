@@ -66,15 +66,7 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="rpmload">
           <div class="text-h6 q-mb-md">RPM/LOAD VE Table</div>
-          <canvas-datagrid
-            v-if="veTable.table.value !== null && tab === 'rpmload'"
-            :data="veTable.table.value"
-            showRowHeaders="false"
-            showColumnHeaders="false"
-            class="Injection_table"
-          />
-
-          <NotTableData v-if="veTable.table.value === null" />
+          <VETable />
         </q-tab-panel>
 
         <q-tab-panel name="af">
@@ -95,21 +87,16 @@
 </template>
 
 <script setup lang="ts">
-import { watchEffect, onMounted, onBeforeUnmount } from 'vue';
+import { watchEffect } from 'vue';
 import { ref, computed } from 'vue';
 import { storeKey } from 'store/index';
 import { useStore } from 'vuex';
 import NotTableData from 'src/components/NotTableData.vue';
-import {
-  TABLE_TYPES,
-  makeInputChecks,
-  useTable,
-  cleanTableEvents,
-  getTableObserver,
-  setActiveStyle,
-  getTableRanges,
-} from 'src/types/table';
+import { TABLE_TYPES, useTable, setActiveStyle, getTableRanges } from 'src/types/table';
 import { parseTable } from 'src/utils/config';
+
+import VETable from './tables/ve.vue';
+import { VETableActions } from './tables/actions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;
@@ -122,22 +109,11 @@ const InjectionTables = computed(() => store.state.Injection.tables.rpm_load);
 
 const paired = computed(() => store.state.UsbLayer.paired);
 
-let loaded = false;
-
 const veTable = useTable({
   store,
   intTable,
   paired,
-  actions: {
-    // estas quedarian dentro de memory/tables
-    start: 'Injection/requestInjectionTableRPMTPS',
-    success: 'Injection/setTableRPM_TPS',
-    error: 'Injection/errorTableRPMTPS',
-    update: 'Injection/uploadTableRPMTPS',
-    // estas solas tendrian que quedar
-    storeUpdate: 'Injection/updateTableRPMTPS',
-    uploadResult: 'Injection/checkUploadResult',
-  },
+  actions: VETableActions,
   state: {
     tableData: InjectionTables,
   },
@@ -146,7 +122,10 @@ const veTable = useTable({
 
 const pathTable = () => {
   if (tab.value === 'rpmload') {
-    veTable.uploadTable(veTable.table.value, store.state.Injection.table_cache.rpm_load);
+    veTable.uploadTable(
+      /* veTable.table.value */ store.state.Injection.tables.rpm_load,
+      store.state.Injection.table_cache.rpm_load
+    );
   }
 };
 const requestTable = () => {
@@ -154,12 +133,6 @@ const requestTable = () => {
     veTable.requestTable();
   }
 };
-
-watchEffect(() => {
-  if (tab.value === 'rpmload') {
-    getTableObserver(17, 'Injection_table');
-  }
-});
 
 watchEffect(() => {
   if (fileUpload.value) {
@@ -177,35 +150,9 @@ watchEffect(() => {
       //TODO: *SIEMPRE* setear los colores antes de meter una tabla nueva
       const ranges = getTableRanges(sortedTable);
       setActiveStyle(ranges.max, ranges.min, true);
-      store.dispatch('Injection/getInjectionTableRPMTPS', sortedTable);
+      store.dispatch('Injection/pathTableRPM_TPS', sortedTable);
     };
     reader.readAsText(fileUpload.value[0]);
-  }
-});
-
-watchEffect(() => {
-  if (veTable.table.value !== null && !store.state.Injection.tables_loading && !loaded) {
-    loaded = true;
-    makeInputChecks({
-      store,
-      table: veTable.table.value,
-      tableClass: 'Injection_table',
-      updateCommand: 'Injection/setTableRPM_TPS',
-    });
-  }
-});
-
-onMounted(() => {
-  if (tab.value === 'rpmload') {
-    //setActiveStyle('injection_ve');
-    cleanTableEvents('Injection_table');
-    getTableObserver(17, 'Injection_table');
-  }
-});
-
-onBeforeUnmount(() => {
-  if (tab.value === 'rpmload') {
-    cleanTableEvents('Injection_table');
   }
 });
 </script>

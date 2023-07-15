@@ -14,6 +14,9 @@ const actions: ActionTree<InjectionInterface, StateInterface> = {
   async getInjectionTableRPMTPS({ commit }, payload) {
     commit('setTableRPM_TPS', payload);
   },
+  async pathTableRPM_TPS({ commit }, payload) {
+    commit('pathTableRPM_TPS', payload);
+  },
   errorTableRPMTPS({ commit }) {
     commit('setTable_RPMTPS_Status', 'error');
     commit('setTableRPM_TPS', defaultInjectionVE);
