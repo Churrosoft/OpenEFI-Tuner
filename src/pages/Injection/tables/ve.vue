@@ -23,6 +23,7 @@ import {
   cleanTableEvents,
   getTableObserver,
   setActiveStyle,
+  getTableRanges,
 } from 'src/types/table';
 import { VETableActions } from './actions';
 
@@ -60,7 +61,10 @@ watchEffect(() => {
 });
 
 onMounted(() => {
-  setActiveStyle('injection_ve');
+  if (InjectionTables.value) {
+    const ranges = getTableRanges(InjectionTables.value.slice(1));
+    setActiveStyle(ranges.max, ranges.min, true);
+  }
   cleanTableEvents('Injection_table');
   getTableObserver(17, 'Injection_table');
 });

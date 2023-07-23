@@ -59,15 +59,7 @@
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="rpmload">
           <div class="text-h6 q-mb-md">RPM/Load (Kpa)</div>
-          <canvas-datagrid
-            v-if="rpmMapTable.table.value !== null && tab === 'rpmload'"
-            :data="rpmMapTable.table.value"
-            showRowHeaders="false"
-            showColumnHeaders="false"
-            class="ignition_table"
-          />
-
-          <NotTableData v-if="rpmMapTable.table.value === null" />
+          <LoadRpmTable />
         </q-tab-panel>
 
         <q-tab-panel name="loadtemp">
@@ -81,12 +73,14 @@
 </template>
 
 <script setup lang="ts">
-import { watchEffect, onMounted, onBeforeUnmount, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 
-import { makeInputChecks, TABLE_TYPES, useTable, cleanTableEvents, getTableObserver } from 'src/types/table';
+import { TABLE_TYPES, useTable } from 'src/types/table';
 import { storeKey } from 'store/index';
 import NotTableData from 'src/components/NotTableData.vue';
+import LoadRpmTable from './tables/loadRpm.vue';
+import { rpmLoadActions } from './tables/actions';
 
 const store = useStore(storeKey);
 const ignitionTables = computed(() => store.state.Ignition.tables.rpm_load);
@@ -94,23 +88,11 @@ const paired = computed(() => store.state.UsbLayer.paired);
 
 let intTable: NodeJS.Timeout | null = null;
 let tab = ref<'rpmload' | 'loadtemp'>('rpmload');
-let rpm_load_loaded = false;
-let temp_load_loaded = false;
-
 const rpmMapTable = useTable({
   store,
   intTable,
   paired,
-  actions: {
-    // estas quedarian dentro de memory/tables
-    start: 'Ignition/requestIgnitionTableRPMTPS',
-    success: 'Ignition/setTableRPM_TPS',
-    error: 'Ignition/errorTableRPMTPS',
-    update: 'Ignition/uploadTableRPMTPS',
-    // estas solas tendrian que quedar
-    storeUpdate: 'Ignition/updateTableRPMTPS',
-    uploadResult: 'Ignition/checkUploadResult',
-  },
+  actions: rpmLoadActions,
   state: {
     tableData: ignitionTables,
   },
@@ -127,41 +109,6 @@ const requestTable = () => {
     rpmMapTable.requestTable();
   }
 };
-
-watchEffect(() => {
-  if (tab.value === 'rpmload') {
-    getTableObserver(17, 'ignition_table');
-  }
-});
-
-watchEffect(() => {
-  if (rpmMapTable.table.value !== null && !store.state.Ignition.tables_loading && !rpm_load_loaded) {
-    rpm_load_loaded = true;
-    makeInputChecks({
-      store,
-      table: rpmMapTable.table.value,
-      tableClass: 'ignition_table',
-      updateCommand: 'Ignition/setTableRPM_TPS',
-    });
-  }
-
-  if (rpmMapTable.table.value !== null && !store.state.Ignition.tables_loading && !temp_load_loaded) {
-    temp_load_loaded = true;
-  }
-});
-
-onMounted(() => {
-  if (tab.value === 'rpmload') {
-    cleanTableEvents('ignition_table');
-    getTableObserver(17, 'ignition_table');
-  }
-});
-
-onBeforeUnmount(() => {
-  if (tab.value === 'rpmload') {
-    cleanTableEvents('ignition_table');
-  }
-});
 </script>
 
 <style>
