@@ -23,6 +23,22 @@ export interface IMakeTableRequest {
   };
 }
 
+export interface ICell {
+  value: string;
+  header: {
+    name: string;
+    title: string;
+    index: number;
+    columnIndex: number;
+    type: 'string';
+  };
+  columnName: string;
+  boundRowIndex: number;
+  boundColumnIndex: number;
+  viewRowIndex: number;
+  viewColumnIndex: number;
+}
+
 export interface IMakeUploadTable {
   paired: ComputedRef<boolean>;
   store: Store<StateInterface>;
@@ -55,6 +71,17 @@ export interface IEditEvent extends Event {
   oldValue: string;
   cell: unknown;
   abort: VoidFunction;
+}
+export interface ISelectEvent extends Event {
+  selectedCells: Array<ICell>;
+  selectedData: Array<null | ITableRow>;
+  selectionBounds: {
+    top: number;
+    left: number;
+    bottom: number;
+    right: number;
+  };
+  preventDefault: VoidFunction;
 }
 
 export * from './styling';

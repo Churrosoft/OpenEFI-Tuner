@@ -99,11 +99,20 @@ export const makeInputChecks = ({
 
           if (isNaN(Number(newValue))) {
             abort();
+            return;
           }
 
           setTimeout(() => {
             void store.commit(updateCommand, table);
           }, 10);
+        } as EventListener,
+        false
+      );
+
+      tableRef[0].addEventListener(
+        'selectionchanged',
+        function (editEvent: IEditEvent) {
+          console.log(editEvent);
         } as EventListener,
         false
       );

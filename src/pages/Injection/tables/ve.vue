@@ -6,7 +6,7 @@
     showColumnHeaders="false"
     class="Injection_table"
   />
-
+  <EditBar v-if="veTable.table.value !== null" />
   <NotTableData v-if="veTable.table.value === null" />
 </template>
 
@@ -29,6 +29,7 @@ import { VETableActions } from './actions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;
+import EditBar from 'src/components/Tables/EditBar.vue';
 
 const store = useStore(storeKey);
 const InjectionTables = computed(() => store.state.Injection.tables.rpm_load);

@@ -6,7 +6,7 @@
     showColumnHeaders="false"
     class="Injection_table"
   />
-
+  <EditBar v-if="rpmMapTable.table.value !== null" />
   <NotTableData v-if="rpmMapTable.table.value === null" />
 </template>
 
@@ -18,6 +18,7 @@ import { makeInputChecks, TABLE_TYPES, useTable, cleanTableEvents, getTableObser
 import { storeKey } from 'store/index';
 import NotTableData from 'src/components/NotTableData.vue';
 import { rpmLoadActions } from './actions';
+import EditBar from 'src/components/Tables/EditBar.vue';
 
 const store = useStore(storeKey);
 const ignitionTables = computed(() => store.state.Ignition.tables.rpm_load);

@@ -8,22 +8,22 @@
         v-model="fileUpload"
         filled
         rounded
-        label="Read table from file"
+        label="import from file"
         multiple
         accept=".msq"
       />
-      <q-btn icon="save" color="secondary" class="gt-xs" outline> Save table to file </q-btn>
+      <q-btn icon="save" color="secondary" class="gt-xs" outline>Export to file</q-btn>
 
       <q-btn icon="download" color="primary" @click="requestTable" type="file">
-        <span class="q-mr-md">get table info from EFI</span>
+        <span class="q-mr-md">get from EFI</span>
       </q-btn>
 
       <q-btn icon="file_upload" color="secondary" class="gt-xs" @click="pathTable" :disable="!paired">
-        write tables to EFI
+        write to EFI
       </q-btn>
 
       <q-btn icon="file_upload" color="secondary" class="xs q-mt-md" @click="pathTable" :disable="!paired">
-        write tables to EFI
+        write to EFI
       </q-btn>
 
       <!--
