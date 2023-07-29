@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { onMounted, ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import {
   select,
   line,
@@ -36,10 +36,10 @@ type LineChartData = LineChartProps['data'] & { LineChartIndex: number };
 const svgRef = ref<Element | null>(null);
 const props = defineProps<LineChartProps>();
 
-onMounted(() => {
-  const { dataKeyA, dataKeyB, size, data } = props;
+onMounted((iterable: Iterable<string>) => {
+  const {dataKeyA, dataKeyB, size, data} = props;
 
-  const margin = { top: 10, right: 30, bottom: 30, left: 60 },
+  const margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = size?.width ?? 460 - margin.left - margin.right,
     height = size?.height ?? 400 - margin.top - margin.bottom;
 
@@ -50,7 +50,7 @@ onMounted(() => {
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
   let dataWithKey = data.map((d, i) => {
-    return { ...d, LineChartIndex: i } as LineChartData;
+    return {...d, LineChartIndex: i} as LineChartData;
   });
 
   const dereferencedData = JSON.parse(JSON.stringify(dataWithKey));
@@ -79,7 +79,7 @@ onMounted(() => {
         max(
           dataWithKey,
           (d) => d[dataKeyA as unknown as number] as unknown as number
-        ),
+        ) as number,
       ]
     )
     .range([0, width]);
@@ -92,10 +92,7 @@ onMounted(() => {
   const customY = scaleLinear()
     .domain(
       props.margins?.y ?? [
-        max(
-          dataWithKey,
-          (d) => d[dataKeyB as unknown as number] as unknown as number
-        ),
+        max(dataWithKey, (d) => d[dataKeyB as unknown as number] as unknown as number) as number,
         0,
       ]
     )
@@ -242,34 +239,34 @@ onMounted(() => {
     .call(dragHandler);
 
   props.axisLabel &&
-    svg
-      .append('text')
-      .style('text-anchor', 'end')
-      .attr('x', width - 4)
-      .attr('y', height - 8)
-      .attr('fill', 'currentColor')
-      .attr('class', 'text-h6')
-      .text(props.axisLabel.x);
+  svg
+    .append('text')
+    .style('text-anchor', 'end')
+    .attr('x', width - 4)
+    .attr('y', height - 8)
+    .attr('fill', 'currentColor')
+    .attr('class', 'text-h6')
+    .text(props.axisLabel.x);
 
   props.axisLabel &&
-    svg
-      .append('text')
-      //.attr('transform', 'rotate(-90)') // TODO:Add prop for rotate Y Label
-      .attr('x', 5)
-      .attr('y', 4)
-      .attr('dy', '1em')
-      .attr('fill', 'currentColor')
-      .attr('class', 'text-h6')
-      .style('text-anchor', 'start')
-      .text(props.axisLabel.y);
+  svg
+    .append('text')
+    //.attr('transform', 'rotate(-90)') // TODO:Add prop for rotate Y Label
+    .attr('x', 5)
+    .attr('y', 4)
+    .attr('dy', '1em')
+    .attr('fill', 'currentColor')
+    .attr('class', 'text-h6')
+    .style('text-anchor', 'start')
+    .text(props.axisLabel.y);
 });
 </script>
 
 <template>
   <div ref="resizeRef" id="svgRef">
     <svg ref="svgRef">
-      <g class="x-axis" />
-      <g class="y-axis" />
+      <g class="x-axis"/>
+      <g class="y-axis"/>
     </svg>
   </div>
 </template>

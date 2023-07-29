@@ -1,20 +1,23 @@
 <template>
   <canvas-datagrid
-    v-if="veTable.table.value !== null"
-    :data="veTable.table.value"
-    showRowHeaders="false"
-    showColumnHeaders="false"
-    class="Injection_table"
+      v-if="veTable.table.value !== null"
+      :data="veTable.table.value"
+      showRowHeaders="false"
+      showColumnHeaders="false"
+      class="Injection_table"
   />
-  <EditBar v-if="veTable.table.value !== null" />
-  <NotTableData v-if="veTable.table.value === null" />
+  <EditBar v-if="veTable.table.value !== null"
+           :selection="selection"
+           :tableValues="veTable?.table"
+           :update-table="pathTable"/>
+  <NotTableData v-if="veTable.table.value === null"/>
 </template>
 
 <script setup lang="ts">
-import { watchEffect, onMounted, onBeforeUnmount } from 'vue';
-import { computed } from 'vue';
-import { storeKey } from 'store/index';
-import { useStore } from 'vuex';
+import {watchEffect, onMounted, onBeforeUnmount, ref} from 'vue';
+import {computed} from 'vue';
+import {storeKey} from 'store/index';
+import {useStore} from 'vuex';
 import NotTableData from 'src/components/NotTableData.vue';
 import {
   TABLE_TYPES,
@@ -23,9 +26,9 @@ import {
   cleanTableEvents,
   getTableObserver,
   setActiveStyle,
-  getTableRanges,
+  getTableRanges, ISelectEvent, ITableRow,
 } from 'src/types/table';
-import { VETableActions } from './actions';
+import {VETableActions} from './actions';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;
@@ -37,6 +40,7 @@ const InjectionTables = computed(() => store.state.Injection.tables.rpm_load);
 const paired = computed(() => store.state.UsbLayer.paired);
 
 let loaded = false;
+const selection = ref<null | ISelectEvent['selectedCells']>(null);
 
 const veTable = useTable({
   store,
@@ -49,6 +53,12 @@ const veTable = useTable({
   table: TABLE_TYPES.INJECTION_RPM_TPS,
 });
 
+const pathTable = (newTableData: Array<ITableRow>) => {
+  const ranges = getTableRanges(newTableData);
+  setActiveStyle(ranges.max, ranges.min, true);
+  store.dispatch('Injection/pathTableRPM_TPS', newTableData);
+}
+
 watchEffect(() => {
   if (veTable.table.value !== null && !store.state.Injection.tables_loading && !loaded) {
     loaded = true;
@@ -56,7 +66,10 @@ watchEffect(() => {
       store,
       table: veTable.table.value,
       tableClass: 'Injection_table',
-      updateCommand: 'Injection/setTableRPM_TPS',
+      updateCommand: 'Injection/pathTableRPM_TPS',
+      selectChange: (newVal) => {
+        selection.value = newVal
+      },
     });
   }
 });

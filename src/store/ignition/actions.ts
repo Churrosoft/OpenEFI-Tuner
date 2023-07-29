@@ -11,6 +11,9 @@ const actions: ActionTree<IgnitionInterface, StateInterface> = {
   requestIgnitionTableRPMTPS({ commit }) {
     commit('setIgnitionLoading', true);
   },
+  pathTableRPM_TPS({ commit }, payload) {
+    commit('pathTableRPM_TPS', payload);
+  },
   async getIgnitionTableRPMTPS({ commit }, payload) {
     commit('setTableRPM_TPS', payload);
   },

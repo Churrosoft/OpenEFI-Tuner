@@ -5,6 +5,6 @@ export const VETableActions = {
   error: 'Injection/errorTableRPMTPS',
   update: 'Injection/uploadTableRPMTPS',
   // estas solas tendrian que quedar
-  storeUpdate: 'Injection/updateTableRPMTPS',
+  storeUpdate: 'Injection/pathTableRPM_TPS',
   uploadResult: 'Injection/checkUploadResult',
 };

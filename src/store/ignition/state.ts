@@ -1,4 +1,4 @@
-import { ITableRow } from 'src/types/tables';
+import {ITableRow} from 'src/types/table';
 
 export type ITableStatus = null | 'loading' | 'error';
 export interface IgnitionInterface {

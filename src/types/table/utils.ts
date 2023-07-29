@@ -2,14 +2,13 @@
 
 import { diff } from 'deep-object-diff';
 import { getGroupedUSBCommands, getUSBCommand, IUSBCommand, SerialCommand, SerialStatus } from 'src/types/commands';
-/* import { deepCompare } from 'src/types/compare'; */
-import { computed, ref, /* toRaw, watch, */ watchEffect } from 'vue';
+import {computed, ref,  watchEffect} from 'vue';
 import { Store } from 'vuex';
 import {
   getTableRanges,
   IEditEvent,
   IMakeTableRequest,
-  IMakeUploadTable,
+  IMakeUploadTable, ISelectEvent,
   ITableRow,
   IUseTable,
   setActiveStyle,
@@ -70,7 +69,6 @@ export const makeUploadTable =
       }
     });
 
-    console.log(rowsToUpdate);
     if (!rowsToUpdate.length) return;
 
     void store.dispatch('Memory/writeTable', { data: rowsToUpdate, selectedTable: table });
@@ -82,11 +80,13 @@ export const makeInputChecks = ({
   store,
   tableClass,
   updateCommand,
+  selectChange,
 }: {
   table: unknown;
   store: Store<StateInterface>;
   tableClass: string;
   updateCommand: string;
+  selectChange: (data: ISelectEvent['selectedCells']) => void
 }) => {
   //ma' que timeout esperar a que exista el nodo en el dom, pero bueno
   setTimeout(() => {
@@ -111,8 +111,8 @@ export const makeInputChecks = ({
 
       tableRef[0].addEventListener(
         'selectionchanged',
-        function (editEvent: IEditEvent) {
-          console.log(editEvent);
+        function (editEvent: ISelectEvent) {
+          selectChange(editEvent.selectedCells);
         } as EventListener,
         false
       );
@@ -123,7 +123,6 @@ export const makeInputChecks = ({
 const deReferenceRows = (value: unknown) => JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
 export const useTable = ({ store, actions, state, paired, intTable, table: selectedTable }: IUseTable) => {
-  /*  const pong = false; */
   const table = ref(deReferenceRows(state.tableData.value));
   const uploadResult = computed((): Array<IUSBCommand> | null =>
     getGroupedUSBCommands(store.getters, [
@@ -147,25 +146,6 @@ export const useTable = ({ store, actions, state, paired, intTable, table: selec
       void store.dispatch(actions.uploadResult, uploadResult.value);
     }
   });
-
-  // view => store update
-  /*
-  FIXME: NO ANDAA AAAAA
-  watch(
-    table,
-    (newTableValue) => {
-      if (deepCompare(table, toRaw(newTableValue))) {
-        if (!pong) {
-          pong = true;
-          return;
-        }
-        console.log('table have changed', toRaw(newTableValue));
-        void store.dispatch(actions.storeUpdate, newTableValue);
-        pong = false;
-      }
-    },
-    { deep: true }
-  ); */
 
   const uploadTable = makeUploadTable({ store, paired, update: actions.update, table: selectedTable });
   const requestTable = makeTableRequest({
