@@ -32,7 +32,7 @@ const actions: ActionTree<InjectionInterface, StateInterface> = {
     if (payload === null) return;
 
     payload.map((command) => {
-      if (command !== null) {
+      if (command !== null) { //este if esta al pedo?
         void dispatch('UsbLayer/removeMesage', command, {
           root: true,
         });
