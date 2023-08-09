@@ -1,38 +1,39 @@
 <template>
   <canvas-datagrid
-    v-if="veTable.table.value !== null"
-    :data="veTable.table.value"
-    showRowHeaders="false"
-    showColumnHeaders="false"
-    class="Injection_table"
+      v-if="afrTable.table.value !== null"
+      :data="afrTable.table.value"
+      class="injection_afr_table"
+      showColumnHeaders="false"
+      showRowHeaders="false"
   />
-  <EditBar v-if="veTable.table.value !== null"
+  <EditBar v-if="afrTable.table.value !== null"
            :selection="selection"
-           :tableValues="veTable?.table"
+           :tableValues="afrTable?.table"
            :update-table="pathTable"/>
-  <NotTableData v-if="veTable.table.value === null"/>
+  <NotTableData v-if="afrTable.table.value === null"/>
 </template>
 
-<script setup lang="ts">
-import {watchEffect, onMounted, onBeforeUnmount, ref} from 'vue';
-import {computed} from 'vue';
+<script lang="ts" setup>
+import {computed, onBeforeUnmount, onMounted, ref, watchEffect} from 'vue';
 import {storeKey} from 'store/index';
 import {useStore} from 'vuex';
 import NotTableData from 'src/components/NotTableData.vue';
 import {
-  TABLE_TYPES,
-  makeInputChecks,
-  useTable,
   cleanTableEvents,
   getTableObserver,
+  getTableRanges,
+  ISelectEvent,
+  ITableRow,
+  makeInputChecks,
   setActiveStyle,
-  getTableRanges, ISelectEvent, ITableRow,
+  TABLE_TYPES,
+  useTable,
 } from 'src/types/table';
-import {VETableActions} from './actions';
+import {AFRTableActions} from './actions';
+import EditBar from 'src/components/Tables/EditBar.vue';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let intTable: NodeJS.Timeout | null = null;
-import EditBar from 'src/components/Tables/EditBar.vue';
 
 const store = useStore(storeKey);
 const InjectionTables = computed(() => store.state.Injection.tables.rpm_load);
@@ -42,34 +43,36 @@ const paired = computed(() => store.state.UsbLayer.paired);
 let loaded = false;
 const selection = ref<null | ISelectEvent['selectedCells']>(null);
 
-const veTable = useTable({
+const afrTable = useTable({
   store,
   intTable,
   paired,
-  actions: VETableActions,
+  actions: AFRTableActions,
   state: {
     tableData: InjectionTables,
   },
   table: TABLE_TYPES.INJECTION_RPM_TPS,
+  storeIndex: 'rpm_load_afr'
 });
 
 const pathTable = (newTableData: Array<ITableRow>) => {
   const ranges = getTableRanges(newTableData);
   setActiveStyle(ranges.max, ranges.min, true);
-  store.dispatch('Injection/pathTableRPM_TPS', newTableData);
+  store.dispatch('Injection/pathTable', {tableData: newTableData, table: 'rpm_load_afr'});
 }
 
 watchEffect(() => {
-  if (veTable.table.value !== null && !store.state.Injection.tables_loading && !loaded) {
+  if (afrTable.table.value !== null && !store.state.Injection.tables_loading && !loaded) {
     loaded = true;
     makeInputChecks({
       store,
-      table: veTable.table.value,
-      tableClass: 'Injection_table',
-      updateCommand: 'Injection/pathTableRPM_TPS',
+      table: afrTable.table.value,
+      tableClass: 'injection_afr_table',
+      updateCommand: 'Injection/pathTable',
       selectChange: (newVal) => {
         selection.value = newVal
       },
+      storeIndex: 'rpm_load_afr'
     });
   }
 });
@@ -79,12 +82,12 @@ onMounted(() => {
     const ranges = getTableRanges(InjectionTables.value.slice(1));
     setActiveStyle(ranges.max, ranges.min, true);
   }
-  cleanTableEvents('Injection_table');
-  getTableObserver(17, 'Injection_table');
+  cleanTableEvents('injection_afr_table');
+  getTableObserver(17, 'injection_afr_table');
 });
 
 onBeforeUnmount(() => {
-  cleanTableEvents('Injection_table');
+  cleanTableEvents('injection_afr_table');
 });
 </script>
 

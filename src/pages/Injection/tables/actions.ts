@@ -8,3 +8,12 @@ export const VETableActions = {
   storeUpdate: 'Injection/pathTableRPM_TPS',
   uploadResult: 'Injection/checkUploadResult',
 };
+
+// el resto salvo caso muy raro quedaria asi luego del refactor:
+export const AFRTableActions = {
+  start: 'Injection/requestTable',
+  success: 'Injection/getTable',
+  error: 'Injection/errorTable',
+  update: 'Injection/pathTable',
+  uploadResult: 'Injection/checkUploadResult',
+};

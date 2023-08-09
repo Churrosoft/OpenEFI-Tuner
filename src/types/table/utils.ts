@@ -18,19 +18,27 @@ import {
 import { StateInterface } from 'src/store';
 
 export const makeTableRequest =
-  ({ store, intTable, paired, actions, mocked, table }: IMakeTableRequest) =>
+  ({ store, intTable, paired, actions, mocked, table,storeIndex }: IMakeTableRequest) =>
   () => {
     if (mocked) {
       void store.dispatch('Memory/getTable', table);
-      void store.dispatch(actions.success);
+
+      if(storeIndex) {
+          void store.dispatch(actions.success,storeIndex);
+      }else{
+          void store.dispatch(actions.success);
+      }
       return;
     }
 
     if (!paired.value) return;
 
     void store.dispatch('Memory/requestTable', table);
-    void store.dispatch(actions.start);
-
+      if(storeIndex) {
+          void store.dispatch(actions.start,storeIndex);
+      }else{
+          void store.dispatch(actions.start);
+      }
     const tableInterval = () => {
       const tableAvailable = getUSBCommand(store.getters, SerialCommand.Table, SerialStatus.DataChunkEnd);
       const tableError = getUSBCommand(store.getters, SerialCommand.Table, SerialStatus.Error);
@@ -44,7 +52,11 @@ export const makeTableRequest =
         clearInterval(intTable as NodeJS.Timeout);
       }
       if (tableError) {
-        void store.dispatch(actions.error);
+          if(storeIndex) {
+              void store.dispatch(actions.error,storeIndex);
+          }else{
+              void store.dispatch(actions.error);
+          }
         console.debug('Table error');
         clearInterval(intTable as NodeJS.Timeout);
       }
@@ -81,12 +93,14 @@ export const makeInputChecks = ({
   tableClass,
   updateCommand,
   selectChange,
+  storeIndex,
 }: {
   table: unknown;
   store: Store<StateInterface>;
   tableClass: string;
   updateCommand: string;
   selectChange: (data: ISelectEvent['selectedCells']) => void
+  storeIndex ?:string;
 }) => {
   //ma' que timeout esperar a que exista el nodo en el dom, pero bueno
   setTimeout(() => {
@@ -103,7 +117,11 @@ export const makeInputChecks = ({
           }
 
           setTimeout(() => {
-            void store.commit(updateCommand, table);
+            if(storeIndex) {
+              void store.commit(updateCommand, {table:storeIndex, tableData:table});
+            }else {
+              void store.commit(updateCommand, table);
+            }
           }, 10);
         } as EventListener,
         false
@@ -122,7 +140,7 @@ export const makeInputChecks = ({
 
 const deReferenceRows = (value: unknown) => JSON.parse(JSON.stringify(value)) as Array<ITableRow>;
 
-export const useTable = ({ store, actions, state, paired, intTable, table: selectedTable }: IUseTable) => {
+export const useTable = ({ store, actions, state, paired, intTable, table: selectedTable ,storeIndex}: IUseTable) => {
   const table = ref(deReferenceRows(state.tableData.value));
   const uploadResult = computed((): Array<IUSBCommand> | null =>
     getGroupedUSBCommands(store.getters, [
@@ -143,7 +161,11 @@ export const useTable = ({ store, actions, state, paired, intTable, table: selec
   // view => store => HW update
   watchEffect(() => {
     if (uploadResult.value) {
-      void store.dispatch(actions.uploadResult, uploadResult.value);
+      if(storeIndex) {
+        void store.commit(actions.uploadResult, {table:storeIndex, tableData:uploadResult.value});
+      }else {
+        void store.commit(actions.uploadResult, table);
+      }
     }
   });
 
@@ -154,7 +176,13 @@ export const useTable = ({ store, actions, state, paired, intTable, table: selec
     intTable,
     table: selectedTable,
     actions: actions as IMakeTableRequest['actions'],
+      storeIndex
   });
 
   return { uploadTable, requestTable, table };
 };
+
+
+/*
+vuex.esm-bundler.js:999 [vuex] unknown mutation type: Injection/checkUploadResult
+ */

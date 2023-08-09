@@ -10,6 +10,8 @@ export type ITableRow = {
   [k: `col_${string}`]: string;
 };
 
+export type ITableStatus = null | 'loading' | 'error';
+
 export interface IMakeTableRequest {
   paired: ComputedRef<boolean>;
   store: Store<StateInterface>;
@@ -21,6 +23,7 @@ export interface IMakeTableRequest {
     success: string;
     error: string;
   };
+  storeIndex ?:string;
 }
 
 export interface ICell {
@@ -56,7 +59,7 @@ export interface IUseTable {
     success: string;
     error: string;
     update: string;
-    storeUpdate: string;
+    storeUpdate?: string; // no ce usa ma'
     uploadResult: string;
   };
   state: {
@@ -64,6 +67,8 @@ export interface IUseTable {
   };
 
   table: ITABLE_REF;
+  // new
+  storeIndex?:string;
 }
 
 export interface IEditEvent extends Event {
